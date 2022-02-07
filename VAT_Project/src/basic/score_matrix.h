@@ -62,7 +62,7 @@ struct Blast_score_blk
 		// }
 
 		return data_->matrix->data[(long)blast_alphabet<_val>()[(long)AlphabetFeature<_val>::alpha[x]]][(long)blast_alphabet<_val>()[(long)AlphabetFeature<_val>::alpha[y]]];
-		 }
+	}
 
 	double lambda() const
 	{ return data_->kbp_gap_std[0]->Lambda; }
@@ -103,13 +103,14 @@ struct score_matrix
 		verbose_stream << "Scoring matrix = " << name_ << endl;
 		verbose_stream << "Lambda = " << sb_.lambda() << endl;
 		verbose_stream << "K = " << sb_.k() << endl;
-		/*const unsigned n = Value_traits<_val>::ALPHABET_SIZE;
-		for(unsigned i=0;i<n;++i) {
-			for(unsigned j=0;j<n;++j)
-				printf("%3i", (int)matrix8_.data[i*32+j]);
-			printf("\n");
-		}*/
-	}
+		const unsigned n = AlphabetFeature<_val>::ALPHABET_SIZE;
+		// for(unsigned i=0;i<n;++i) {
+		// 	for(unsigned j=0;j<n;++j)
+		// 		printf("%3i", (int)matrix8_.data[i*32+j]);
+		// 		// printf("%5i", i*32+j);
+		// 	printf("\n");
+		}
+	
 
 	static const score_matrix& get()
 	{ return *instance; }

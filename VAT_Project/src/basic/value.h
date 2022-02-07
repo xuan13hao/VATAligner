@@ -44,12 +44,17 @@ template <> const DNA BioAlphabet<DNA>::invalid = 0xff;
 template <> const Protein BioAlphabet<Protein>::invalid = 0xff;
 template <> const RNA BioAlphabet<RNA>::invalid = 0xff;
 
+const RNA AlphabetFeature<RNA>::mask_char = 4;
+const char *AlphabetFeature<RNA>::alpha = "ACGUN";
+const BioAlphabet<RNA> AlphabetFeature<RNA>::bioa('R');
 
 const DNA AlphabetFeature<DNA>::mask_char = 4;
 const char *AlphabetFeature<DNA>::alpha = "ACGTN";
+const BioAlphabet<DNA> AlphabetFeature<DNA>::bioa('D');
+
 const Protein AlphabetFeature<Protein>::mask_char = 23;
 const char* AlphabetFeature<Protein>::alpha = "ARNDCQEGHILKMFPSTWYVBJZX*";
-const BioAlphabet<DNA> AlphabetFeature<DNA>::bioa('D');
+
 const BioAlphabet<Protein> AlphabetFeature<Protein>::bioa('P');
 
 

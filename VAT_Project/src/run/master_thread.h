@@ -202,8 +202,8 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		timer_mapping.resume();
 		size_t n_query_seqs;
 
-		//n_query_seqs = pushDNASeq(query_file, *format_a, &query_seqs<DNA>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
-		n_query_seqs = load_seqs<DNA,_val,Single_strand>(query_file, *format_a, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		n_query_seqs = loadDNASeqs<DNA,_val,Single_strand>(query_file, *format_a, &query_seqs<DNA>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		// n_query_seqs = load_seqs<DNA,_val,Single_strand>(query_file, *format_a, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
 
 		// if(input_sequence_type() == nucleotide)
 		// {

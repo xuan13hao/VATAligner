@@ -164,7 +164,16 @@ int main(int ac, const char* av[])
         	else
         		throw std::runtime_error("Database type (protein/nucleotide) not specified. Please use option --dbtype prot/nucl.");
 #else
-				make_db(DNA());
+        	if(program_options::db_type == "dna")
+        		make_db(DNA());
+        	else if(program_options::db_type == "prot")
+        		make_db(Protein());
+			else if(program_options::db_type == "rna")
+        		make_db(RNA());
+			else
+        		throw std::runtime_error("Database type (protein/nucleotide) not specified. Please use option --dbtype prot/dna/rna.");
+
+				// make_db(DNA());
         		// make_db(Protein());
 #endif
         } else if ((program_options::command == program_options::blastp
@@ -180,8 +189,10 @@ int main(int ac, const char* av[])
         		program_options::chunk_size = 0;
         	if(program_options::command == program_options::blastn)
         		master_thread<DNA>();
-        	else
+        	else if(program_options::command == program_options::blastp)
         		master_thread<DNA>();
+			//else if(program_options::command == program_options::blastr)
+        		//master_thread<RNA>();
         } else if(program_options::command == program_options::view && vm.count("daa") > 0)
         	view();
 		#ifdef EXTRA

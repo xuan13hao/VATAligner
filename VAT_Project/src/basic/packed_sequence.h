@@ -19,19 +19,26 @@ bool has_n(const sequence<const DNA> &seq)
 struct Packed_sequence
 {
 
+	// Packed_sequence(const sequence<const DNA> &seq):
+	// 	has_n_ (::has_n(seq))
+	// {
+	// 	if(has_n_)
+	// 		pack<DNA,3>(seq);
+	// 	else
+	// 		pack<DNA,2>(seq);
+	// }
 	Packed_sequence(const sequence<const DNA> &seq):
-		has_n_ (::has_n(seq))
-	{
-		if(has_n_)
-			pack<DNA,3>(seq);
-		else
-			pack<DNA,2>(seq);
-	}
-
+		has_n_ (false)
+	{ pack<DNA,5>(seq); }
 	Packed_sequence(const sequence<const Protein> &seq):
 		has_n_ (false)
 	{ pack<Protein,5>(seq); }
 
+	Packed_sequence(const sequence<const RNA> &seq):
+		has_n_ (false)
+	{ pack<RNA,5>(seq); }
+
+	
 	Packed_sequence(Binary_buffer::Iterator &it, unsigned len, bool has_n, unsigned b):
 		has_n_ (has_n)
 	{

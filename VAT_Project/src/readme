@@ -1,0 +1,7 @@
+
+./diamond makedb --in ../data/MT-human.fa -d r
+./diamond blastp -d r -q ../data/q2.fa -a match
+./diamond view -a match.daa -o match
+
+
+./diamond makedb --dbtype dna --in ../data/MT-human.fa -d r

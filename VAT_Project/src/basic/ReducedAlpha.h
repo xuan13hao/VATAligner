@@ -133,6 +133,8 @@ private:
 
 template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction (ReducedAlphaType::protein);
 template<> const ReducedAlpha<DNA> ReducedAlpha<DNA>::reduction (ReducedAlphaType::dna);
+template<> const ReducedAlpha<RNA> ReducedAlpha<RNA>::reduction (ReducedAlphaType::rna);
+
 
 #ifdef EXTRA
 #include "../../../extra/reduction.h"
