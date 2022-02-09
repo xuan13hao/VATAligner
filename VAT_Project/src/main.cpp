@@ -187,12 +187,12 @@ int main(int ac, const char* av[])
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
         		program_options::chunk_size = 0;
-        	if(program_options::command == program_options::blastn)
+        	if(program_options::command == program_options::blastp)
         		master_thread<DNA>();
-        	else if(program_options::command == program_options::blastp)
-        		master_thread<DNA>();
-			//else if(program_options::command == program_options::blastr)
-        		//master_thread<RNA>();
+        	// else if(program_options::command == program_options::blastp)
+        	// 	master_thread<Protein>();
+			// else if(program_options::command == program_options::blastr)
+        	// 	master_thread<RNA>();
         } else if(program_options::command == program_options::view && vm.count("daa") > 0)
         	view();
 		#ifdef EXTRA

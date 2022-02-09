@@ -20,7 +20,7 @@ size_t push_seq(String_set<_val> &ss, String_set<DNA> &source_seqs, const vector
 	ss.push_back(seq);
 	return seq.size();
 }
-
+/*
 template<typename _ival, typename _val, typename _strand>
 size_t push_seq(String_set<_val> &ss, String_set<RNA>& source_seqs, const vector<_ival> &seq)
 {
@@ -37,7 +37,7 @@ size_t pushDNASeq(String_set<DNA> &ss, String_set<DNA>& source_seqs, const vecto
 }
 
 
-size_t pushRNASeq(String_set<RNA> &ss, String_set<RNA>& source_seqs, const vector<RNA> &seq)
+size_t pushRNASeq(String_set<RNA> &ss, String_set<DNA>& source_seqs, const vector<RNA> &seq)
 {
 	ss.push_back(seq);
 	return seq.size();
@@ -56,7 +56,7 @@ size_t pushProteinSeq(String_set<Protein> &ss, String_set<DNA>& source_seqs, con
 // 	cout << "push seq 2" << endl;
 // 	return 0;
 // }
-
+*/
 template<>
 size_t push_seq<DNA,Protein,Double_strand>(String_set<Protein> &ss, String_set<DNA>& source_seqs, const vector<DNA> &seq)
 {
@@ -86,6 +86,7 @@ size_t push_seq<DNA,DNA,Double_strand>(String_set<DNA> &ss, String_set<DNA>& sou
 	ss.push_back(Translator::reverse(seq));
 	return seq.size()*2;
 }
+
 
 template<typename _ival, typename _val, typename _strand>
 size_t load_seqs(Input_stream &file,
@@ -121,7 +122,7 @@ size_t load_seqs(Input_stream &file,
 	}
 	return n;
 }
-
+/*
 
 
 template<typename _ival, typename _val, typename _strand>
@@ -195,7 +196,7 @@ size_t loadProteinSeqs(Input_stream &file,
 }
 
 template<typename _ival, typename _val, typename _strand>
-size_t loadRNAseqs(Input_stream &file,
+size_t loadRNASeqs(Input_stream &file,
 		const Sequence_file_format<_ival> &format,
 		Sequence_set<_val>** seqs,
 		String_set<char,0>*& ids,
@@ -227,6 +228,6 @@ size_t loadRNAseqs(Input_stream &file,
 		delete source_seqs;
 	}
 	return n;
-}
+}*/
 
 #endif /* LOAD_SEQS_H_ */

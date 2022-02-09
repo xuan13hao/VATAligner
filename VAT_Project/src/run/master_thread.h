@@ -55,7 +55,7 @@ void process_shape(unsigned sid,
 	::partition p (VATParameter::seedp, program_options::lowmem);
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) {
 
-		verbose_stream << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
+		cout << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
 
@@ -75,7 +75,7 @@ void process_shape(unsigned sid,
 				query_hst->get(program_options::index_mode, sid),
 				range);
 		timer.finish();
-
+		cout << "Searching alignments" << endl;
 		timer.go("Searching alignments");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
 		launch_scheduled_thread_pool(context, VATParameter::seedp, program_options::threads());
@@ -93,6 +93,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		DAA_output &master_out,
 		vector<Temp_file> &tmp_file)
 {
+	cout << "Loading reference sequences" << endl;
 	task_timer timer ("Loading reference sequences", true);
 	ref_seqs<_val>::data_ = new Masked_sequence_set<_val> (db_file);
 	ref_ids::data_ = new String_set<char,0> (db_file);
@@ -110,14 +111,14 @@ void run_ref_chunk(Database_file<_val> &db_file,
 			program_options::mem_buffered());
 	timer.finish();
 	timer_mapping.stop();
-
+	cout << "Initializing temporary storage" << endl;
 	for(unsigned i=0;i<shape_config::instance.count();++i)
 		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
 
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
 	exception_state.sync();
-
+	cout << "Closing temporary storage" << endl;
 	timer.go("Deallocating buffers");
 	delete[] ref_buffer;
 
@@ -129,7 +130,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		out = new Output_stream (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	// cout << "Computing alignments" << endl;
+	cout << "Computing alignments" << endl;
 	timer.go("Computing alignments");
 	align_queries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
 	delete Trace_pt_buffer<_locr,_locl>::instance;
@@ -140,6 +141,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		delete out;
 	}
 	timer_mapping.stop();
+	cout << "Deallocating reference" << endl;
 
 	timer.go("Deallocating reference");
 	delete ref_seqs<_val>::data_;
@@ -159,7 +161,7 @@ void run_query_chunk(Database_file<_val> &db_file,
 	char *query_buffer = sorted_list<_locq>::Type::alloc_buffer(*query_hst);
 	vector<Temp_file> tmp_file;
 	timer.finish();
-
+	cout << "Allocating buffers" << endl;
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)
 		run_ref_chunk<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
@@ -189,9 +191,13 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 	timer_mapping.resume();
 	// const Sequence_file_format<DNA> *format_n (guess_format<DNA>(program_options::query_file));
 	// const Sequence_file_format<Protein> *format_a (guess_format<Protein>(program_options::query_file));
-	const Sequence_file_format<DNA> *format_a (guess_format<DNA>(program_options::query_file));
+	const Sequence_file_format<DNA> *format_d (guess_format<DNA>(program_options::query_file));
+	//const Sequence_file_format<_val> *format_p (guess_format<_val>(program_options::query_file));
+
 	Input_stream query_file (program_options::query_file, true);
 	current_query_chunk=0;
+	cout << "Opening the output file " << endl;
+
 	timer.go("Opening the output file");
 	DAA_output master_out;
 	timer_mapping.stop();
@@ -202,9 +208,17 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		timer_mapping.resume();
 		size_t n_query_seqs;
 
-		n_query_seqs = loadDNASeqs<DNA,_val,Single_strand>(query_file, *format_a, &query_seqs<DNA>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
-		// n_query_seqs = load_seqs<DNA,_val,Single_strand>(query_file, *format_a, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		n_query_seqs = load_seqs<DNA,_val,Single_strand>(query_file, *format_d, &query_seqs<DNA>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		//n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		// if(input_sequence_type() == nucleotide)
+		// {
+		// 	n_query_seqs = load_seqs<DNA, _val, Single_strand>(query_file, *format_d, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		// }else
+		// {
+		// 	n_query_seqs = load_seqs<Protein,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		// }
 
+		cout << "Loading query sequences =  " <<n_query_seqs<< endl;
 		// if(input_sequence_type() == nucleotide)
 		// {
 		// 	n_query_seqs = load_seqs<DNA, _val, Double_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));

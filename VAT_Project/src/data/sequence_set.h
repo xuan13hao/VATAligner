@@ -24,7 +24,9 @@ struct Sequence_set : public String_set<_val>
 	{ }
 
 	void print_stats() const
-	{ verbose_stream << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; }
+	{ 
+		cout << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; 
+	}
 
 	pair<size_t,size_t> len_bounds(size_t min_len) const
 	{
