@@ -1,3 +1,21 @@
+/****
+Copyright (c) 2014, University of Tuebingen
+Author: Benjamin Buchfink
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+****/
 
 #ifndef DAA_WRITE_H_
 #define DAA_WRITE_H_
@@ -51,7 +69,7 @@ struct DAA_output
 		buf.write((uint32_t)0);
 		uint32_t l = query.length();
 		buf.write(l);
-		buf.write_c_str(query_name.c_str(), find_first_of(query_name.c_str(), VATParameter::id_delimiters));
+		buf.write_c_str(query_name.c_str(), find_first_of(query_name.c_str(), Const::id_delimiters));
 		Packed_sequence s (query);
 		uint8_t flags = s.has_n() ? 1 : 0;
 		buf.write(flags);
@@ -75,20 +93,6 @@ struct DAA_output
 			unsigned query_id,
 			const vector<char> &transcript_buf)
 	{
-		cout << query_ids::get()[query_id].c_str() << '\t'
-				<< ref_ids::get()[match.subject_id_].c_str()<< '\t'
-				<< (double)(match.traceback_->identities_)*100/(match.traceback_->len_)<< '\t'
-				<< match.traceback_->len_<< '\t'
-				<< match.traceback_->mismatches_<< '\t'
-				<< match.traceback_->gap_openings_<< '\t'
-				<< match.traceback_->query_begin_ + 1<< '\t'
-				<< match.traceback_->query_begin_ + match.traceback_->query_len_<< '\t'
-				<< match.traceback_->subject_begin_+1 << '\t'
-				<< match.traceback_->subject_begin_+match.traceback_->subject_len_<< '\t'
-				// << nm.bitscore(match.traceback_->score_)<< '\t'
-				// << nm.evalue(nm.bitscore(match.traceback_->score_),refheader.letters,query_source_len)<<'\t'
-				<<'\n';
-			
 		buf.write(ref_map.get<_val>(current_ref_block, match.subject_id_));
 		buf.write(get_segment_flag(match));
 		buf.write_packed(match.score_);

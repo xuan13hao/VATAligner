@@ -11,7 +11,7 @@ using std::vector;
 bool has_n(const sequence<const DNA> &seq)
 {
 	for(unsigned i=0;i<seq.length();++i)
-		if(seq[i] == AlphabetFeature<DNA>::mask_char)
+		if(seq[i] == Value_traits<DNA>::MASK_CHAR)
 			return true;
 	return false;
 }
@@ -19,13 +19,13 @@ bool has_n(const sequence<const DNA> &seq)
 struct Packed_sequence
 {
 
-	// Packed_sequence(const sequence<const DNA> &seq):
+	// Packed_sequence(const sequence<const Nucleotide> &seq):
 	// 	has_n_ (::has_n(seq))
 	// {
 	// 	if(has_n_)
-	// 		pack<DNA,3>(seq);
+	// 		pack<Nucleotide,3>(seq);
 	// 	else
-	// 		pack<DNA,2>(seq);
+	// 		pack<Nucleotide,2>(seq);
 	// }
 	Packed_sequence(const sequence<const DNA> &seq):
 		has_n_ (false)
@@ -34,11 +34,6 @@ struct Packed_sequence
 		has_n_ (false)
 	{ pack<Protein,5>(seq); }
 
-	Packed_sequence(const sequence<const RNA> &seq):
-		has_n_ (false)
-	{ pack<RNA,5>(seq); }
-
-	
 	Packed_sequence(Binary_buffer::Iterator &it, unsigned len, bool has_n, unsigned b):
 		has_n_ (has_n)
 	{

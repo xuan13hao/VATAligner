@@ -18,85 +18,36 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 Author: Benjamin Buchfink
 ****/
 
-#ifndef HASH_TABLE_H_
-#define HASH_TABLE_H_
+#ifndef CONST_H_
+#define CONST_H_
 
-template<typename T, T value> struct value_compare
-{
-	bool operator()(T x) const
-	{ return x == value; }
-};
-
-template<typename _K, typename _V, typename _E, typename _H> class hash_table
+struct Const
 {
 
-public:
+	enum {
+		build_version = 59,
+		build_compatibility = 52,
+		daa_version = 0,
+		seedp_bits = 10,
+		seedp = 1<<seedp_bits,
+		max_seed_weight = 32,
+		seqp_bits = 8,
+		seqp = 1<<seqp_bits,
+		max_shapes = 16,
+		index_modes = 2,
+		min_shape_len = 10,
+		max_shape_len = 32,
+		seed_anchor = 8
+	};
 
-	struct entry
-	{
-		_K	key;
-		_V	value;
-	} __attribute__((packed));
-
-	hash_table(size_t size):
-		table (new entry[size]),
-		size_ (size)
-	{ memset(table, 0, size_ * sizeof(entry)); }
-
-	~hash_table()
-	{ delete[] table; }
-
-	entry* operator[](_K key) const
-	{
-		entry *entry = get_entry(key);
-		if(_E()(entry->value))
-			return NULL;
-		return entry;
-	}
-
-	void insert(_K key, _V value)
-	{
-		entry *entry = get_entry(key);
-		if(_E()(entry->value))
-			entry->key = key;
-		entry->value = value;
-	}
-
-	size_t size() const
-	{
-		return size_;
-	}
-
-	size_t count() const
-	{
-		size_t n (0);
-		for(size_t i=0;i<size_;++i)
-			if(!_E()(table[i].value))
-				++n;
-		return n;
-	}
-
-private:
-
-	entry* get_entry(_K key) const
-	{
-		entry *p = &table[_H()(key) % size_];
-		bool wrapped = false;
-		while(p->key != key && !_E()(p->value)) {
-			++p;
-			if(p == &table[size_]) {
-				if(wrapped)
-					throw hash_table_overflow_exception();
-				p = &table[0];
-				wrapped = true;
-			}
-		}
-		return p;
-	}
-
-	entry	*table;
-	size_t	 size_;
+	static const char* version_string;
+	static const char* program_name;
+	static const char* id_delimiters;
 
 };
 
-#endif /* HASH_TABLE_H_ */
+const char* Const::version_string = "0.7.10";
+const char* Const::program_name = "diamond";
+const char* Const::id_delimiters = " \a\b\f\n\r\t\v";
+
+#endif /* CONST_H_ */

@@ -1,5 +1,4 @@
 
-
 #ifndef SEQUENCE_SET_H_
 #define SEQUENCE_SET_H_
 
@@ -24,9 +23,7 @@ struct Sequence_set : public String_set<_val>
 	{ }
 
 	void print_stats() const
-	{ 
-		cout << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; 
-	}
+	{ verbose_stream << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; }
 
 	pair<size_t,size_t> len_bounds(size_t min_len) const
 	{
@@ -74,7 +71,7 @@ struct Sequence_set : public String_set<_val>
 	vector<size_t> partition() const
 	{
 		vector<size_t> v;
-		const size_t l = (this->letters()+VATParameter::seqp-1) / VATParameter::seqp;
+		const size_t l = (this->letters()+Const::seqp-1) / Const::seqp;
 		v.push_back(0);
 		for(unsigned i=0;i<this->get_length();) {
 			size_t n = 0;
@@ -82,7 +79,7 @@ struct Sequence_set : public String_set<_val>
 				n += this->length(i++);
 			v.push_back(i);
 		}
-		for(unsigned i=v.size();i<VATParameter::seqp+1;++i)
+		for(unsigned i=v.size();i<Const::seqp+1;++i)
 			v.push_back(this->get_length());
 		return v;
 	}

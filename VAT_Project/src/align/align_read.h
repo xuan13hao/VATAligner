@@ -1,4 +1,22 @@
+/****
+Copyright (c) 2014, University of Tuebingen
+All rights reserved.
 
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+****
+Author: Benjamin Buchfink
+****/
 
 #ifndef ALIGN_READ_H_
 #define ALIGN_READ_H_
@@ -9,10 +27,10 @@
 #include "../basic/match.h"
 #include "../basic/statistics.h"
 #include "../search/align_ungapped.h"
-#include "AlignSequence.h"
+#include "align_sequence.h"
 #include "../util/text_buffer.h"
 #include "../output/output_buffer.h"
-#include "LinkSegments.h"
+#include "link_segments.h"
 
 using std::vector;
 
@@ -32,11 +50,9 @@ void align_read(Output_buffer<_val> &buffer,
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
-	//cout << "align_read 1...." << endl;	
+
 	assert(end > begin);
 	const size_t hit_count = end - begin;
-	cout << "hit_count = " <<hit_count<<endl;
-
 	local->reserve(hit_count);
 	const unsigned contexts = query_contexts();
 	const unsigned query = begin->query_/contexts;
@@ -45,8 +61,7 @@ void align_read(Output_buffer<_val> &buffer,
 	const size_t db_letters = ref_header.letters;
 	unsigned padding[6];
 
-	//cout << ".....contexts=" << contexts << ", query_translated()= " << query_translated() << ", padding=" << padding;
-	typedef Map<typename vector<hit<_locr, _locl>>::iterator, typename hit<_locr, _locl>::template Query_id<1>> Map_t;
+	typedef Map<typename vector<hit<_locr,_locl> >::iterator,typename hit<_locr,_locl>::template Query_id<1> > Map_t;
 	Map_t hits (begin, end);
 	typename Map_t::Iterator i = hits.begin();
 	while(i.valid()) {

@@ -1,5 +1,4 @@
 
-
 #ifndef SCORE_TRAITS_H_
 #define SCORE_TRAITS_H_
 

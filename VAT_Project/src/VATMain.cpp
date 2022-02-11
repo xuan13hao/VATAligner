@@ -1,4 +1,22 @@
+/****
+Copyright (c) 2014, University of Tuebingen
+All rights reserved.
 
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+****
+Author: Benjamin Buchfink
+****/
 
 #include <iostream>
 #include <iterator>
@@ -41,7 +59,7 @@ int main(int ac, const char* av[])
             ("help,h", "produce help message")
             ("threads,p", po::value<uint32_t>(&program_options::threads_)->default_value(0), "number of cpu threads")
             ("db,d", po::value<string>(&program_options::database), "database file")
-            ("daa,a", po::value<string>(&program_options::daa_file), "VAT alignment archive (DAA) file")
+            ("daa,a", po::value<string>(&program_options::daa_file), "DIAMOND alignment archive (DAA) file")
             ("verbose,v", "enable verbose out")
             ("log", "enable debug log");
 
@@ -49,8 +67,6 @@ int main(int ac, const char* av[])
         makedb.add_options()
         	("in", po::value<string>(&program_options::input_ref_file), "input reference file in FASTA format")
         	("block-size,b", po::value<double>(&program_options::chunk_size), "sequence block size in billions of letters (default=2)")
-			("dbtype", po::value<string>(&program_options::db_type), "database type (nucl/prot)")
-
 #ifdef EXTRA
         	("dbtype", po::value<string>(&program_options::db_type), "database type (nucl/prot)")
 #endif
@@ -145,44 +161,30 @@ int main(int ac, const char* av[])
 
         if (vm.count("help")) {
         	cout << endl << "Syntax:" << endl;
-        	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
+        	cout << "  diamond COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
-        	cout << "  makedb\tBuild VAT database from a FASTA file" << endl;
+        	cout << "  makedb\tBuild diamond database from a FASTA file" << endl;
         	cout << "  blastp\tAlign amino acid query sequences against a protein reference database" << endl;
         	cout << "  blastx\tAlign DNA query sequences against a protein reference database" << endl;
-        	cout << "  view\tView VAT alignment archive (DAA) formatted file" << endl;
+        	cout << "  view\tView DIAMOND alignment archive (DAA) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
-        } else if (program_options::command == program_options::makedb && vm.count("in") && vm.count("db")) {
+        } else if (program_options::command == program_options::makedb && vm.count("in") && vm.count("db")) 
+		{
         	if(vm.count("block-size") == 0)
         		program_options::chunk_size = 2;
-#ifdef EXTRA
-        	if(program_options::db_type == "nucl")
-        		make_db(Nucleotide());
-        	else if(program_options::db_type == "prot")
-        		make_db(Amino_acid());
-        	else
-        		throw std::runtime_error("Database type (protein/nucleotide) not specified. Please use option --dbtype prot/nucl.");
-#else
-        	if(program_options::db_type == "dna")
-        		make_db(DNA());
-        	else if(program_options::db_type == "prot")
-        		make_db(Protein());
-			else if(program_options::db_type == "rna")
-        		make_db(RNA());
-			else
-        		throw std::runtime_error("Database type (protein/nucleotide) not specified. Please use option --dbtype prot/dna/rna.");
+        		//make_db(Amino_acid());
+				make_db(DNA());
 
-				// make_db(DNA());
-        		// make_db(Protein());
-#endif
+
         } else if ((program_options::command == program_options::blastp
         		|| program_options::command == program_options::blastx
 #ifdef EXTRA
         		|| program_options::command == program_options::blastn
 #endif
         		)
-        		&& vm.count("query") && vm.count("db") && vm.count("daa")) {
+        		&& vm.count("query") && vm.count("db") && vm.count("daa")) 
+		{
         	if(vm.count("block-size") > 0) {
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
@@ -191,8 +193,6 @@ int main(int ac, const char* av[])
         		master_thread<DNA>();
         	// else if(program_options::command == program_options::blastp)
         	// 	master_thread<Protein>();
-			// else if(program_options::command == program_options::blastr)
-        	// 	master_thread<RNA>();
         } else if(program_options::command == program_options::view && vm.count("daa") > 0)
         	view();
 		#ifdef EXTRA

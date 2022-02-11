@@ -1,12 +1,10 @@
 
+
 #ifndef VALUE_H_
 #define VALUE_H_
 
-// #include "value_type.h"
-#include "AlphabetFeature.h"
-#include "BioAlphabet.h"
-#include "VATParameter.h"
-
+#include "value_type.h"
+#include "const.h"
 
 typedef enum { amino_acid=0, nucleotide=1 } Sequence_type;
 
@@ -39,26 +37,6 @@ bool query_translated()
 int query_len_factor()
 { return program_options::command == program_options::blastx ? 3 : 1; }
 
-
-template <> const DNA BioAlphabet<DNA>::invalid = 0xff;
-template <> const Protein BioAlphabet<Protein>::invalid = 0xff;
-template <> const RNA BioAlphabet<RNA>::invalid = 0xff;
-
-const RNA AlphabetFeature<RNA>::mask_char = 4;
-const char *AlphabetFeature<RNA>::alpha = "ACGUN";
-const BioAlphabet<RNA> AlphabetFeature<RNA>::bioa('R');
-
-const DNA AlphabetFeature<DNA>::mask_char = 4;
-const char *AlphabetFeature<DNA>::alpha = "ACGTN";
-const BioAlphabet<DNA> AlphabetFeature<DNA>::bioa('D');
-
-const Protein AlphabetFeature<Protein>::mask_char = 23;
-const char* AlphabetFeature<Protein>::alpha = "ARNDCQEGHILKMFPSTWYVBJZX*";
-
-const BioAlphabet<Protein> AlphabetFeature<Protein>::bioa('P');
-
-
-/*
 template<typename _val>
 struct Char_representation
 {
@@ -88,49 +66,49 @@ private:
 	_val data_[256];
 };
 
-template<> const Amino_acid Char_representation<Amino_acid>::invalid = 0xff;
-template<> const Nucleotide Char_representation<Nucleotide>::invalid = 0xff;
+template<> const Protein Char_representation<Protein>::invalid = 0xff;
+template<> const DNA Char_representation<DNA>::invalid = 0xff;
 
 template<typename _val>
 struct Value_traits
 { };
 
 template<>
-struct Value_traits<Amino_acid>
+struct Value_traits<Protein>
 {
 	enum { ALPHABET_SIZE = 25 };
-	static const Amino_acid				MASK_CHAR;
+	static const Protein				MASK_CHAR;
 	static const char*					ALPHABET;
-	static const Char_representation<Amino_acid>	from_char;
+	static const Char_representation<Protein>	from_char;
 };
 
-const Amino_acid					Value_traits<Amino_acid>::MASK_CHAR = 23;
-const char* Value_traits<Amino_acid>::ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*";
-const Char_representation<Amino_acid> Value_traits<Amino_acid>::from_char (Value_traits<Amino_acid>::ALPHABET_SIZE, Value_traits<Amino_acid>::ALPHABET, Value_traits<Amino_acid>::MASK_CHAR, "UO-");
+const Protein					Value_traits<Protein>::MASK_CHAR = 23;
+const char* Value_traits<Protein>::ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*";
+const Char_representation<Protein> Value_traits<Protein>::from_char (Value_traits<Protein>::ALPHABET_SIZE, Value_traits<Protein>::ALPHABET, Value_traits<Protein>::MASK_CHAR, "UO-");
 
 template<>
-struct Value_traits<const Amino_acid> : public Value_traits<Amino_acid>
+struct Value_traits<const Protein> : public Value_traits<Protein>
 { };
 
 template<>
-struct Value_traits<Nucleotide>
+struct Value_traits<DNA>
 {
 	enum { ALPHABET_SIZE = 5 };
-	static const Nucleotide				MASK_CHAR;
+	static const DNA				MASK_CHAR;
 	static const char*					ALPHABET;
-	static const Char_representation<Nucleotide>	from_char;
+	static const Char_representation<DNA>	from_char;
 };
 
-const Nucleotide Value_traits<Nucleotide>::MASK_CHAR = 4;
-const char* Value_traits<Nucleotide>::ALPHABET = "ACGTN";
-const Char_representation<Nucleotide> Value_traits<Nucleotide>::from_char (Value_traits<Nucleotide>::ALPHABET_SIZE, Value_traits<Nucleotide>::ALPHABET, Value_traits<Nucleotide>::MASK_CHAR, "MRWSYKVHDBX");
+const DNA Value_traits<DNA>::MASK_CHAR = 4;
+const char* Value_traits<DNA>::ALPHABET = "ACGTN";
+const Char_representation<DNA> Value_traits<DNA>::from_char (Value_traits<DNA>::ALPHABET_SIZE, Value_traits<DNA>::ALPHABET, Value_traits<DNA>::MASK_CHAR, "MRWSYKVHDBX");
 
 template<>
-struct Value_traits<const Nucleotide> : public Value_traits<Nucleotide>
+struct Value_traits<const DNA> : public Value_traits<DNA>
 { };
 
-char to_char(Amino_acid a)
-{ return Value_traits<Amino_acid>::ALPHABET[a]; }
+char to_char(Protein a)
+{ return Value_traits<Protein>::ALPHABET[a]; }
 
 template<>
 struct Value_traits<char>
@@ -138,5 +116,5 @@ struct Value_traits<char>
 	static char from_char(char c)
 	{ return c; }
 };
-*/
+
 #endif /* VALUE_H_ */

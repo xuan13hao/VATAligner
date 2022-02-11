@@ -1,5 +1,4 @@
 
-
 #ifndef BINARY_BUFFER_H_
 #define BINARY_BUFFER_H_
 

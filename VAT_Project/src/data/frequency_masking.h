@@ -19,9 +19,9 @@ struct Masked_sequence_set : public Sequence_set<_val>
 	void build_masking(unsigned sid, const seedp_range &range, typename sorted_list<_loc>::Type &idx)
 	{
 		task_timer timer ("Counting low complexity seeds", false);
-		vector<unsigned> counts (VATParameter::seedp);
+		vector<unsigned> counts (Const::seedp);
 		Count_context<_loc> count_context (idx, counts);
-		launch_scheduled_thread_pool(count_context, VATParameter::seedp, program_options::threads());
+		launch_scheduled_thread_pool(count_context, Const::seedp, program_options::threads());
 
 		timer.finish();
 		size_t n = 0;
@@ -35,7 +35,7 @@ struct Masked_sequence_set : public Sequence_set<_val>
 
 		timer.go("Building position filter");
 		Build_context<_loc> build_context(idx, sid, counts, *this);
-		launch_scheduled_thread_pool(build_context, VATParameter::seedp, program_options::threads());
+		launch_scheduled_thread_pool(build_context, Const::seedp, program_options::threads());
 		timer.finish();
 		log_stream << "Masked positions = " << std::accumulate(counts.begin(), counts.end(), 0) << std::endl;
 	}
@@ -131,7 +131,7 @@ private:
 private:
 
 	typedef hash_table<uint32_t, uint8_t, value_compare<uint8_t, 0>, murmur_hash> filter_table;
-	auto_ptr<filter_table> pos_filters[VATParameter::max_shapes][VATParameter::seedp];
+	auto_ptr<filter_table> pos_filters[Const::max_shapes][Const::seedp];
 
 };
 

@@ -24,7 +24,7 @@ struct Reference_header
 {
 	Reference_header():
 		unique_id (0x24af8a415ee186dllu),
-		build (VATParameter::build_version),
+		build (Const::build_version),
 		long_addressing (false),
 		sequences (0),
 		letters (0)
@@ -43,7 +43,7 @@ struct Reference_header
 struct Database_format_exception : public exception
 {
 	virtual const char* what() const throw()
-	{ return "Database file is not a VAT database."; }
+	{ return "Database file is not a DIAMOND database."; }
 };
 
 template<typename _val>
@@ -56,7 +56,7 @@ struct Database_file : public Input_stream
 			throw Database_format_exception ();
 		if(ref_header.unique_id != Reference_header ().unique_id)
 			throw Database_format_exception ();
-		if(ref_header.build > VATParameter::build_version || ref_header.build < VATParameter::build_compatibility)
+		if(ref_header.build > Const::build_version || ref_header.build < Const::build_compatibility)
 			throw invalid_database_version_exception();
 #ifdef EXTRA
 		if(sequence_type(_val()) != ref_header.sequence_type)
@@ -95,7 +95,7 @@ size_t max_id_len(const String_set<char,0> &ids)
 {
 	size_t max (0);
 	for(size_t i=0;i<ids.get_length(); ++i)
-		max = std::max(max, find_first_of(ids[i].c_str(), VATParameter::id_delimiters));
+		max = std::max(max, find_first_of(ids[i].c_str(), Const::id_delimiters));
 	return max;
 }
 
@@ -126,7 +126,7 @@ struct Ref_map
 			n = next_++;
 			data_[block][i] = n;
 			len_.push_back(ref_seqs<_val>::get().length(i));
-			name_.push_back(get_str(ref_ids::get()[i].c_str(), VATParameter::id_delimiters));
+			name_.push_back(get_str(ref_ids::get()[i].c_str(), Const::id_delimiters));
 			return n;
 		}
 	}

@@ -65,15 +65,25 @@ struct sequence
 	friend std::ostream& operator<<(std::ostream &os, const sequence &s)
 	{
 		for(unsigned i=0;i<s.len_;++i)
-			os << AlphabetFeature<_val>::alpha[s.data_[i]];
+			os << Value_traits<_val>::ALPHABET[s.data_[i]];
 		return os;
 	}
 	friend Text_buffer& operator<<(Text_buffer &buf, const sequence &s)
 	{
 		for(unsigned i=0;i<s.len_;++i)
-			buf << AlphabetFeature<_val>::alpha[s.data_[i]];
+			buf << Value_traits<_val>::ALPHABET[s.data_[i]];
 		return buf;
 	}
+	/*friend std::ostream& operator<<(std::ostream &os, const sequence &s)
+	{
+		std::cout << "co = " << s.clipping_offset_ << std::endl;
+		for(unsigned i=s.clipping_offset_;i<s.len_;++i) {
+			if(s.data_[i] == 24)
+				break;
+			os << mask_critical(s.data_[i]);
+		}
+		return os;
+	}*/
 	size_t	 len_;
 	int		 clipping_offset_;
 	_val	*data_;

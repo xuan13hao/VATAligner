@@ -1,5 +1,3 @@
-#ifndef __SETUP_H__
-#define __SETUP_H__
 
 #ifndef SETUP_H_
 #define SETUP_H_
@@ -20,7 +18,7 @@ void setup(const string &command, int ac, const char **av)
 	auto_append_extension(po::daa_file, ".daa");
 
 	if(po::debug_log) {
-		io::tee_filter<io::file_sink> t (io::file_sink("vat.log", std::ios_base::out | std::ios_base::app));
+		io::tee_filter<io::file_sink> t (io::file_sink("diamond.log", std::ios_base::out | std::ios_base::app));
 		verbose_stream.push(t);
 		log_stream.push(t);
 		log_stream.push(cout);
@@ -36,7 +34,7 @@ void setup(const string &command, int ac, const char **av)
 		log_stream << av[i] << ' ';
 	log_stream << endl;
 
-	verbose_stream << VATParameter::program_name << " v" << VATParameter::version_string << "." << VATParameter::build_version << endl;
+	verbose_stream << Const::program_name << " v" << Const::version_string << "." << Const::build_version << endl;
 #ifndef NDEBUG
 	verbose_stream << "Assertions enabled." << endl;
 #endif
@@ -55,9 +53,8 @@ void setup(const string &command, int ac, const char **av)
 		po::command = po::view;
 	else
 		po::command = po::invalid;
-	//cout << "setup amino_acid start" << endl;
-	if (sequence_type() == amino_acid)
-	{
+
+	if(sequence_type() == amino_acid) {
 		if(po::gap_open == -1)
 			po::gap_open = 11;
 		if(po::gap_extend == -1)
@@ -69,9 +66,7 @@ void setup(const string &command, int ac, const char **av)
 				po::penalty,
 				Protein ()));
 		score_matrix::get().print<Protein>();
-	}
-	else
-	{
+	} else {
 #ifdef EXTRA
 		if(po::gap_open == -1)
 			po::gap_open = 5;
@@ -82,11 +77,10 @@ void setup(const string &command, int ac, const char **av)
 				po::gap_extend,
 				po::reward,
 				po::penalty,
-				DNA ()));
-		score_matrix::get().print<DNA>();
+				Nucleotide ()));
+		score_matrix::get().print<Nucleotide>();
 #endif
 	}
-
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;
 	verbose_stream << "Gap extension penalty = " << po::gap_extend << endl;
 
@@ -107,7 +101,6 @@ void setup(const string &command, int ac, const char **av)
 template<typename _val>
 void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
-	cout << "setup_search_params............" << endl;
 	namespace po = program_options;
 	if(po::aligner_mode == po::sensitive) {
 		po::set_option(po::hit_cap, 256u);
@@ -164,5 +157,3 @@ void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t c
 }
 
 #endif /* SETUP_H_ */
-
-#endif // __SETUP_H__

@@ -38,10 +38,10 @@ struct sorted_list
 	{
 		task_timer timer ("Building seed list", false);
 		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
-		launch_scheduled_thread_pool(build_context, VATParameter::seqp, program_options::threads());
+		launch_scheduled_thread_pool(build_context, Const::seqp, program_options::threads());
 		timer.go("Sorting seed list");
 		Sort_context sort_context (*this);
-		launch_scheduled_thread_pool(sort_context, VATParameter::seedp, program_options::threads());
+		launch_scheduled_thread_pool(sort_context, Const::seedp, program_options::threads());
 	}
 
 	template<typename _t>
@@ -85,7 +85,7 @@ struct sorted_list
 
 private:
 
-	typedef Static_matrix<entry*,VATParameter::seqp,VATParameter::seedp> Ptr_set;
+	typedef Static_matrix<entry*,Const::seqp,Const::seedp> Ptr_set;
 
 	struct buffered_iterator
 	{
@@ -113,13 +113,13 @@ private:
 		}
 		void flush()
 		{
-			for(unsigned p=0;p<VATParameter::seedp;++p)
+			for(unsigned p=0;p<Const::seedp;++p)
 				if(n[p] > 0)
 					flush(p);
 		}
-		entry* ptr[VATParameter::seedp];
-		entry  	 buf[VATParameter::seedp][BUFFER_SIZE];
-		uint8_t  n[VATParameter::seedp];
+		entry* ptr[Const::seedp];
+		entry  	 buf[Const::seedp][BUFFER_SIZE];
+		uint8_t  n[Const::seedp];
 	};
 
 	entry* ptr_begin(unsigned i) const
@@ -179,11 +179,11 @@ private:
 	Ptr_set* build_iterators(const shape_histogram &hst) const
 	{
 		Ptr_set *iterators = new Ptr_set;
-		for(unsigned i=0;i<VATParameter::seedp;++i)
+		for(unsigned i=0;i<Const::seedp;++i)
 			(*iterators)[0][i] = ptr_begin(i);
 
-		for(unsigned i=1;i<VATParameter::seqp;++i) {
-			for(unsigned j=0;j<VATParameter::seedp;++j)
+		for(unsigned i=1;i<Const::seqp;++i) {
+			for(unsigned j=0;j<Const::seedp;++j)
 				(*iterators)[i][j] = (*iterators)[i-1][j] + hst[i-1][j];
 		}
 		return iterators;
@@ -205,7 +205,7 @@ private:
 		{
 			task_timer timer ("Computing limits", false);
 			this->push_back(0);
-			for(unsigned i=0;i<VATParameter::seedp;++i) {
+			for(unsigned i=0;i<Const::seedp;++i) {
 #ifdef EXTRA
 				log_stream << i << ' ' << partition_size(hst, i) << endl;
 #endif

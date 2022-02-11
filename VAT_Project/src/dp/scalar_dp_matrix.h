@@ -1,5 +1,4 @@
 
-
 #ifndef SCALAR_DP_MATRIX_H_
 #define SCALAR_DP_MATRIX_H_
 

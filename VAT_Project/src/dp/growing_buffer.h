@@ -1,5 +1,4 @@
 
-
 #ifndef GROWING_BUFFER_H_
 #define GROWING_BUFFER_H_
 

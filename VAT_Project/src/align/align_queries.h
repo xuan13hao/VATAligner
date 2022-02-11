@@ -1,4 +1,22 @@
+/****
+Copyright (c) 2014, University of Tuebingen
+All rights reserved.
 
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+****
+Author: Benjamin Buchfink
+****/
 
 #ifndef ALIGN_QUERIES_H_
 #define ALIGN_QUERIES_H_
@@ -6,7 +24,7 @@
 #include "../util/merge_sort.h"
 #include "../search/trace_pt_buffer.h"
 #include "../util/map.h"
-#include "AlignRead.h"
+#include "align_read.h"
 #include "../util/task_queue.h"
 
 using std::vector;
@@ -31,13 +49,10 @@ void align_queries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 		Output_buffer<_val> &buffer,
 		Statistics &st)
 {
-	//cout << "align_queries 1...." << endl;
-	typedef Map<typename vector<hit<_locr, _locl>>::iterator, typename hit<_locr, _locl>::template Query_id<_d> > Map_t;
+	typedef Map<typename vector<hit<_locr,_locl> >::iterator,typename hit<_locr,_locl>::template Query_id<_d> > Map_t;
 	Map_t hits (begin, end);
 	typename Map_t::Iterator i = hits.begin();
-	//cout << "align_queries 2...." << endl;
 	while(i.valid() && !exception_state()) {
-		//cout << "pre ... align_read." << endl;
 		align_read<_val,_locr,_locl>(buffer, st, i.begin(), i.end());
 		++i;
 	}
@@ -62,22 +77,13 @@ struct Align_context
 			try {
 				switch(query_contexts()) {
 				case 6:
-				{
-					//cout << "6";
-					align_queries<_val, _locr, _locl, 6>(query_range.begin, query_range.end, *buffer, st);
+					align_queries<_val,_locr,_locl,6>(query_range.begin, query_range.end, *buffer, st);
 					break;
-				}
 				case 2:
-				{
-					//cout << "2";
-					align_queries<_val, _locr, _locl, 2>(query_range.begin, query_range.end, *buffer, st);
+					align_queries<_val,_locr,_locl,2>(query_range.begin, query_range.end, *buffer, st);
 					break;
-				}
 				default:
-				{
-					//cout << "1"<<endl;
 					align_queries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
-				}
 				}
 				queue.push(i);
 			} catch(std::exception &e) {

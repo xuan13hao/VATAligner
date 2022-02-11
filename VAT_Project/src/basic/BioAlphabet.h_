@@ -1,5 +1,7 @@
 #ifndef __BIOALPHABET_H__
 #define __BIOALPHABET_H__
+#include <assert.h>
+
 
 template<typename T>
 class BioAlphabet
@@ -24,8 +26,8 @@ class BioAlphabet
 
     T operator()(char c) const
     {
-        assert(data_[(long)c] == invalid);
-        return data_[(long)c];
+       assert(data_[(long)c] == invalid);
+       return data_[(long)c];
     }
 //ACGTN  
 //MRWSYKVHDBX
@@ -47,7 +49,7 @@ class BioAlphabet
       data_[(long)'D'] = 4;
       data_[(long)'B'] = 4;
       data_[(long)'X'] = 4;
-/*
+
       data_[(long)'a'] = 0;
       data_[(long)'c'] = 1;
       data_[(long)'g'] = 2;
@@ -64,7 +66,7 @@ class BioAlphabet
       data_[(long)'D'] = 4;
       data_[(long)'B'] = 4;
       data_[(long)'X'] = 4;
-      */
+      
     }
 //ACGUN
     void initRNA()

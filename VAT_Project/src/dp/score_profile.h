@@ -1,4 +1,5 @@
 
+
 #ifndef SCORE_PROFILE_H_
 #define SCORE_PROFILE_H_
 
@@ -34,7 +35,7 @@ struct sequence_stream
 		  	  const typename vector<sequence<const _val> >::const_iterator &end,
 		 	  unsigned pos)
 	{
-		memset(data_, AlphabetFeature<_val>::mask_char, buffer_len*16);
+		memset(data_, Value_traits<_val>::MASK_CHAR, buffer_len*16);
 		unsigned n = 0;
 		typename vector<sequence<const _val> >::const_iterator it (begin);
 		assert(pos < it->length());
@@ -83,7 +84,7 @@ struct score_profile
 	template<typename _val>
 	inline void set(const __m128i &seq)
 	{
-		assert(sizeof(data_)/sizeof(score_vector<_score>) >= AlphabetFeature<_val>::ALPHABET_SIZE);
+		assert(sizeof(data_)/sizeof(score_vector<_score>) >= Value_traits<_val>::ALPHABET_SIZE);
 		/*unsigned j = 0;
 		do {
 			data_[j] = score_vector<_score> (j, seq);
@@ -97,7 +98,7 @@ struct score_profile
 		} while(j<24);
 		data_[j] = score_vector<_score> (j, seq);
 		assert(j+1 == Value_traits<_val>::ALPHABET_SIZE);*/
-		for(unsigned j=0;j<AlphabetFeature<_val>::ALPHABET_SIZE;++j)
+		for(unsigned j=0;j<Value_traits<_val>::ALPHABET_SIZE;++j)
 			data_[j] = score_vector<_score> (j, seq);
 	}
 

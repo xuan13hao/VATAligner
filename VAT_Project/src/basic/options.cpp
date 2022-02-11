@@ -1,10 +1,11 @@
 
+
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "options.h"
-#include "SequenceType.h"
+#include "value_type.h"
 
 namespace program_options {
 
@@ -117,17 +118,14 @@ unsigned read_padding(size_t len)
 template<>
 unsigned read_padding<Protein>(size_t len)
 {
-	//printf("read_padding<Amino_acid>");
-	if (padding == 0)
-	{
+	if(padding == 0) {
 		if(len<=35)
 			return 5;
 		else if(len<=55)
 			return 16;
 		else
 			return 32;
-	}
-	else
+	} else
 		return padding;
 }
 

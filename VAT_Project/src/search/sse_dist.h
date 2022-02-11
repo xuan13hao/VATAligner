@@ -1,4 +1,5 @@
 
+
 #ifndef SSE_DIST_H_
 #define SSE_DIST_H_
 
@@ -6,7 +7,7 @@
 #include <tmmintrin.h>
 #endif
 
-#include "../basic/ReducedAlpha.h"
+#include "../basic/reduction.h"
 
 unsigned popcount_3(uint64_t x)
 {
@@ -59,7 +60,7 @@ __m128i reduce_seq_generic(const __m128i &seq)
 	_val* s = (_val*)&seq;
 	uint8_t* d = (uint8_t*)&r;
 	for(unsigned i=0;i<16;++i)
-		*(d++) = ReducedAlpha<_val>::reduction(*(s++));
+		*(d++) = Reduction<_val>::reduction(*(s++));
 	return r;
 }
 

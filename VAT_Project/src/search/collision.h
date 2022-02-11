@@ -6,7 +6,7 @@
 template<typename _val>
 inline unsigned letter_match(const _val query, const _val subject)
 {
-	if(query != AlphabetFeature<_val>::mask_char && ReducedAlpha<_val>::reduction(query) == ReducedAlpha<_val>::reduction(mask_critical(subject)))
+	if(query != Value_traits<_val>::MASK_CHAR && Reduction<_val>::reduction(query) == Reduction<_val>::reduction(mask_critical(subject)))
 		return 1;
 	else
 		return 0;
