@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "options.h"
+#include "VATParameters.h"
 #include "value_type.h"
 
-namespace program_options {
+namespace VATParameters {
 
 string		input_ref_file;
 uint32_t	threads_;

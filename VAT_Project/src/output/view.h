@@ -1,21 +1,3 @@
-/****
-Copyright (c) 2014, University of Tuebingen
-Author: Benjamin Buchfink
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-****/
 
 #ifndef VIEW_H_
 #define VIEW_H_
@@ -25,9 +7,9 @@ const unsigned view_buf_size = 32;
 struct View_writer
 {
 	View_writer():
-		f_ (program_options::output_file + (program_options::compression==1?".gz":""),
-				program_options::compression==1,
-				program_options::output_file.length()==0 ? Output_stream::stdout_sink : Output_stream::file_sink)
+		f_ (VATParameters::output_file + (VATParameters::compression==1?".gz":""),
+				VATParameters::compression==1,
+				VATParameters::output_file.length()==0 ? Output_stream::stdout_sink : Output_stream::file_sink)
 	{ }
 	void operator()(Text_buffer &buf)
 	{
@@ -63,7 +45,7 @@ struct View_context
 	View_context(DAA_file &daa, View_writer &writer, const Output_format<_val> &format):
 		daa (daa),
 		writer (writer),
-		queue (3*program_options::threads(), writer),
+		queue (3*VATParameters::threads(), writer),
 		format (format)
 	{ }
 	void operator()(unsigned thread_id)
@@ -76,7 +58,7 @@ struct View_context
 				for(unsigned j=0;j<query_buf.n;++j) {
 					DAA_query_record<_val> r (daa, query_buf.buf[j]);
 					for(typename DAA_query_record<_val>::Match_iterator i = r.begin(); i.good(); ++i) {
-						if(i->frame > 2 && program_options::forwardonly)
+						if(i->frame > 2 && VATParameters::forwardonly)
 							continue;
 						format.print_match(*i, *buffer);
 					}
@@ -114,12 +96,12 @@ void view(DAA_file &daa)
 	format.print_header(writer.f_);
 
 	View_context<_val> context (daa, writer, format);
-	launch_thread_pool(context, program_options::threads());
+	launch_thread_pool(context, VATParameters::threads());
 }
 
 void view()
 {
-	DAA_file daa (program_options::daa_file);
+	DAA_file daa (VATParameters::daa_file);
 	if(daa.mode() == blastn)
 		view<DNA>(daa);
 	else

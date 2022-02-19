@@ -5,7 +5,7 @@
 #include "../algo/blast/core/blast_stat.h"
 #include "../algo/blast/core/blast_encoding.h"
 #include "score_traits.h"
-
+#include "Matrixs.h"
 using std::string;
 using std::cout;
 using std::endl;
@@ -50,7 +50,11 @@ struct Blast_score_blk
 
 	template<typename _val>
 	int score(_val x, _val y) const
-	{ return data_->matrix->data[(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[y]]]; }
+	{ 
+		// cout<<"x = "<<(char)Value_traits<_val>::ALPHABET[x]<<endl;
+		return getMatchScore((char)Value_traits<_val>::ALPHABET[x],(char)Value_traits<_val>::ALPHABET[y]);
+		// return data_->matrix->data[(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[y]]]; 
+	}
 
 	double lambda() const
 	{ return data_->kbp_gap_std[0]->Lambda; }
@@ -91,12 +95,12 @@ struct score_matrix
 		verbose_stream << "Scoring matrix = " << name_ << endl;
 		verbose_stream << "Lambda = " << sb_.lambda() << endl;
 		verbose_stream << "K = " << sb_.k() << endl;
-		/*const unsigned n = Value_traits<_val>::ALPHABET_SIZE;
+		const unsigned n = Value_traits<_val>::ALPHABET_SIZE;
 		for(unsigned i=0;i<n;++i) {
 			for(unsigned j=0;j<n;++j)
 				printf("%3i", (int)matrix8_.data[i*32+j]);
 			printf("\n");
-		}*/
+		}
 	}
 
 	static const score_matrix& get()

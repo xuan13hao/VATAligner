@@ -40,15 +40,15 @@ struct Sequence_set : public String_set<_val>
 	{
 		const _val* begin (this->data(offset));
 		unsigned n (0);
-		while(*begin != String_set<_val>::PADDING_CHAR && n <= program_options::window) {
+		while(*begin != String_set<_val>::PADDING_CHAR && n <= VATParameters::window) {
 			--begin;
 			++n;
 		}
 		++begin;
-		left = program_options::window + 1 - n;
+		left = VATParameters::window + 1 - n;
 		const _val* end (this->data(offset));
 		n = 0;
-		while(*end != String_set<_val>::PADDING_CHAR && n < program_options::window) {
+		while(*end != String_set<_val>::PADDING_CHAR && n < VATParameters::window) {
 			++end;
 			++n;
 		}
@@ -59,19 +59,19 @@ struct Sequence_set : public String_set<_val>
 	{
 		const _val* begin (this->data(offset));
 		unsigned n (0);
-		while(*begin != String_set<_val>::PADDING_CHAR && n <= program_options::window) {
+		while(*begin != String_set<_val>::PADDING_CHAR && n <= VATParameters::window) {
 			--begin;
 			++n;
 		}
 		++begin;
-		const _val* s (this->data(offset - program_options::window));
-		return sequence<const _val> (s, 2*program_options::window, begin - s);
+		const _val* s (this->data(offset - VATParameters::window));
+		return sequence<const _val> (s, 2*VATParameters::window, begin - s);
 	}
 
 	vector<size_t> partition() const
 	{
 		vector<size_t> v;
-		const size_t l = (this->letters()+Const::seqp-1) / Const::seqp;
+		const size_t l = (this->letters()+VATConsts::seqp-1) / VATConsts::seqp;
 		v.push_back(0);
 		for(unsigned i=0;i<this->get_length();) {
 			size_t n = 0;
@@ -79,7 +79,7 @@ struct Sequence_set : public String_set<_val>
 				n += this->length(i++);
 			v.push_back(i);
 		}
-		for(unsigned i=v.size();i<Const::seqp+1;++i)
+		for(unsigned i=v.size();i<VATConsts::seqp+1;++i)
 			v.push_back(this->get_length());
 		return v;
 	}

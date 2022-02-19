@@ -4,7 +4,7 @@
 #define VALUE_H_
 
 #include "value_type.h"
-#include "const.h"
+#include "VATConsts.h"
 
 typedef enum { amino_acid=0, nucleotide=1 } Sequence_type;
 
@@ -17,25 +17,25 @@ Sequence_type sequence_type<DNA>(const DNA&)
 { return nucleotide; }
 
 Sequence_type input_sequence_type()
-{ return program_options::command == program_options::blastp ? amino_acid : nucleotide; }
+{ return VATParameters::command == VATParameters::blastp ? amino_acid : nucleotide; }
 
 Sequence_type sequence_type()
-{ return program_options::command == program_options::blastn ? nucleotide : amino_acid; }
+{ return VATParameters::command == VATParameters::blastn ? nucleotide : amino_acid; }
 
 size_t query_contexts()
 {
-	switch(program_options::command) {
-	case program_options::blastn: return 2;
-	case program_options::blastx: return 6;
+	switch(VATParameters::command) {
+	case VATParameters::blastn: return 2;
+	case VATParameters::blastx: return 6;
 	default: return 1;
 	}
 }
 
 bool query_translated()
-{ return program_options::command == program_options::blastx ? true : false; }
+{ return VATParameters::command == VATParameters::blastx ? true : false; }
 
 int query_len_factor()
-{ return program_options::command == program_options::blastx ? 3 : 1; }
+{ return VATParameters::command == VATParameters::blastx ? 3 : 1; }
 
 template<typename _val>
 struct Char_representation

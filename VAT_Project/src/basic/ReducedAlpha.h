@@ -47,8 +47,5 @@ private:
 template<> const Reduction<Protein> Reduction<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
 template<> const Reduction<DNA> Reduction<DNA>::reduction ("A C G T");
 
-#ifdef EXTRA
-#include "../../../extra/reduction.h"
-#endif
 
 #endif /* REDUCTION_H_ */

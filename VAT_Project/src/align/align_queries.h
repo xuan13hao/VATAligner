@@ -1,22 +1,4 @@
-/****
-Copyright (c) 2014, University of Tuebingen
-All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-****
-Author: Benjamin Buchfink
-****/
 
 #ifndef ALIGN_QUERIES_H_
 #define ALIGN_QUERIES_H_
@@ -65,7 +47,7 @@ struct Align_context
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
-		queue (program_options::threads()*8, writer)
+		queue (VATParameters::threads()*8, writer)
 	{ }
 	void operator()(unsigned thread_id)
 	{
@@ -103,20 +85,21 @@ template<typename _val, typename _locr, typename _locl>
 void align_queries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream* output_file)
 {
 	Trace_pt_list<_locr,_locl> v;
-	for(unsigned bin=0;bin<trace_pts.bins();++bin) {
+	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
+	{
 		log_stream << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
 		task_timer timer ("Loading trace points", false);
 		trace_pts.load(v, bin);
 		timer.go("Sorting trace points");
-		merge_sort(v.begin(), v.end(), program_options::threads());
+		merge_sort(v.begin(), v.end(), VATParameters::threads());
 		v.init();
 		timer.go("Computing alignments");
 		if(ref_header.n_blocks > 1) {
 			Align_context<_val,_locr,_locl,Temp_output_buffer<_val> > context (v, output_file);
-			launch_thread_pool(context, program_options::threads());
+			launch_thread_pool(context, VATParameters::threads());
 		} else {
 			Align_context<_val,_locr,_locl,Output_buffer<_val> > context (v, output_file);
-			launch_thread_pool(context, program_options::threads());
+			launch_thread_pool(context, VATParameters::threads());
 		}
 	}
 }

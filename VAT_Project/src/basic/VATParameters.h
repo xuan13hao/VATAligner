@@ -8,7 +8,7 @@
 
 using std::string;
 
-namespace program_options
+namespace VATParameters
 {
 
 	extern string	input_ref_file;

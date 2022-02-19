@@ -17,7 +17,7 @@ include_directories(
   "${Boost_INCLUDE_DIR}")
 
 add_executable(VAT src/VATMain.cpp
-  src/basic/options.cpp
+  src/basic/VATParameters.cpp
   src/util/tinythread.cpp)
 
 target_link_libraries(VAT blast_core ${Boost_LIBRARIES})

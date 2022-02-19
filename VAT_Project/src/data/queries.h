@@ -2,9 +2,9 @@
 #ifndef QUERIES_H_
 #define QUERIES_H_
 
-#include "../basic/translate.h"
+#include "../basic/Translator.h"
 #include "../util/complexity_filter.h"
-#include "sorted_list.h"
+#include "RadixCluster.h"
 #include "../basic/statistics.h"
 #include "sequence_set.h"
 

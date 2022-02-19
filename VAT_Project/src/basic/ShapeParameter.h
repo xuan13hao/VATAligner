@@ -2,15 +2,15 @@
 #ifndef SHAPE_CONFIG_H_
 #define SHAPE_CONFIG_H_
 
-#include "shape.h"
+#include "Shape.h"
 
 template<typename _val>
 struct shape_codes
 {
-	static const char* str[Const::index_modes][Const::max_shapes];
+	static const char* str[VATConsts::index_modes][VATConsts::max_shapes];
 };
 
-template<> const char* shape_codes<Protein>::str[][Const::max_shapes] = {
+template<> const char* shape_codes<Protein>::str[][VATConsts::max_shapes] = {
 		{ "111101011101111", "111011001100101111", "1111001001010001001111", "111100101000010010010111", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },				// 4x12
 		{ "1111011111",		// 16x9
 		"111001101111",
@@ -30,7 +30,7 @@ template<> const char* shape_codes<Protein>::str[][Const::max_shapes] = {
 		"1110001000100000001010011" }
 };
 
-template<> const char* shape_codes<DNA>::str[][Const::max_shapes] = {
+template<> const char* shape_codes<DNA>::str[][VATConsts::max_shapes] = {
 		// 1x14
 		//{ "11110110011010101111", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		// 16x14
@@ -62,7 +62,7 @@ public:
 		n_ (0),
 		mode_ (mode-1)
 	{
-		unsigned maxShapes = program_options::shapes == 0 ? Const::max_shapes : program_options::shapes;
+		unsigned maxShapes = VATParameters::shapes == 0 ? VATConsts::max_shapes : VATParameters::shapes;
 		for(unsigned i=0;i<maxShapes;++i)
 			if(shape_codes<_val>::str[mode_][i])
 				shapes_[n_++] = shape (shape_codes<_val>::str[mode_][i], i);
@@ -82,7 +82,7 @@ public:
 
 private:
 
-	shape shapes_[Const::max_shapes];
+	shape shapes_[VATConsts::max_shapes];
 	unsigned n_, mode_;
 
 };

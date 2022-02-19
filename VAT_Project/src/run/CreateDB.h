@@ -3,7 +3,7 @@
 #define MAKE_DB_H_
 
 #include <iostream>
-#include "../basic/options.h"
+#include "../basic/VATParameters.h"
 #include "../data/reference.h"
 #include "../basic/exceptions.h"
 #include "../basic/statistics.h"
@@ -16,25 +16,23 @@ void make_db(_val)
 	using std::cout;
 	using std::endl;
 
-	verbose_stream << "Database file = " << program_options::input_ref_file << endl;
+	verbose_stream << "Database file = " << VATParameters::input_ref_file << endl;
 
 	boost::timer::cpu_timer total;
 	task_timer timer ("Opening the database file", true);
-	Input_stream db_file (program_options::input_ref_file, true);
+	Input_stream db_file (VATParameters::input_ref_file, true);
 	timer.finish();
 
-	ref_header.block_size = program_options::chunk_size;
-#ifdef EXTRA
-	ref_header.sequence_type = sequence_type(_val ());
-#endif
+	ref_header.block_size = VATParameters::chunk_size;
+
 	size_t chunk = 0;
-	Output_stream main(program_options::database);
+	Output_stream main(VATParameters::database);
 	main.write(&ref_header, 1);
 
 	for(;;++chunk) {
 		timer.go("Loading sequences");
 		Sequence_set<DNA>* ss;
-		size_t n_seq = load_seqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (Sequence_set<_val>**)&ref_seqs<_val>::data_, ref_ids::data_, ss, (size_t)(program_options::chunk_size * 1e9));
+		size_t n_seq = load_seqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (Sequence_set<_val>**)&ref_seqs<_val>::data_, ref_ids::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
 		log_stream << "load_seqs n=" << n_seq << endl;
 		if(n_seq == 0)
 			break;

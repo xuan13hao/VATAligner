@@ -19,9 +19,9 @@ struct Masked_sequence_set : public Sequence_set<_val>
 	void build_masking(unsigned sid, const seedp_range &range, typename sorted_list<_loc>::Type &idx)
 	{
 		task_timer timer ("Counting low complexity seeds", false);
-		vector<unsigned> counts (Const::seedp);
+		vector<unsigned> counts (VATConsts::seedp);
 		Count_context<_loc> count_context (idx, counts);
-		launch_scheduled_thread_pool(count_context, Const::seedp, program_options::threads());
+		launch_scheduled_thread_pool(count_context, VATConsts::seedp, VATParameters::threads());
 
 		timer.finish();
 		size_t n = 0;
@@ -30,12 +30,12 @@ struct Masked_sequence_set : public Sequence_set<_val>
 			const size_t ht_size (std::max(static_cast<size_t>(static_cast<float>(counts[i]) * 1.3), static_cast<size_t>(counts[i] + 1)));
 			pos_filters[sid][i] = auto_ptr<filter_table> (new filter_table(ht_size));
 		}
-		log_stream << "Hit cap = " << program_options::hit_cap << std::endl;
+		log_stream << "Hit cap = " << VATParameters::hit_cap << std::endl;
 		log_stream << "Low complexity seeds = " << n << std::endl;
 
 		timer.go("Building position filter");
 		Build_context<_loc> build_context(idx, sid, counts, *this);
-		launch_scheduled_thread_pool(build_context, Const::seedp, program_options::threads());
+		launch_scheduled_thread_pool(build_context, VATConsts::seedp, VATParameters::threads());
 		timer.finish();
 		log_stream << "Masked positions = " << std::accumulate(counts.begin(), counts.end(), 0) << std::endl;
 	}
@@ -69,7 +69,7 @@ private:
 			unsigned n = 0;
 			typename sorted_list<_loc>::Type::const_iterator i = idx.get_partition_cbegin(seedp);
 			while(!i.at_end()) {
-				if(i.n > program_options::hit_cap)
+				if(i.n > VATParameters::hit_cap)
 					++n;
 				++i;
 			}
@@ -93,7 +93,7 @@ private:
 			unsigned n = 0;
 			typename sorted_list<_loc>::Type::iterator i = idx.get_partition_begin(seedp);
 			while(!i.at_end()) {
-				if(i.n > program_options::hit_cap)
+				if(i.n > VATParameters::hit_cap)
 					n += seqs.mask_seed_pos<_loc>(i, sid, seedp);
 				++i;
 			}
@@ -131,7 +131,7 @@ private:
 private:
 
 	typedef hash_table<uint32_t, uint8_t, value_compare<uint8_t, 0>, murmur_hash> filter_table;
-	auto_ptr<filter_table> pos_filters[Const::max_shapes][Const::seedp];
+	auto_ptr<filter_table> pos_filters[VATConsts::max_shapes][VATConsts::seedp];
 
 };
 

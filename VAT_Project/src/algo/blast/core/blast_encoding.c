@@ -116,7 +116,7 @@ const Uint1 AMINOACID_TO_NCBISTDAA[128] = {
 14,15,16,17,18,24,19,20,21,22,23, 0, 0, 0, 0, 0,
  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
+//ARNDCQEGHILKMFPSTWYVBJZX*
 const char NCBISTDAA_TO_AMINOACID[BLASTAA_SIZE] = {
 '-','A','B','C','D','E','F','G','H','I','K','L','M',
 'N','P','Q','R','S','T','V','W','X','Y','Z','U','*',

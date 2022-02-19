@@ -4,7 +4,7 @@
 #define TRACE_PT_BUFFER_H_
 
 #include "../util/async_buffer.h"
-#include "../basic/match.h"
+#include "../basic/Hits.h"
 
 using std::auto_ptr;
 

@@ -46,7 +46,7 @@ struct score_vector<uint8_t>
 
 	explicit score_vector(unsigned a, const __m128i &seq)
 	{
-		if(program_options::have_ssse3) {
+		if(VATParameters::have_ssse3) {
 #ifdef __SSSE3__
 			set_ssse3(a, seq);
 #else

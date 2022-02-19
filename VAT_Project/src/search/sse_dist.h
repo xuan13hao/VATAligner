@@ -7,7 +7,7 @@
 #include <tmmintrin.h>
 #endif
 
-#include "../basic/reduction.h"
+#include "../basic/ReducedAlpha.h"
 
 unsigned popcount_3(uint64_t x)
 {
@@ -67,7 +67,7 @@ __m128i reduce_seq_generic(const __m128i &seq)
 template<typename _val>
 __m128i reduce_seq(const __m128i &seq)
 {
-	if(program_options::have_ssse3) {
+	if(VATParameters::have_ssse3) {
 #ifdef __SSSE3__
 		return reduce_seq_ssse3<_val>(seq);
 #else

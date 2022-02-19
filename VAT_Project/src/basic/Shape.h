@@ -3,12 +3,12 @@
 #ifndef SHAPE_H_
 #define SHAPE_H_
 
-#include "const.h"
+#include "VATConsts.h"
 #include "value.h"
-#include "seed.h"
+#include "SeedPartition.h"
 #include "../util/hash_function.h"
 #include "score_matrix.h"
-#include "reduction.h"
+#include "ReducedAlpha.h"
 
 const double background_freq[] = {-1.188861,
 		-4.343446,
@@ -40,7 +40,7 @@ struct shape
 		mask_ (0),
 		rev_mask_ (0),
 		id_ (0)
-	{ memset(positions_, 0, sizeof(uint32_t)*Const::max_seed_weight); }
+	{ memset(positions_, 0, sizeof(uint32_t)*VATConsts::max_seed_weight); }
 
 	shape(const char *code, unsigned id):
 		weight_ (0),
@@ -48,14 +48,14 @@ struct shape
 		rev_mask_ (0),
 		id_ (id)
 	{
-		assert(id < Const::max_shapes);
+		assert(id < VATConsts::max_shapes);
 		assert(strlen(code) <= 32);
-		memset(positions_, 0, sizeof(uint32_t)*Const::max_seed_weight);
+		memset(positions_, 0, sizeof(uint32_t)*VATConsts::max_seed_weight);
 		unsigned i (0);
 		for(;i<strlen(code);++i) {
 			rev_mask_ <<= 1;
 			if(code[i] == '1') {
-				assert(weight_ < Const::max_seed_weight);
+				assert(weight_ < VATConsts::max_seed_weight);
 				positions_[weight_] = i;
 				++weight_;
 				mask_ |= 1 << i;
@@ -81,7 +81,7 @@ struct shape
 			s *= Reduction<_val>::reduction.size();
 			s += uint64_t(r);
 		}
-		if(use_seed_freq<_val>() && f > program_options::max_seed_freq) return false;
+		if(use_seed_freq<_val>() && f > VATParameters::max_seed_freq) return false;
 #ifdef EXTRA
 		s = murmur_hash()(s);
 #endif
@@ -100,7 +100,7 @@ struct shape
 			unsigned r = Reduction<_val>::reduction(l);
 			f += background_freq[r];
 		}
-		return !use_seed_freq<_val>() || f <= program_options::max_seed_freq;
+		return !use_seed_freq<_val>() || f <= VATParameters::max_seed_freq;
 	}
 
 	template<typename _val>
@@ -115,10 +115,10 @@ struct shape
 			unsigned r = Reduction<_val>::reduction(l);
 			f += background_freq[r];
 		}
-		return !use_seed_freq<_val>() || f <= program_options::max_seed_freq;
+		return !use_seed_freq<_val>() || f <= VATParameters::max_seed_freq;
 	}
 
-	uint32_t length_, weight_, positions_[Const::max_seed_weight], d_, mask_, rev_mask_, id_;
+	uint32_t length_, weight_, positions_[VATConsts::max_seed_weight], d_, mask_, rev_mask_, id_;
 
 };
 

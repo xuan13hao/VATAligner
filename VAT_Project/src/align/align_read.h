@@ -1,22 +1,4 @@
-/****
-Copyright (c) 2014, University of Tuebingen
-All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-****
-Author: Benjamin Buchfink
-****/
 
 #ifndef ALIGN_READ_H_
 #define ALIGN_READ_H_
@@ -24,7 +6,7 @@ Author: Benjamin Buchfink
 #include <vector>
 #include <assert.h>
 #include "../util/async_buffer.h"
-#include "../basic/match.h"
+#include "../basic/Hits.h"
 #include "../basic/statistics.h"
 #include "../search/align_ungapped.h"
 #include "align_sequence.h"
@@ -77,25 +59,25 @@ void align_read(Output_buffer<_val> &buffer,
 	std::sort(matches->begin(), matches->end());
 	unsigned n_hsp = 0, n_target_seq = 0;
 	typename vector<Segment<_val> >::iterator it = matches->begin();
-	const int min_raw_score = score_matrix::get().rawscore(program_options::min_bit_score == 0
-			? score_matrix::get().bitscore(program_options::max_evalue, ref_header.letters, query_len) : program_options::min_bit_score);
+	const int min_raw_score = score_matrix::get().rawscore(VATParameters::min_bit_score == 0
+			? score_matrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	const int top_score = matches->operator[](0).score_;
 
 	while(it < matches->end()) {
 		const bool same_subject = it != matches->begin() && (it-1)->subject_id_ == it->subject_id_;
 		if(!same_subject && it->score_ < min_raw_score)
 			break;
-		if(!same_subject && !program_options::output_range(n_target_seq, it->score_, top_score))
+		if(!same_subject && !VATParameters::output_range(n_target_seq, it->score_, top_score))
 			break;
 		if(same_subject && (it-1)->score_ == it->score_) {
 			++it;
 			continue;
 		}
-		if(static_cast<double>(it->traceback_->identities_)*100/it->traceback_->len_ < program_options::min_id) {
+		if(static_cast<double>(it->traceback_->identities_)*100/it->traceback_->len_ < VATParameters::min_id) {
 			++it;
 			continue;
 		}
-		if(same_subject && program_options::single_domain) {
+		if(same_subject && VATParameters::single_domain) {
 			++it;
 			continue;
 		}
@@ -107,7 +89,7 @@ void align_read(Output_buffer<_val> &buffer,
 		++n_hsp;
 		if(!same_subject)
 			++n_target_seq;
-		if(program_options::alignment_traceback && it->traceback_->gap_openings_ > 0)
+		if(VATParameters::alignment_traceback && it->traceback_->gap_openings_ > 0)
 			stat.inc(Statistics::GAPPED);
 		++it;
 	}

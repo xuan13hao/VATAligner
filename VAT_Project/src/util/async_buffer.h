@@ -32,7 +32,7 @@ struct Async_buffer
 		bin_size_ ((input_count + bins_ - 1) / bins_)
 	{
 		log_stream << "Async_buffer() " << input_count << ',' << bin_size_ << endl;
-		for(unsigned j=0;j<program_options::threads();++j)
+		for(unsigned j=0;j<VATParameters::threads();++j)
 			for(unsigned i=0;i<bins;++i) {
 				tmp_file_.push_back(Temp_file ());
 				out_.push_back(new Output_stream (tmp_file_.back()));
@@ -90,12 +90,12 @@ struct Async_buffer
 	void load(vector<_t> &data, unsigned bin) const
 	{
 		size_t size = 0;
-		for(unsigned i=0;i<program_options::threads();++i)
+		for(unsigned i=0;i<VATParameters::threads();++i)
 			size += size_[i*bins_+bin];
 		log_stream << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
 		data.resize(size);
 		_t* ptr = data.data();
-		for(unsigned i=0;i<program_options::threads();++i) {
+		for(unsigned i=0;i<VATParameters::threads();++i) {
 			Input_stream f (tmp_file_[i*bins_+bin]);
 			const size_t s = size_[i*bins_+bin];
 			const size_t n = f.read(ptr, s);

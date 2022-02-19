@@ -5,7 +5,7 @@
 
 #include "sequence.h"
 #include "../util/async_buffer.h"
-#include "edit_transcript.h"
+#include "EditTranscript.h"
 
 enum Strand { FORWARD, REVERSE };
 

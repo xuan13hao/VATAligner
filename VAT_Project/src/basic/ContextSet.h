@@ -3,7 +3,7 @@
 #define SETUP_H_
 
 #include <boost/iostreams/tee.hpp>
-#include "options.h"
+#include "VATParameters.h"
 #include "../util/system.h"
 
 using std::cout;
@@ -12,7 +12,7 @@ using std::endl;
 void setup(const string &command, int ac, const char **av)
 {
 	namespace io = boost::iostreams;
-	namespace po = program_options;
+	namespace po = VATParameters;
 
 	auto_append_extension(po::database, ".dmnd");
 	auto_append_extension(po::daa_file, ".daa");
@@ -34,7 +34,7 @@ void setup(const string &command, int ac, const char **av)
 		log_stream << av[i] << ' ';
 	log_stream << endl;
 
-	verbose_stream << Const::program_name << " v" << Const::version_string << "." << Const::build_version << endl;
+	verbose_stream << VATConsts::program_name << " v" << VATConsts::version_string << "." << VATConsts::build_version << endl;
 #ifndef NDEBUG
 	verbose_stream << "Assertions enabled." << endl;
 #endif
@@ -101,7 +101,7 @@ void setup(const string &command, int ac, const char **av)
 template<typename _val>
 void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
-	namespace po = program_options;
+	namespace po = VATParameters;
 	if(po::aligner_mode == po::sensitive) {
 		po::set_option(po::hit_cap, 256u);
 	} else if (po::aligner_mode == po::fast) {
@@ -125,7 +125,7 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 template<>
 void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
-	namespace po = program_options;
+	namespace po = VATParameters;
 	if(po::aligner_mode == po::sensitive) {
 		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/8735437)));
 	} else if (po::aligner_mode == po::fast) {

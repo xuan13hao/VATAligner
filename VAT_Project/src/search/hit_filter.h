@@ -29,10 +29,10 @@ struct hit_filter
 
 	void push(_locr subject, int score)
 	{
-		if(score >= program_options::min_hit_score)
+		if(score >= VATParameters::min_hit_score)
 			push_hit(subject);
 		else
-			subjects_->push_back(ref_seqs<_val>::data_->fixed_window_infix(subject+Const::seed_anchor));
+			subjects_->push_back(ref_seqs<_val>::data_->fixed_window_infix(subject+VATConsts::seed_anchor));
 	}
 
 	void finish()
@@ -40,14 +40,14 @@ struct hit_filter
 		if(subjects_->size() == 0)
 			return;
 		unsigned left;
-		sequence<const _val> query (query_seqs<_val>::data_->window_infix(q_pos_ + Const::seed_anchor, left));
+		sequence<const _val> query (query_seqs<_val>::data_->window_infix(q_pos_ + VATConsts::seed_anchor, left));
 		smith_waterman(query,
 				*subjects_,
-				program_options::hit_band,
+				VATParameters::hit_band,
 				left,
-				program_options::gap_open + program_options::gap_extend,
-				program_options::gap_extend,
-				program_options::min_hit_score,
+				VATParameters::gap_open + VATParameters::gap_extend,
+				VATParameters::gap_extend,
+				VATParameters::min_hit_score,
 				*this,
 				uint8_t(),
 				stats_);
@@ -67,7 +67,7 @@ struct hit_filter
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)
-	{ push_hit(ref_seqs<_val>::data_->position(seq.data()+program_options::window-Const::seed_anchor)); stats_.inc(Statistics::GAPPED_HITS); }
+	{ push_hit(ref_seqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); stats_.inc(Statistics::GAPPED_HITS); }
 
 private:
 

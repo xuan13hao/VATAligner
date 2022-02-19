@@ -3,7 +3,7 @@
 #ifndef FLOATING_SW_H_
 #define FLOATING_SW_H_
 
-#include "../basic/match.h"
+#include "../basic/Hits.h"
 #include "scalar_dp_matrix.h"
 #include "../util/direction.h"
 #include "scalar_traceback.h"

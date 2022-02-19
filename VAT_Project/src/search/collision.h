@@ -77,9 +77,9 @@ bool is_primary_hit2(const _val *query,
 					const unsigned len,
 					Statistics &stat)
 {
-	assert(len > 0 && len <= program_options::window*2);
+	assert(len > 0 && len <= VATParameters::window*2);
 	unsigned mask (0);
-	const bool chunked (program_options::lowmem > 1);
+	const bool chunked (VATParameters::lowmem > 1);
 	unsigned i = len;
 
 	do {
@@ -117,8 +117,8 @@ bool is_primary_hit(const _val *query,
 					const unsigned sid,
 					const unsigned len)
 {
-	assert(len > 0 && len <= program_options::window*2);
-	const bool chunked (program_options::lowmem > 1);
+	assert(len > 0 && len <= VATParameters::window*2);
+	const bool chunked (VATParameters::lowmem > 1);
 	uint64_t mask = reduced_match32(query, subject, len);
 	unsigned i = 0;
 	uint64_t current_mask = shape_config::instance.get_shape(sid).mask_;

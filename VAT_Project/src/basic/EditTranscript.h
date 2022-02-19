@@ -4,7 +4,7 @@
 #define EDIT_TRANSCRIPT_H_
 
 #include <vector>
-#include "packed_transcript.h"
+#include "PackedTranscript.h"
 
 using std::vector;
 using std::endl;

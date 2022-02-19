@@ -11,8 +11,8 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 	delta = 0;
 
 	const _val *q (query-1), *s (subject-1);
-	const unsigned window_left = std::max(program_options::window, (unsigned)Const::seed_anchor) - Const::seed_anchor;
-	while(score - st < program_options::xdrop
+	const unsigned window_left = std::max(VATParameters::window, (unsigned)VATConsts::seed_anchor) - VATConsts::seed_anchor;
+	while(score - st < VATParameters::xdrop
 			&& delta < window_left
 			&& *q != String_set<_val>::PADDING_CHAR
 			&& *s != String_set<_val>::PADDING_CHAR)
@@ -27,9 +27,9 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 	q = query + seed_len;
 	s = subject + seed_len;
 	st = score;
-	assert(seed_len >= Const::seed_anchor);
-	const unsigned window_right = std::max(program_options::window, seed_len - Const::seed_anchor) - (seed_len - Const::seed_anchor);
-	while(score - st < program_options::xdrop
+	assert(seed_len >= VATConsts::seed_anchor);
+	const unsigned window_right = std::max(VATParameters::window, seed_len - VATConsts::seed_anchor) - (seed_len - VATConsts::seed_anchor);
+	while(score - st < VATParameters::xdrop
 			&& n < window_right
 			&& *q != String_set<_val>::PADDING_CHAR
 			&& *s != String_set<_val>::PADDING_CHAR)

@@ -18,7 +18,7 @@ void align_range(_locq q_pos,
 	const _val* query = query_seqs<_val>::data_->data(q_pos);
 	hit_filter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
 
-	if(s.n <= program_options::hit_cap) {
+	if(s.n <= VATParameters::hit_cap) {
 		stats.inc(Statistics::SEED_HITS, s.n);
 		while(i < s.n) {
 			align<_val,_locr,_locq,_locl>(q_pos, query, s[i], stats, sid, hf);

@@ -8,11 +8,11 @@
 #include "../data/reference.h"
 #include "../data/queries.h"
 #include "../basic/statistics.h"
-#include "../basic/shape_config.h"
+#include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
 #include "../align/align_queries.h"
 #include "../search/align_range.h"
-#include "../basic/setup.h"
+#include "../basic/ContextSet.h"
 
 using std::endl;
 using std::cout;
@@ -52,18 +52,18 @@ void process_shape(unsigned sid,
 {
 	using std::vector;
 
-	::partition p (Const::seedp, program_options::lowmem);
+	::partition p (VATConsts::seedp, VATParameters::lowmem);
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) {
 
 		verbose_stream << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
-
+		// cout<<"Searching alignments"<<endl;
 		task_timer timer ("Building reference index", true);
 		typename sorted_list<_locr>::Type ref_idx (ref_buffer,
 				*ref_seqs<_val>::data_,
 				shape_config::instance.get_shape(sid),
-				ref_hst.get(program_options::index_mode, sid),
+				ref_hst.get(VATParameters::index_mode, sid),
 				range);
 		ref_seqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
 
@@ -72,13 +72,13 @@ void process_shape(unsigned sid,
 		typename sorted_list<_locq>::Type query_idx (query_buffer,
 				*query_seqs<_val>::data_,
 				shape_config::instance.get_shape(sid),
-				query_hst->get(program_options::index_mode, sid),
+				query_hst->get(VATParameters::index_mode, sid),
 				range);
 		timer.finish();
 
 		timer.go("Searching alignments");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
-		launch_scheduled_thread_pool(context, Const::seedp, program_options::threads());
+		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
 	}
 	timer_mapping.stop();
 }
@@ -99,15 +99,15 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	ref_hst.load(db_file);
 	setup_search_params<_val>(query_len_bounds, ref_seqs<_val>::data_->letters());
 	ref_map.init(ref_seqs<_val>::get().get_length());
-
+	cout<<"Loading reference sequences"<<endl;
 	timer.go("Allocating buffers");
 	char *ref_buffer = sorted_list<_locr>::Type::alloc_buffer(ref_hst);
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
 	Trace_pt_buffer<_locr,_locl>::instance = new Trace_pt_buffer<_locr,_locl> (query_seqs<_val>::data_->get_length()/query_contexts(),
-			program_options::tmpdir,
-			program_options::mem_buffered());
+			VATParameters::tmpdir,
+			VATParameters::mem_buffered());
 	timer.finish();
 	timer_mapping.stop();
 
@@ -159,7 +159,7 @@ void run_query_chunk(Database_file<_val> &db_file,
 	char *query_buffer = sorted_list<_locq>::Type::alloc_buffer(*query_hst);
 	vector<Temp_file> tmp_file;
 	timer.finish();
-
+	cout<<"Allocating buffers"<<endl;
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)
 		run_ref_chunk<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
@@ -183,26 +183,29 @@ void run_query_chunk(Database_file<_val> &db_file,
 template<typename _val, typename _locr>
 void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
 {
-	shape_config::instance = shape_config (program_options::index_mode, _val ());
-
+	shape_config::instance = shape_config (VATParameters::index_mode, _val ());
+	cout<<"Opening the output file"<<endl;
 	task_timer timer ("Opening the input file", true);
 	timer_mapping.resume();
-	const Sequence_file_format<DNA> *format_n (guess_format<DNA>(program_options::query_file));
-	// const Sequence_file_format<Protein> *format_a (guess_format<Protein>(program_options::query_file));
-	Input_stream query_file (program_options::query_file, true);
+	// const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
+	const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
+	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
-
 	timer.go("Opening the output file");
+	cout<<"Loading query sequences 1"<<endl;
 	DAA_output master_out;
+	cout<<"Loading query sequences 2"<<endl;
 	timer_mapping.stop();
 	timer.finish();
+	
 
 	for(;;++current_query_chunk) {
 		task_timer timer ("Loading query sequences", true);
 		timer_mapping.resume();
 		size_t n_query_seqs;
+		
 
-		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
+		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 /*
 		if(input_sequence_type() == nucleotide)
 			n_query_seqs = load_seqs<Nucleotide,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
@@ -264,14 +267,14 @@ void master_thread()
 	cpu_timer timer2, timer_mapping;
 	timer_mapping.stop();
 
-	if(!check_dir(program_options::tmpdir))
-		throw std::runtime_error("Temporary directory " + program_options::tmpdir + " does not exist or is not a directory. Please use option -t to specify a different directory.");
+	if(!check_dir(VATParameters::tmpdir))
+		throw std::runtime_error("Temporary directory " + VATParameters::tmpdir + " does not exist or is not a directory. Please use option -t to specify a different directory.");
 
 	task_timer timer ("Opening the database", 1);
 	Database_file<_val> db_file;
 	timer.finish();
-	program_options::set_options<_val>(ref_header.block_size);
-	verbose_stream << "Reference = " << program_options::database << endl;
+	VATParameters::set_options<_val>(ref_header.block_size);
+	verbose_stream << "Reference = " << VATParameters::database << endl;
 	verbose_stream << "Sequences = " << ref_header.sequences << endl;
 	verbose_stream << "Letters = " << ref_header.letters << endl;
 	verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;

@@ -3,9 +3,9 @@
 #ifndef SEED_HISTOGRAM_H_
 #define SEED_HISTOGRAM_H_
 
-#include "../basic/seed.h"
+#include "../basic/SeedPartition.h"
 #include "sequence_set.h"
-#include "../basic/shape_config.h"
+#include "../basic/ShapeParameter.h"
 #include "../util/thread.h"
 
 using std::vector;
@@ -48,7 +48,7 @@ void decode_zero_rle(int32_t *data, size_t len, Input_stream &in)
 	}
 }
 
-typedef int32_t shape_histogram[Const::seqp][Const::seedp];
+typedef int32_t shape_histogram[VATConsts::seqp][VATConsts::seedp];
 
 struct seedp_range
 {
@@ -77,7 +77,7 @@ private:
 size_t partition_size(const shape_histogram &hst, unsigned p)
 {
 	size_t s (0);
-	for(unsigned i=0;i<Const::seqp;++i)
+	for(unsigned i=0;i<VATConsts::seqp;++i)
 		s += hst[i][p];
 	return s;
 }
@@ -101,7 +101,7 @@ struct seed_histogram
 	{
 		memset(data_, 0, sizeof(data_));
 		Build_context<_val> context (seqs, *this);
-		launch_scheduled_thread_pool(context, Const::seqp, program_options::threads());
+		launch_scheduled_thread_pool(context, VATConsts::seqp, VATParameters::threads());
 	}
 
 	const shape_histogram& get(unsigned index_mode, unsigned sid) const
@@ -110,10 +110,10 @@ struct seed_histogram
 	size_t max_chunk_size() const
 	{
 		size_t max (0);
-		::partition p (Const::seedp, program_options::lowmem);
+		::partition p (VATConsts::seedp, VATParameters::lowmem);
 		for(unsigned shape=0;shape < shape_config::get().count();++shape)
 			for(unsigned chunk=0;chunk < p.parts; ++chunk)
-				max = std::max(max, hst_size(data_[program_options::index_mode-1][shape], seedp_range(p.getMin(chunk), p.getMax(chunk))));
+				max = std::max(max, hst_size(data_[VATParameters::index_mode-1][shape], seedp_range(p.getMin(chunk), p.getMax(chunk))));
 		return max;
 	}
 
@@ -153,17 +153,17 @@ private:
 			const size_t end,
 			const vector<shape_config> &cfgs)
 	{
-		assert(seqp < Const::seqp);
+		assert(seqp < VATConsts::seqp);
 		uint64_t key;
 		for(size_t i=begin;i<end;++i) {
 
 			assert(i < seqs.get_length());
 			const sequence<const _val> seq = seqs[i];
-			if(seq.length() < Const::min_shape_len) continue;
-			for(unsigned j=0;j<seq.length()+1-Const::min_shape_len; ++j)
+			if(seq.length() < VATConsts::min_shape_len) continue;
+			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
 				for(vector<shape_config>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
-					assert(cfg->mode() < Const::index_modes);
-					assert(cfg->count() <= Const::max_shapes);
+					assert(cfg->mode() < VATConsts::index_modes);
+					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)
 						if(j+cfg->get_shape(k).length_ < seq.length()+1 && cfg->get_shape(k).set_seed(key, &seq[j]))
 							++data_[cfg->mode()][k][seqp][seed_partition(key)];
@@ -176,15 +176,15 @@ private:
 	static vector<shape_config> shape_configs()
 	{
 		vector<shape_config> v;
-		if(program_options::command == program_options::makedb) {
-			for(unsigned i=1;i<=Const::index_modes;++i)
+		if(VATParameters::command == VATParameters::makedb) {
+			for(unsigned i=1;i<=VATConsts::index_modes;++i)
 				v.push_back(shape_config (i, _val()));
 		} else
-			v.push_back(shape_config (program_options::index_mode, _val()));
+			v.push_back(shape_config (VATParameters::index_mode, _val()));
 		return v;
 	}
 
-	shape_histogram data_[Const::index_modes][Const::max_shapes];
+	shape_histogram data_[VATConsts::index_modes][VATConsts::max_shapes];
 
 };
 

@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include "sequence_set.h"
-#include "../basic/translate.h"
+#include "../basic/Translator.h"
 #include "../util/seq_file_format.h"
 
 struct Single_strand { };
