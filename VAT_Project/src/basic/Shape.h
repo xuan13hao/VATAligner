@@ -73,7 +73,7 @@ struct shape
 		double f = 0;
 		for(unsigned i=0;i<weight_;++i) {
 			_val l = seq[positions_[i]];
-			if(l == Value_traits<_val>::MASK_CHAR || l == String_set<_val>::PADDING_CHAR)
+			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
 			unsigned r = Reduction<_val>::reduction(l);
@@ -94,7 +94,7 @@ struct shape
 		double f = 0;
 		for(unsigned i=0;i<weight_;++i) {
 			_val l = seq[positions_[i]];
-			if(l == Value_traits<_val>::MASK_CHAR || l == String_set<_val>::PADDING_CHAR)
+			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
 			unsigned r = Reduction<_val>::reduction(l);
@@ -109,7 +109,7 @@ struct shape
 		double f = 0;
 		for(unsigned i=0;i<weight_;++i) {
 			_val l = seq[(int)positions_[i]-(int)length_];
-			if(l == Value_traits<_val>::MASK_CHAR || l == String_set<_val>::PADDING_CHAR)
+			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
 			unsigned r = Reduction<_val>::reduction(l);

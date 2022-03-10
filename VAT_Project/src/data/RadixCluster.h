@@ -32,7 +32,7 @@ struct sorted_list
 	{ return new char[sizeof(entry) * hst.max_chunk_size()]; }
 
 	template<typename _val>
-	sorted_list(char *buffer, const Sequence_set<_val> &seqs, const shape &sh, const shape_histogram &hst, const seedp_range &range):
+	sorted_list(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const shape_histogram &hst, const seedp_range &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<entry*>(buffer))
 	{
@@ -137,7 +137,7 @@ private:
 	template<typename _val>
 	struct Build_context
 	{
-		Build_context(const Sequence_set<_val> &seqs, const shape &sh, const seedp_range &range, Ptr_set *iterators):
+		Build_context(const SequenceSet<_val> &seqs, const shape &sh, const seedp_range &range, Ptr_set *iterators):
 			seqs (seqs),
 			sh (sh),
 			range (range),
@@ -153,7 +153,7 @@ private:
 					sh,
 					range);
 		}
-		const Sequence_set<_val> &seqs;
+		const SequenceSet<_val> &seqs;
 		const shape &sh;
 		const seedp_range &range;
 		const auto_ptr<Ptr_set> iterators;
@@ -161,7 +161,7 @@ private:
 	};
 
 	template<typename _val>
-	static void build_seqp(const Sequence_set<_val> &seqs, unsigned begin, unsigned end, entry **ptr, const shape &sh, const seedp_range &range)
+	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, entry **ptr, const shape &sh, const seedp_range &range)
 	{
 		uint64_t key;
 		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));

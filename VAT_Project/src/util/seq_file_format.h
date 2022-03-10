@@ -20,7 +20,7 @@ protected:
 	{
 		char a = 0;
 		while(s.read(&a, 1) == 1 && a != '\n' && a != '\r')
-			v.push_back(Value_traits<_t>::from_char(a));
+			v.push_back(AlphabetAttributes<_t>::from_char(a));
 		if(a == '\r')
 			if(s.read(&a, 1) != 1 || a != '\n')
 				throw file_format_exception ();
@@ -46,7 +46,7 @@ protected:
 			case '\r':
 				break;
 			default:
-				v.push_back(Value_traits<_val>::from_char(a));
+				v.push_back(AlphabetAttributes<_val>::from_char(a));
 				++col;
 			}
 		}

@@ -160,7 +160,7 @@ void print(Link_iterator i, std::ostream &os, const _val *s, Edit_operation gap_
 		if(*i == gap_op)
 			os << '-';
 		else
-			os << Value_traits<_val>::ALPHABET[*(s++)];
+			os << AlphabetAttributes<_val>::ALPHABET[*(s++)];
 		++n;
 	}
 }

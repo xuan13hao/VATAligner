@@ -8,11 +8,11 @@ using std::vector;
 using std::auto_ptr;
 
 template<typename _val>
-struct Masked_sequence_set : public Sequence_set<_val>
+struct Masked_sequence_set : public SequenceSet<_val>
 {
 
 	Masked_sequence_set(Input_stream &file):
-			Sequence_set<_val> (file)
+			SequenceSet<_val> (file)
 	{ }
 
 	template<typename _loc>
@@ -43,7 +43,7 @@ struct Masked_sequence_set : public Sequence_set<_val>
 	bool get_masking(const _val *pos, unsigned sid) const
 	{
 		uint64_t seed;
-		shape_config::get().get_shape(sid).set_seed(seed, pos);
+		ShapeConfigures::get().get_shape(sid).set_seed(seed, pos);
 		const filter_table::entry *e;
 		if((e = pos_filters[sid][seed_partition(seed)]->operator [](seed_partition_offset(seed))) != 0) {
 			const size_t offset (pos - this->data(0));

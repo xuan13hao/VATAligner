@@ -18,19 +18,19 @@ local_match<_val> floating_sw_dir(const _val *query, const _val *subject, int ba
 	Scalar_dp_matrix<_score,_traceback> mtx (band);
 	const _val *x = query, *y = subject;
 
-	while(*y != String_set<_val>::PADDING_CHAR && max_score - column_max < xdrop) {
+	while(*y != AlphabetSet<_val>::PADDING_CHAR && max_score - column_max < xdrop) {
 		typename Scalar_dp_matrix<_score,_traceback>::Column_iterator it = mtx.column(j, i_max);
-		if(get_dir(x, it.row(), _dir()) == String_set<_val>::PADDING_CHAR)
+		if(get_dir(x, it.row(), _dir()) == AlphabetSet<_val>::PADDING_CHAR)
 			break;
 		_score vgap = Scalar_dp_matrix<_score,_traceback>::NEG_MIN;
-		if(get_dir(x, i_max+1, _dir()) == String_set<_val>::PADDING_CHAR) {
+		if(get_dir(x, i_max+1, _dir()) == AlphabetSet<_val>::PADDING_CHAR) {
 			column_max = std::numeric_limits<_score>::min();
 		} else {
 			++i_max;
 			column_max += score_matrix::get().letter_score(mask_critical(*y), get_dir(x, i_max, _dir()));
 		}
 
-		for(; it.valid() && get_dir(x, it.row(), _dir()) != String_set<_val>::PADDING_CHAR; ++it) {
+		for(; it.valid() && get_dir(x, it.row(), _dir()) != AlphabetSet<_val>::PADDING_CHAR; ++it) {
 			const _score match_score = score_matrix::get().letter_score(mask_critical(*y), get_dir(x, it.row(), _dir()));
 			const _score s = max(max(it.diag() + match_score, vgap), it.hgap_in());
 			if(s > column_max) {

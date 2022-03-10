@@ -3,26 +3,26 @@
 #ifndef VALUE_TYPE_H_
 #define VALUE_TYPE_H_
 
-struct Letter_prot { };
-struct Letter_nucl { };
+class AlphatProtein { };
+class AlphatDNA { };
 
 template<typename _tag>
-struct Value_type
+struct AlphabetType
 {
 
-	Value_type():
+	AlphabetType():
 		value_ ()
 	{ }
 
-	Value_type(int v):
+	AlphabetType(int v):
 		value_ ((char)v)
 	{ }
 
-	Value_type(char v):
+	AlphabetType(char v):
 		value_ (v)
 	{ }
 
-	Value_type(unsigned v):
+	AlphabetType(unsigned v):
 		value_ ((char)v)
 	{ }
 
@@ -38,10 +38,10 @@ struct Value_type
 	operator long() const
 	{ return (long)value_; }
 
-	bool operator==(const Value_type &rhs) const
+	bool operator==(const AlphabetType &rhs) const
 	{ return value_ == rhs.value_; }
 
-	bool operator!=(const Value_type &rhs) const
+	bool operator!=(const AlphabetType &rhs) const
 	{ return value_ != rhs.value_; }
 
 private:
@@ -50,7 +50,7 @@ private:
 
 };
 
-typedef Value_type<Letter_prot> Protein;
-typedef Value_type<Letter_nucl> DNA;
+typedef AlphabetType<AlphatProtein> Protein;
+typedef AlphabetType<AlphatDNA> DNA;
 
 #endif /* VALUE_TYPE_H_ */

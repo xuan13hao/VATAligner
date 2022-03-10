@@ -5,7 +5,7 @@
 #include <boost/program_options.hpp>
 #include "basic/VATParameters.h"
 #include "util/log_stream.h"
-#include "data/reference.h"
+#include "data/Reference.h"
 #include "run/CreateDB.h"
 #include "run/AlignmentFlow.h"
 #include "util/complexity_filter.h"
@@ -146,7 +146,7 @@ int main(int ac, const char* av[])
         	if(vm.count("block-size") == 0)
         		VATParameters::chunk_size = 2;
         		// make_db(Amino_acid());
-				// make_db(DNA());
+				make_db(DNA());
 				// make_db(Protein());
 
 
@@ -163,9 +163,9 @@ int main(int ac, const char* av[])
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
         		VATParameters::chunk_size = 0;
-        	if(VATParameters::command == VATParameters::blastp)
-				master_thread<Protein>();
-        		// master_thread<DNA>();
+        	if(VATParameters::command == VATParameters::blastn)
+				// master_thread<Protein>();
+        		master_thread<DNA>();
         	// else if(program_options::command == program_options::blastp)
         	// 	master_thread<Protein>();
         } else if(VATParameters::command == VATParameters::view && vm.count("daa") > 0)

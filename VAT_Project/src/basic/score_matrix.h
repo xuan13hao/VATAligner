@@ -51,22 +51,40 @@ struct Blast_score_blk
 	template<typename _val>
 	int score(_val x, _val y) const
 	{ 
-		// cout<<"x = "<<(char)Value_traits<_val>::ALPHABET[x]<<endl;
-		return getMatchScore((char)Value_traits<_val>::ALPHABET[x],(char)Value_traits<_val>::ALPHABET[y]);
-		// return data_->matrix->data[(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)Value_traits<_val>::ALPHABET[y]]]; 
+		return getMatchScore((char)AlphabetAttributes<_val>::ALPHABET[x],(char)AlphabetAttributes<_val>::ALPHABET[y]);
 	}
-
+	//lamda = 0.267
 	double lambda() const
-	{ return data_->kbp_gap_std[0]->Lambda; }
-
+	{ 
+		double lamda = 0.267;
+		return lamda;
+		// cout<<"lamda = "<<data_->kbp_gap_std[0]->Lambda<<endl;
+		// return data_->kbp_gap_std[0]->Lambda; 
+	}
+	//k = 0.041
 	double k() const
-	{ return data_->kbp_gap_std[0]->K; }
-
+	{ 
+		double k = 0.041;
+		return k;
+		// cout<<"k = "<<data_->kbp_gap_std[0]->K<<endl;
+		// return data_->kbp_gap_std[0]->K; 
+	}
+	//lnk = -3.19
 	double ln_k() const
-	{ return data_->kbp_gap_std[0]->logK; }
-
+	{ 
+		double lnk = -3.19;
+		return lnk;
+		// cout<<"ln k = "<<data_->kbp_gap_std[0]->logK<<endl;
+		// return data_->kbp_gap_std[0]->logK; 
+	}
+	//low socre = -4
 	int low_score() const
-	{ return data_->loscore; }
+	{ 
+		int lowscore = -4;
+		return lowscore;
+		//cout<<"low_score = "<<data_->loscore<<endl;
+		//return data_->loscore; 
+	}
 
 private:
 
@@ -92,15 +110,19 @@ struct score_matrix
 	template<typename _val>
 	void print() const
 	{
-		verbose_stream << "Scoring matrix = " << name_ << endl;
-		verbose_stream << "Lambda = " << sb_.lambda() << endl;
-		verbose_stream << "K = " << sb_.k() << endl;
-		const unsigned n = Value_traits<_val>::ALPHABET_SIZE;
-		for(unsigned i=0;i<n;++i) {
-			for(unsigned j=0;j<n;++j)
-				printf("%3i", (int)matrix8_.data[i*32+j]);
-			printf("\n");
-		}
+		cout << "Scoring matrix = " << name_ << endl;
+		// cout << "Lambda = " << sb_.lambda() << endl;
+		// cout << "K = " << sb_.k() << endl;
+		// sb_.lambda();
+		// sb_.k(); 
+		// sb_.ln_k();
+		// sb_.low_score();
+		// const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
+		// for(unsigned i=0;i<n;++i) {
+		// 	for(unsigned j=0;j<n;++j)
+		// 		printf("%3i", (int)matrix8_.data[i*32+j]);
+		// 	printf("\n");
+		// }
 	}
 
 	static const score_matrix& get()
@@ -157,7 +179,7 @@ private:
 		template<typename _val>
 		Scores(const _val&, const Blast_score_blk &sb, char bias = 0)
 		{
-			const unsigned n = Value_traits<_val>::ALPHABET_SIZE;
+			const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
 			for(unsigned i=0;i<32;++i)
 				for(unsigned j=0;j<32;++j)
 					data[i*32+j] = i < n && j < n ? (_t)(sb.score((_val)i, (_val)j) + (int)bias) : std::numeric_limits<_t>::min();

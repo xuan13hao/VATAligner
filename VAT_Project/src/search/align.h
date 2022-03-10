@@ -3,7 +3,7 @@
 #ifndef ALIGN_H_
 #define ALIGN_H_
 
-#include "../data/reference.h"
+#include "../data/Reference.h"
 #include "../basic/statistics.h"
 #include "../basic/score_matrix.h"
 #include "../basic/ShapeParameter.h"
@@ -30,7 +30,7 @@ void align(const _locq q_pos,
 
 	unsigned delta, len;
 	int score;
-	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, shape_config::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
+	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
 		return;
 
 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))

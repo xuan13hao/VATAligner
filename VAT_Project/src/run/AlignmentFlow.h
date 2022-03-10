@@ -5,8 +5,8 @@
 
 #include <iostream>
 #include <boost/timer/timer.hpp>
-#include "../data/reference.h"
-#include "../data/queries.h"
+#include "../data/Reference.h"
+#include "../data/Queries.h"
 #include "../basic/statistics.h"
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
@@ -62,7 +62,7 @@ void process_shape(unsigned sid,
 		task_timer timer ("Building reference index", true);
 		typename sorted_list<_locr>::Type ref_idx (ref_buffer,
 				*ref_seqs<_val>::data_,
-				shape_config::instance.get_shape(sid),
+				ShapeConfigures::instance.get_shape(sid),
 				ref_hst.get(VATParameters::index_mode, sid),
 				range);
 		ref_seqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
@@ -71,7 +71,7 @@ void process_shape(unsigned sid,
 		timer_mapping.resume();
 		typename sorted_list<_locq>::Type query_idx (query_buffer,
 				*query_seqs<_val>::data_,
-				shape_config::instance.get_shape(sid),
+				ShapeConfigures::instance.get_shape(sid),
 				query_hst->get(VATParameters::index_mode, sid),
 				range);
 		timer.finish();
@@ -95,11 +95,13 @@ void run_ref_chunk(Database_file<_val> &db_file,
 {
 	task_timer timer ("Loading reference sequences", true);
 	ref_seqs<_val>::data_ = new Masked_sequence_set<_val> (db_file);
-	ref_ids::data_ = new String_set<char,0> (db_file);
+	ref_ids::data_ = new AlphabetSet<char,0> (db_file);
 	ref_hst.load(db_file);
+
 	setup_search_params<_val>(query_len_bounds, ref_seqs<_val>::data_->letters());
-	ref_map.init(ref_seqs<_val>::get().get_length());
 	cout<<"Loading reference sequences"<<endl;
+
+	ref_map.init(ref_seqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
 	char *ref_buffer = sorted_list<_locr>::Type::alloc_buffer(ref_hst);
 
@@ -111,13 +113,13 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	timer.finish();
 	timer_mapping.stop();
 
-	for(unsigned i=0;i<shape_config::instance.count();++i)
+	for(unsigned i=0;i<ShapeConfigures::instance.count();++i)
 		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
 
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
 	exception_state.sync();
-
+	cout<<"Closing temporary storage"<<endl;
 	timer.go("Deallocating buffers");
 	delete[] ref_buffer;
 
@@ -183,12 +185,12 @@ void run_query_chunk(Database_file<_val> &db_file,
 template<typename _val, typename _locr>
 void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
 {
-	shape_config::instance = shape_config (VATParameters::index_mode, _val ());
+	ShapeConfigures::instance = ShapeConfigures (VATParameters::index_mode, _val ());
 	cout<<"Opening the output file"<<endl;
 	task_timer timer ("Opening the input file", true);
 	timer_mapping.resume();
-	// const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
-	const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
+	const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
+	// const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
@@ -205,7 +207,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		size_t n_query_seqs;
 		
 
-		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 /*
 		if(input_sequence_type() == nucleotide)
 			n_query_seqs = load_seqs<Nucleotide,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
@@ -224,7 +226,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 
 		timer.go("Building query histograms");
 		query_hst = auto_ptr<seed_histogram> (new seed_histogram (*query_seqs<_val>::data_, _val()));
-		const pair<size_t,size_t> query_len_bounds = query_seqs<_val>::data_->len_bounds(shape_config::get().get_shape(0).length_);
+		const pair<size_t,size_t> query_len_bounds = query_seqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();
 		const bool long_addressing_query = query_seqs<_val>::data_->raw_len() > (size_t)std::numeric_limits<uint32_t>::max();

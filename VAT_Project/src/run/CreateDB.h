@@ -4,10 +4,10 @@
 
 #include <iostream>
 #include "../basic/VATParameters.h"
-#include "../data/reference.h"
+#include "../data/Reference.h"
 #include "../basic/exceptions.h"
 #include "../basic/statistics.h"
-#include "../data/load_seqs.h"
+#include "../data/LoadSequence.h"
 #include "../util/seq_file_format.h"
 
 template<class _val>
@@ -31,8 +31,8 @@ void make_db(_val)
 
 	for(;;++chunk) {
 		timer.go("Loading sequences");
-		Sequence_set<DNA>* ss;
-		size_t n_seq = load_seqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (Sequence_set<_val>**)&ref_seqs<_val>::data_, ref_ids::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
+		SequenceSet<DNA>* ss;
+		size_t n_seq = load_seqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ref_seqs<_val>::data_, ref_ids::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
 		log_stream << "load_seqs n=" << n_seq << endl;
 		if(n_seq == 0)
 			break;

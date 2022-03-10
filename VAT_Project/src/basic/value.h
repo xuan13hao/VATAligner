@@ -38,9 +38,9 @@ int query_len_factor()
 { return VATParameters::command == VATParameters::blastx ? 3 : 1; }
 
 template<typename _val>
-struct Char_representation
+struct AlphabetMap
 {
-	Char_representation(unsigned size, const char *chars, char mask, const char *mask_chars)
+	AlphabetMap(unsigned size, const char *chars, char mask, const char *mask_chars)
 	{
 		memset(data_, invalid, sizeof(data_));
 		for(unsigned i=0;i<size;++i) {
@@ -66,52 +66,52 @@ private:
 	_val data_[256];
 };
 
-template<> const Protein Char_representation<Protein>::invalid = 0xff;
-template<> const DNA Char_representation<DNA>::invalid = 0xff;
+template<> const Protein AlphabetMap<Protein>::invalid = 0xff;
+template<> const DNA AlphabetMap<DNA>::invalid = 0xff;
 
 template<typename _val>
-struct Value_traits
+struct AlphabetAttributes
 { };
 
 template<>
-struct Value_traits<Protein>
+struct AlphabetAttributes<Protein>
 {
 	enum { ALPHABET_SIZE = 25 };
 	static const Protein				MASK_CHAR;
 	static const char*					ALPHABET;
-	static const Char_representation<Protein>	from_char;
+	static const AlphabetMap<Protein>	from_char;
 };
 
-const Protein					Value_traits<Protein>::MASK_CHAR = 23;
-const char* Value_traits<Protein>::ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*";
-const Char_representation<Protein> Value_traits<Protein>::from_char (Value_traits<Protein>::ALPHABET_SIZE, Value_traits<Protein>::ALPHABET, Value_traits<Protein>::MASK_CHAR, "UO-");
+const Protein					AlphabetAttributes<Protein>::MASK_CHAR = 23;
+const char* AlphabetAttributes<Protein>::ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*";
+const AlphabetMap<Protein> AlphabetAttributes<Protein>::from_char (AlphabetAttributes<Protein>::ALPHABET_SIZE, AlphabetAttributes<Protein>::ALPHABET, AlphabetAttributes<Protein>::MASK_CHAR, "UO-");
 
 template<>
-struct Value_traits<const Protein> : public Value_traits<Protein>
+struct AlphabetAttributes<const Protein> : public AlphabetAttributes<Protein>
 { };
 
 template<>
-struct Value_traits<DNA>
+struct AlphabetAttributes<DNA>
 {
 	enum { ALPHABET_SIZE = 5 };
 	static const DNA				MASK_CHAR;
 	static const char*					ALPHABET;
-	static const Char_representation<DNA>	from_char;
+	static const AlphabetMap<DNA>	from_char;
 };
 
-const DNA Value_traits<DNA>::MASK_CHAR = 4;
-const char* Value_traits<DNA>::ALPHABET = "ACGTN";
-const Char_representation<DNA> Value_traits<DNA>::from_char (Value_traits<DNA>::ALPHABET_SIZE, Value_traits<DNA>::ALPHABET, Value_traits<DNA>::MASK_CHAR, "MRWSYKVHDBX");
+const DNA AlphabetAttributes<DNA>::MASK_CHAR = 4;
+const char* AlphabetAttributes<DNA>::ALPHABET = "ACGTN";
+const AlphabetMap<DNA> AlphabetAttributes<DNA>::from_char (AlphabetAttributes<DNA>::ALPHABET_SIZE, AlphabetAttributes<DNA>::ALPHABET, AlphabetAttributes<DNA>::MASK_CHAR, "MRWSYKVHDBX");
 
 template<>
-struct Value_traits<const DNA> : public Value_traits<DNA>
+struct AlphabetAttributes<const DNA> : public AlphabetAttributes<DNA>
 { };
 
 char to_char(Protein a)
-{ return Value_traits<Protein>::ALPHABET[a]; }
+{ return AlphabetAttributes<Protein>::ALPHABET[a]; }
 
 template<>
-struct Value_traits<char>
+struct AlphabetAttributes<char>
 {
 	static char from_char(char c)
 	{ return c; }

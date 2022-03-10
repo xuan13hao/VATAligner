@@ -8,13 +8,13 @@
 using std::vector;
 
 template<typename _t, char _pchar = 0xff, size_t _padding = 1>
-struct String_set
+struct AlphabetSet
 {
 
 	static const unsigned PERIMETER_PADDING = 256;
 	static const _t PADDING_CHAR;
 
-	String_set():
+	AlphabetSet():
 		data_ (PERIMETER_PADDING)
 	{ limits_.push_back(PERIMETER_PADDING); }
 
@@ -59,7 +59,7 @@ struct String_set
 		file.write(data_);
 	}
 
-	String_set(Input_stream &file)
+	AlphabetSet(Input_stream &file)
 	{
 		file.read(limits_);
 		file.read(data_);
@@ -108,6 +108,6 @@ private:
 
 };
 
-template<typename _t, char _pchar, size_t _padding> const _t String_set<_t,_pchar,_padding>::PADDING_CHAR = _pchar;
+template<typename _t, char _pchar, size_t _padding> const _t AlphabetSet<_t,_pchar,_padding>::PADDING_CHAR = _pchar;
 
 #endif /* STRING_SET_H_ */

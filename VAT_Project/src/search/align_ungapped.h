@@ -14,8 +14,8 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 	const unsigned window_left = std::max(VATParameters::window, (unsigned)VATConsts::seed_anchor) - VATConsts::seed_anchor;
 	while(score - st < VATParameters::xdrop
 			&& delta < window_left
-			&& *q != String_set<_val>::PADDING_CHAR
-			&& *s != String_set<_val>::PADDING_CHAR)
+			&& *q != AlphabetSet<_val>::PADDING_CHAR
+			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		st += score_matrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
@@ -31,8 +31,8 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 	const unsigned window_right = std::max(VATParameters::window, seed_len - VATConsts::seed_anchor) - (seed_len - VATConsts::seed_anchor);
 	while(score - st < VATParameters::xdrop
 			&& n < window_right
-			&& *q != String_set<_val>::PADDING_CHAR
-			&& *s != String_set<_val>::PADDING_CHAR)
+			&& *q != AlphabetSet<_val>::PADDING_CHAR
+			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		st += score_matrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);

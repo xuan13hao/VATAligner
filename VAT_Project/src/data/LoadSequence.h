@@ -4,7 +4,7 @@
 #define LOAD_SEQS_H_
 
 #include <iostream>
-#include "sequence_set.h"
+#include "SequenceSet.h"
 #include "../basic/Translator.h"
 #include "../util/seq_file_format.h"
 
@@ -12,7 +12,7 @@ struct Single_strand { };
 struct Double_strand { };
 
 template<typename _ival, typename _val, typename _strand>
-size_t push_seq(String_set<_val> &ss, String_set<DNA>& source_seqs, const vector<_ival> &seq)
+size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 { ss.push_back(seq); return seq.size(); }
 
 /*
@@ -53,14 +53,14 @@ size_t push_seq<Nucleotide,Nucleotide,Double_strand>(String_set<Nucleotide> &ss,
 template<typename _ival, typename _val, typename _strand>
 size_t load_seqs(Input_stream &file,
 		const Sequence_file_format<_ival> &format,
-		Sequence_set<_val>** seqs,
-		String_set<char,0>*& ids,
-		Sequence_set<DNA>*& source_seqs,
+		SequenceSet<_val>** seqs,
+		AlphabetSet<char,0>*& ids,
+		SequenceSet<DNA>*& source_seqs,
 		size_t max_letters)
 {
-	*seqs = new Sequence_set<_val> ();
-	ids = new String_set<char,0> ();
-	source_seqs = new Sequence_set<DNA> ();
+	*seqs = new SequenceSet<_val> ();
+	ids = new AlphabetSet<char,0> ();
+	source_seqs = new SequenceSet<DNA> ();
 	size_t letters = 0, n = 0;
 	vector<_ival> seq;
 	vector<char> id;

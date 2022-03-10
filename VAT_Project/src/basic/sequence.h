@@ -65,13 +65,13 @@ struct sequence
 	friend std::ostream& operator<<(std::ostream &os, const sequence &s)
 	{
 		for(unsigned i=0;i<s.len_;++i)
-			os << Value_traits<_val>::ALPHABET[s.data_[i]];
+			os << AlphabetAttributes<_val>::ALPHABET[s.data_[i]];
 		return os;
 	}
 	friend Text_buffer& operator<<(Text_buffer &buf, const sequence &s)
 	{
 		for(unsigned i=0;i<s.len_;++i)
-			buf << Value_traits<_val>::ALPHABET[s.data_[i]];
+			buf << AlphabetAttributes<_val>::ALPHABET[s.data_[i]];
 		return buf;
 	}
 	/*friend std::ostream& operator<<(std::ostream &os, const sequence &s)

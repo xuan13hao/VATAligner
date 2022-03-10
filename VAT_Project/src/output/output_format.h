@@ -117,7 +117,7 @@ struct Sam_format : public Output_format<_val>
 					buf << '0';
 					del = 0;
 				}
-				buf << Value_traits<_val>::ALPHABET[i->letter];
+				buf << AlphabetAttributes<_val>::ALPHABET[i->letter];
 				break;
 			case op_deletion:
 				if(matches > 0) {
@@ -126,7 +126,7 @@ struct Sam_format : public Output_format<_val>
 				}
 				if(del == 0)
 					buf << '^';
-				buf << Value_traits<_val>::ALPHABET[i->letter];
+				buf << AlphabetAttributes<_val>::ALPHABET[i->letter];
 				++del;
 			}
 		}

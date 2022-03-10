@@ -4,7 +4,7 @@
 #define SEED_HISTOGRAM_H_
 
 #include "../basic/SeedPartition.h"
-#include "sequence_set.h"
+#include "SequenceSet.h"
 #include "../basic/ShapeParameter.h"
 #include "../util/thread.h"
 
@@ -97,7 +97,7 @@ struct seed_histogram
 	{ }
 
 	template<typename _val>
-	seed_histogram(const Sequence_set<_val> &seqs, const _val&)
+	seed_histogram(const SequenceSet<_val> &seqs, const _val&)
 	{
 		memset(data_, 0, sizeof(data_));
 		Build_context<_val> context (seqs, *this);
@@ -111,7 +111,7 @@ struct seed_histogram
 	{
 		size_t max (0);
 		::partition p (VATConsts::seedp, VATParameters::lowmem);
-		for(unsigned shape=0;shape < shape_config::get().count();++shape)
+		for(unsigned shape=0;shape < ShapeConfigures::get().count();++shape)
 			for(unsigned chunk=0;chunk < p.parts; ++chunk)
 				max = std::max(max, hst_size(data_[VATParameters::index_mode-1][shape], seedp_range(p.getMin(chunk), p.getMax(chunk))));
 		return max;
@@ -132,7 +132,7 @@ private:
 	template<typename _val>
 	struct Build_context
 	{
-		Build_context(const Sequence_set<_val> &seqs, seed_histogram &hst):
+		Build_context(const SequenceSet<_val> &seqs, seed_histogram &hst):
 			seqs (seqs),
 			cfgs (shape_configs<_val>()),
 			seq_partition (seqs.partition()),
@@ -140,18 +140,18 @@ private:
 		{ }
 		void operator()(unsigned thread_id, unsigned seqp) const
 		{ hst.build_seq_partition(seqs, seqp, seq_partition[seqp], seq_partition[seqp+1], cfgs); }
-		const Sequence_set<_val> &seqs;
-		const vector<shape_config> cfgs;
+		const SequenceSet<_val> &seqs;
+		const vector<ShapeConfigures> cfgs;
 		const vector<size_t> seq_partition;
 		seed_histogram &hst;
 	};
 
 	template<typename _val>
-	void build_seq_partition(const Sequence_set<_val> &seqs,
+	void build_seq_partition(const SequenceSet<_val> &seqs,
 			const unsigned seqp,
 			const size_t begin,
 			const size_t end,
-			const vector<shape_config> &cfgs)
+			const vector<ShapeConfigures> &cfgs)
 	{
 		assert(seqp < VATConsts::seqp);
 		uint64_t key;
@@ -161,7 +161,7 @@ private:
 			const sequence<const _val> seq = seqs[i];
 			if(seq.length() < VATConsts::min_shape_len) continue;
 			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
-				for(vector<shape_config>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
+				for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
 					assert(cfg->mode() < VATConsts::index_modes);
 					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)
@@ -173,14 +173,14 @@ private:
 	}
 
 	template<typename _val>
-	static vector<shape_config> shape_configs()
+	static vector<ShapeConfigures> shape_configs()
 	{
-		vector<shape_config> v;
+		vector<ShapeConfigures> v;
 		if(VATParameters::command == VATParameters::makedb) {
 			for(unsigned i=1;i<=VATConsts::index_modes;++i)
-				v.push_back(shape_config (i, _val()));
+				v.push_back(ShapeConfigures (i, _val()));
 		} else
-			v.push_back(shape_config (VATParameters::index_mode, _val()));
+			v.push_back(ShapeConfigures (VATParameters::index_mode, _val()));
 		return v;
 	}
 

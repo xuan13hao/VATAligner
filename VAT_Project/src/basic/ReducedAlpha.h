@@ -20,8 +20,8 @@ struct Reduction
         for(unsigned i=0;i<size_;++i)
         	for(unsigned j=0;j<tokens[i].length();++j) {
         		const char ch = tokens[i][j];
-        		map_[(long) Value_traits<_val>::from_char(ch)] =  i;
-                map8_[(long) Value_traits<_val>::from_char(ch)] =  i;
+        		map_[(long) AlphabetAttributes<_val>::from_char(ch)] =  i;
+                map8_[(long) AlphabetAttributes<_val>::from_char(ch)] =  i;
             }
 	}
 

@@ -5,12 +5,12 @@
 #include "Shape.h"
 
 template<typename _val>
-struct shape_codes
+struct ShapeCodes
 {
 	static const char* str[VATConsts::index_modes][VATConsts::max_shapes];
 };
 
-template<> const char* shape_codes<Protein>::str[][VATConsts::max_shapes] = {
+template<> const char* ShapeCodes<Protein>::str[][VATConsts::max_shapes] = {
 		{ "111101011101111", "111011001100101111", "1111001001010001001111", "111100101000010010010111", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },				// 4x12
 		{ "1111011111",		// 16x9
 		"111001101111",
@@ -30,7 +30,7 @@ template<> const char* shape_codes<Protein>::str[][VATConsts::max_shapes] = {
 		"1110001000100000001010011" }
 };
 
-template<> const char* shape_codes<DNA>::str[][VATConsts::max_shapes] = {
+template<> const char* ShapeCodes<DNA>::str[][VATConsts::max_shapes] = {
 		// 1x14
 		//{ "11110110011010101111", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		// 16x14
@@ -45,27 +45,27 @@ template<> const char* shape_codes<DNA>::str[][VATConsts::max_shapes] = {
 		//{ "11110111011111", "111010100100101100111", "1011001101001000000011111", "10111001000000110100101011", "111000010011000100010110011", "110100010100100010100001111", "111000100011000001100101011", "101101001100000101010100011", "1110101000001001100001001101", "1110010001000110100010010101", "1100011010001010100000100111", "1110010011000100001001001011", "1101010100100000110001001011", "1110000100100010000110011011", "1101100001010010000101010011", "1101101000010100010010000111" }
 };
 
-class shape_config
+class ShapeConfigures
 {
 
 public:
 
-	static shape_config instance;
+	static ShapeConfigures instance;
 
-	shape_config():
+	ShapeConfigures():
 		n_ (0),
 		mode_ (0)
 	{ }
 
 	template<class _val>
-	shape_config(unsigned mode, const _val&):
+	ShapeConfigures(unsigned mode, const _val&):
 		n_ (0),
 		mode_ (mode-1)
 	{
 		unsigned maxShapes = VATParameters::shapes == 0 ? VATConsts::max_shapes : VATParameters::shapes;
 		for(unsigned i=0;i<maxShapes;++i)
-			if(shape_codes<_val>::str[mode_][i])
-				shapes_[n_++] = shape (shape_codes<_val>::str[mode_][i], i);
+			if(ShapeCodes<_val>::str[mode_][i])
+				shapes_[n_++] = shape (ShapeCodes<_val>::str[mode_][i], i);
 	}
 
 	unsigned count() const
@@ -77,7 +77,7 @@ public:
 	unsigned mode() const
 	{ return mode_; }
 
-	static const shape_config& get()
+	static const ShapeConfigures& get()
 	{ return instance; }
 
 private:
@@ -87,6 +87,6 @@ private:
 
 };
 
-shape_config shape_config::instance;
+ShapeConfigures ShapeConfigures::instance;
 
 #endif /* SHAPE_CONFIG_H_ */

@@ -6,7 +6,7 @@
 template<typename _val>
 inline unsigned letter_match(const _val query, const _val subject)
 {
-	if(query != Value_traits<_val>::MASK_CHAR && Reduction<_val>::reduction(query) == Reduction<_val>::reduction(mask_critical(subject)))
+	if(query != AlphabetAttributes<_val>::MASK_CHAR && Reduction<_val>::reduction(query) == Reduction<_val>::reduction(mask_critical(subject)))
 		return 1;
 	else
 		return 0;
@@ -21,7 +21,7 @@ template<typename _val>
 inline bool is_lower_chunk(const _val *subject, unsigned sid)
 {
 	uint64_t seed;
-	shape_config::get().get_shape(sid).set_seed(seed, subject);
+	ShapeConfigures::get().get_shape(sid).set_seed(seed, subject);
 	return current_range.lower(seed_partition(seed));
 }
 
@@ -29,7 +29,7 @@ template<typename _val>
 inline bool is_lower_or_equal_chunk(const _val *subject, unsigned sid)
 {
 	uint64_t seed;
-	shape_config::get().get_shape(sid).set_seed(seed, subject);
+	ShapeConfigures::get().get_shape(sid).set_seed(seed, subject);
 	return current_range.lower_or_equal(seed_partition(seed));
 }
 
@@ -41,7 +41,7 @@ inline bool need_lookup(unsigned sid)
 
 template<typename _val>
 inline bool is_low_freq(const _val *subject, unsigned sid)
-{ return shape_config::get().get_shape(sid).is_low_freq(subject); }
+{ return ShapeConfigures::get().get_shape(sid).is_low_freq(subject); }
 
 template <typename _val, typename _pos>
 inline bool shape_collision_right(uint64_t mask, uint64_t shape_mask, const _val *subject, unsigned sid)
@@ -87,9 +87,9 @@ bool is_primary_hit2(const _val *query,
 		mask <<= 1;
 		mask |= letter_match(query[i], subject[i]);
 		for(unsigned j=0;j<sid;++j)
-			if(previous_shape_collision<_val,_pos>(mask, shape_config::instance.get_shape(j).mask_, &subject[i], j, stat))
+			if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(j).mask_, &subject[i], j, stat))
 				return false;
-		if(chunked && i > seed_offset && shape_collision_right<_val,_pos>(mask, shape_config::instance.get_shape(sid).mask_, &subject[i], sid, stat))
+		if(chunked && i > seed_offset && shape_collision_right<_val,_pos>(mask, ShapeConfigures::instance.get_shape(sid).mask_, &subject[i], sid, stat))
 			return false;
 	} while (i > seed_offset);
 
@@ -101,9 +101,9 @@ bool is_primary_hit2(const _val *query,
 		mask <<= 1;
 		mask |= letter_match(query[i], subject[i]);
 		for(unsigned j=0;j<sid;++j)
-			if(previous_shape_collision<_val,_pos>(mask, shape_config::instance.get_shape(j).mask_, &subject[i], j, stat))
+			if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(j).mask_, &subject[i], j, stat))
 				return false;
-		if(shape_collision_left<_val,_pos>(mask, shape_config::instance.get_shape(sid).mask_, &subject[i], sid, chunked, stat))
+		if(shape_collision_left<_val,_pos>(mask, ShapeConfigures::instance.get_shape(sid).mask_, &subject[i], sid, chunked, stat))
 			return false;
 	} while (i > 0);
 
@@ -121,15 +121,15 @@ bool is_primary_hit(const _val *query,
 	const bool chunked (VATParameters::lowmem > 1);
 	uint64_t mask = reduced_match32(query, subject, len);
 	unsigned i = 0;
-	uint64_t current_mask = shape_config::instance.get_shape(sid).mask_;
-	unsigned shape_len =  len - shape_config::instance.get_shape(0).length_ + 1;
+	uint64_t current_mask = ShapeConfigures::instance.get_shape(sid).mask_;
+	unsigned shape_len =  len - ShapeConfigures::instance.get_shape(0).length_ + 1;
 	while(i < shape_len) {
 		if(len-i > 32)
 			mask |= reduced_match32(query+32,subject+32,len-i-32) << 32;
 		for(unsigned j=0;j<32 && i<shape_len;++j) {
 			assert(&subject[j] >= ref_seqs<_val>::data_->data(0) && &subject[j] <= ref_seqs<_val>::data_->data(ref_seqs<_val>::data_->raw_len()-1));
 			for(unsigned k=0;k<sid;++k)
-				if(previous_shape_collision<_val,_pos>(mask, shape_config::instance.get_shape(k).mask_, &subject[j], k))
+				if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(k).mask_, &subject[j], k))
 					return false;
 			if(i < seed_offset && shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked))
 				return false;

@@ -14,7 +14,7 @@ struct Complexity_filter
 	{ return 0; }
 	static const Complexity_filter& get()
 	{ return instance; }
-	void run(String_set<_val> &seqs) const
+	void run(AlphabetSet<_val> &seqs) const
 	{ }
 	static const Complexity_filter instance;
 };
@@ -40,7 +40,7 @@ struct Complexity_filter<Protein>
 			do {
 				for(signed i=l->ssr->left;i<=l->ssr->right;i++) {
 					nMasked++;
-					seq[i] = Value_traits<Protein>::MASK_CHAR;
+					seq[i] = AlphabetAttributes<Protein>::MASK_CHAR;
 				}
 			} while((l=l->next) != 0);
 			BlastSeqLocFree(seg_locs);
@@ -51,7 +51,7 @@ struct Complexity_filter<Protein>
 	static const Complexity_filter& get()
 	{ return instance; }
 
-	void run(String_set<Protein> &seqs) const
+	void run(AlphabetSet<Protein> &seqs) const
 	{
 		Filter_context context (seqs, *this);
 		launch_scheduled_thread_pool(context, seqs.get_length(), VATParameters::threads());
@@ -61,7 +61,7 @@ private:
 
 	struct Filter_context
 	{
-		Filter_context(String_set<Protein> &seqs, const Complexity_filter &filter):
+		Filter_context(AlphabetSet<Protein> &seqs, const Complexity_filter &filter):
 			seqs (seqs),
 			filter (filter)
 		{ }
@@ -69,7 +69,7 @@ private:
 		{
 			filter.filter(seqs[i]);
 		}
-		String_set<Protein> &seqs;
+		AlphabetSet<Protein> &seqs;
 		const Complexity_filter &filter;
 	};
 

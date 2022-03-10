@@ -26,7 +26,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	const unsigned query_len = query.length();
 	padding[frame] = VATParameters::read_padding<_val>(query_len);
 
-	const Sequence_set<_val> *ref = ref_seqs<_val>::data_;
+	const SequenceSet<_val> *ref = ref_seqs<_val>::data_;
 	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) {
 		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) {
 			stat.inc(Statistics::DUPLICATES);

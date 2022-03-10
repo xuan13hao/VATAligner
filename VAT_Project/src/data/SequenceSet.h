@@ -5,21 +5,21 @@
 #include <iostream>
 #include <string>
 #include "../basic/sequence.h"
-#include "string_set.h"
+#include "AlphabetSet.h"
 
 using std::cout;
 using std::endl;
 using std::pair;
 
 template<typename _val>
-struct Sequence_set : public String_set<_val>
+struct SequenceSet : public AlphabetSet<_val>
 {
 
-	Sequence_set()
+	SequenceSet()
 	{ }
 
-	Sequence_set(Input_stream &file):
-		String_set<_val> (file)
+	SequenceSet(Input_stream &file):
+		AlphabetSet<_val> (file)
 	{ }
 
 	void print_stats() const
@@ -40,7 +40,7 @@ struct Sequence_set : public String_set<_val>
 	{
 		const _val* begin (this->data(offset));
 		unsigned n (0);
-		while(*begin != String_set<_val>::PADDING_CHAR && n <= VATParameters::window) {
+		while(*begin != AlphabetSet<_val>::PADDING_CHAR && n <= VATParameters::window) {
 			--begin;
 			++n;
 		}
@@ -48,7 +48,7 @@ struct Sequence_set : public String_set<_val>
 		left = VATParameters::window + 1 - n;
 		const _val* end (this->data(offset));
 		n = 0;
-		while(*end != String_set<_val>::PADDING_CHAR && n < VATParameters::window) {
+		while(*end != AlphabetSet<_val>::PADDING_CHAR && n < VATParameters::window) {
 			++end;
 			++n;
 		}
@@ -59,7 +59,7 @@ struct Sequence_set : public String_set<_val>
 	{
 		const _val* begin (this->data(offset));
 		unsigned n (0);
-		while(*begin != String_set<_val>::PADDING_CHAR && n <= VATParameters::window) {
+		while(*begin != AlphabetSet<_val>::PADDING_CHAR && n <= VATParameters::window) {
 			--begin;
 			++n;
 		}
@@ -96,7 +96,7 @@ struct Sequence_set : public String_set<_val>
 			return l*3;
 	}
 
-	virtual ~Sequence_set()
+	virtual ~SequenceSet()
 	{ }
 
 };

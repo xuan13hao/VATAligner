@@ -11,7 +11,7 @@ using std::vector;
 bool has_n(const sequence<const DNA> &seq)
 {
 	for(unsigned i=0;i<seq.length();++i)
-		if(seq[i] == Value_traits<DNA>::MASK_CHAR)
+		if(seq[i] == AlphabetAttributes<DNA>::MASK_CHAR)
 			return true;
 	return false;
 }

@@ -67,7 +67,7 @@ void setup(const string &command, int ac, const char **av)
 				Protein ()));
 		score_matrix::get().print<Protein>();
 	} else {
-#ifdef EXTRA
+
 		if(po::gap_open == -1)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
@@ -77,9 +77,9 @@ void setup(const string &command, int ac, const char **av)
 				po::gap_extend,
 				po::reward,
 				po::penalty,
-				Nucleotide ()));
-		score_matrix::get().print<Nucleotide>();
-#endif
+				DNA ()));
+		score_matrix::get().print<DNA>();
+
 	}
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;
 	verbose_stream << "Gap extension penalty = " << po::gap_extend << endl;

@@ -13,9 +13,9 @@
 #include "../util/hash_table.h"
 #include "../util/hash_function.h"
 #include "../basic/PackedLocations.h"
-#include "sequence_set.h"
+#include "SequenceSet.h"
 #include "boost/ptr_container/ptr_vector.hpp"
-#include "frequency_masking.h"
+#include "MaskSequence.h"
 
 using std::auto_ptr;
 using boost::ptr_vector;
@@ -74,24 +74,24 @@ struct ref_seqs
 	{ return *(const Masked_sequence_set<_val>*)data_; }
 	static Masked_sequence_set<_val>& get_nc()
 	{ return *(Masked_sequence_set<_val>*)data_; }
-	static Sequence_set<_val> *data_;
+	static SequenceSet<_val> *data_;
 };
 
-template<typename _val> Sequence_set<_val>* ref_seqs<_val>::data_ = 0;
+template<typename _val> SequenceSet<_val>* ref_seqs<_val>::data_ = 0;
 
 struct ref_ids
 {
-	static const String_set<char,0>& get()
+	static const AlphabetSet<char,0>& get()
 	{ return *data_; }
-	static String_set<char,0> *data_;
+	static AlphabetSet<char,0> *data_;
 };
 
-String_set<char,0>* ref_ids::data_ = 0;
+AlphabetSet<char,0>* ref_ids::data_ = 0;
 
 seed_histogram ref_hst;
 unsigned current_ref_block;
 
-size_t max_id_len(const String_set<char,0> &ids)
+size_t max_id_len(const AlphabetSet<char,0> &ids)
 {
 	size_t max (0);
 	for(size_t i=0;i<ids.get_length(); ++i)

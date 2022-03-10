@@ -3,7 +3,9 @@
 #ifndef HASH_FUNCTION_H_
 #define HASH_FUNCTION_H_
 
-struct murmur_hash {
+class murmur_hash {
+	public:
+	
 	uint64_t operator()(uint64_t h) const
 	{
 		h ^= h >> 33;

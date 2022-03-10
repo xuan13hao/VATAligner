@@ -190,6 +190,6 @@ const Protein Translator::lookupReverse[5][5][5] = {
 { 23,23,23,23,23 },
 }};
 
-const Protein Translator::STOP (Value_traits<Protein>::from_char('*'));
+const Protein Translator::STOP (AlphabetAttributes<Protein>::from_char('*'));
 
 #endif /* TRANSLATE_H_ */
