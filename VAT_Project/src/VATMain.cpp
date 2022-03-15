@@ -146,8 +146,8 @@ int main(int ac, const char* av[])
         	if(vm.count("block-size") == 0)
         		VATParameters::chunk_size = 2;
         		// make_db(Amino_acid());
-				make_db(DNA());
-				// make_db(Protein());
+				// make_db(DNA());
+				make_db(Protein());
 
 
         } else if ((VATParameters::command == VATParameters::blastp
@@ -163,9 +163,9 @@ int main(int ac, const char* av[])
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
         		VATParameters::chunk_size = 0;
-        	if(VATParameters::command == VATParameters::blastn)
-				// master_thread<Protein>();
-        		master_thread<DNA>();
+        	if(VATParameters::command == VATParameters::blastp)
+				master_thread<Protein>();
+        		// master_thread<DNA>();
         	// else if(program_options::command == program_options::blastp)
         	// 	master_thread<Protein>();
         } else if(VATParameters::command == VATParameters::view && vm.count("daa") > 0)

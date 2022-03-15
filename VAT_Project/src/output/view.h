@@ -79,6 +79,8 @@ struct View_context
 template<typename _val>
 void view(DAA_file &daa)
 {
+
+	// cout<<""<<daa.score_matrix()<<" " <<daa.gap_open_penalty()<<" "<<daa.gap_extension_penalty()<<" "<<daa.match_reward()<<" "<<daa.mismatch_penalty()<<endl;
 	score_matrix::instance = auto_ptr<score_matrix> (new score_matrix(daa.score_matrix(),
 					daa.gap_open_penalty(),
 					daa.gap_extension_penalty(),
@@ -86,17 +88,21 @@ void view(DAA_file &daa)
 					daa.mismatch_penalty(),
 					_val ()));
 
-	log_stream << "Build version = " << daa.diamond_build() << endl;
-	log_stream << "DB sequences = " << daa.db_seqs() << endl;
-	log_stream << "DB sequences used = " << daa.db_seqs_used() << endl;
-	log_stream << "DB letters = " << daa.db_letters() << endl;
+	cout << "Build version = " << daa.diamond_build() << endl;
+	cout << "DB sequences = " << daa.db_seqs() << endl;
+	cout << "DB sequences used = " << daa.db_seqs_used() << endl;
+	cout << "DB letters = " << daa.db_letters() << endl;
 
 	View_writer writer;
 	const Output_format<_val>& format (get_output_format<_val>());
 	format.print_header(writer.f_);
 
 	View_context<_val> context (daa, writer, format);
+	// cout<<"View_context..."<<endl;
+
 	launch_thread_pool(context, VATParameters::threads());
+
+
 }
 
 void view()

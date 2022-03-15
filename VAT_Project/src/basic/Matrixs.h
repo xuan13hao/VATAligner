@@ -546,7 +546,8 @@ static const int s_Blosum50PSM[25 * 25] = {
       //return dna_sc_[1][dna_ch_[a]][dna_ch_[b]];
     //}
 
-    return prot_sc_[0][prot_ch_[a]][prot_ch_[b]];
+   return prot_sc_[0][prot_ch_[a]][prot_ch_[b]];
+  //  return dna_sc_[1][dna_ch_[a]][dna_ch_[b]];
 
   }
 

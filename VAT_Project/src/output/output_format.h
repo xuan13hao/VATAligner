@@ -26,6 +26,8 @@ struct Blast_tab_format : public Output_format<_val>
 
 	virtual void print_match(const DAA_match_record<_val> &r, Text_buffer &out) const
 	{
+		cout<<"evalue = "<<score_matrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
+		cout<<"bitscore = "<<score_matrix::get().bitscore(r.score) <<endl;
 		out << r.query_name() << '\t'
 				<< r.subject_name << '\t'
 				<< (double)r.identities*100/r.len << '\t'

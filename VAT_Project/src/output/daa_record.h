@@ -194,6 +194,8 @@ Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, DAA_match_recor
 		r.frame = 0;
 		r.translated_query_begin = r.query_begin;
 	} else {
+		// r.frame = 0;
+		// r.translated_query_begin = r.query_begin;
 		r.frame = (flag&(1<<6)) == 0 ? 0 : 1;
 		r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), false);
 	}

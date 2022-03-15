@@ -38,6 +38,7 @@ struct DAA_output
 				VATParameters::matrix,
 				(Align_mode)VATParameters::command)
 	{
+		cout<<"k = "<<score_matrix::get().k()<<", lambda = "<<score_matrix::get().lambda()<<endl;
 		DAA_header1 h1;
 		f_.write(&h1, 1);
 		h2_.block_type[0] = DAA_header2::alignments;

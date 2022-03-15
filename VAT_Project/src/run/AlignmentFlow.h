@@ -161,7 +161,7 @@ void run_query_chunk(Database_file<_val> &db_file,
 	char *query_buffer = sorted_list<_locq>::Type::alloc_buffer(*query_hst);
 	vector<Temp_file> tmp_file;
 	timer.finish();
-	cout<<"Allocating buffers"<<endl;
+	// cout<<"Allocating buffers"<<endl;
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)
 		run_ref_chunk<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
@@ -186,17 +186,17 @@ template<typename _val, typename _locr>
 void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
 {
 	ShapeConfigures::instance = ShapeConfigures (VATParameters::index_mode, _val ());
-	cout<<"Opening the output file"<<endl;
+	// cout<<"Opening the output file"<<endl;
 	task_timer timer ("Opening the input file", true);
 	timer_mapping.resume();
-	const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
-	// const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
+	// const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
+	const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
-	cout<<"Loading query sequences 1"<<endl;
+	// cout<<"Loading query sequences 1"<<endl;
 	DAA_output master_out;
-	cout<<"Loading query sequences 2"<<endl;
+	// cout<<"Loading query sequences 2"<<endl;
 	timer_mapping.stop();
 	timer.finish();
 	
@@ -207,7 +207,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		size_t n_query_seqs;
 		
 
-		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 /*
 		if(input_sequence_type() == nucleotide)
 			n_query_seqs = load_seqs<Nucleotide,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
