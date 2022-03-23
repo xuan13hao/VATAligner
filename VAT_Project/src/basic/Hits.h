@@ -33,17 +33,26 @@ struct hit
 		query_ (query),
 		subject_ (subject),
 		seed_offset_ (seed_offset)
-	{ }
+	{ 
+	}
 	bool operator<(const hit &rhs) const
 	{ return query_ < rhs.query_; }
 	bool blank() const
-	{ return subject_ == 0; }
+	{ 
+		return subject_ == 0; 
+	}
 	unsigned operator%(unsigned i) const
-	{ return (query_/6) % i; }
+	{ 
+		return (query_/6) % i; 
+	}
 	unsigned operator/(unsigned i) const
-	{ return (query_/6)/i; }
+	{ 
+		return (query_/6)/i; 
+	}
 	int64_t global_diagonal() const
-	{ return (int64_t)subject_ - (int64_t)seed_offset_; }
+	{ 
+		return (int64_t)subject_ - (int64_t)seed_offset_; 
+	}
 	template<unsigned _d>
 	static unsigned query_id(const hit& x)
 	{ return x.query_/_d; }

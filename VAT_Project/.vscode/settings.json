@@ -3,6 +3,10 @@
         "new": "cpp",
         "ostream": "cpp",
         "iostream": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "limits": "cpp",
+        "istream": "cpp",
+        "streambuf": "cpp",
+        "iosfwd": "cpp"
     }
 }

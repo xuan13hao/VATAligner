@@ -47,14 +47,19 @@ struct Blast_score_blk
 
 	~Blast_score_blk()
 	{ BlastScoreBlkFree(data_); }
-
+	// for protein alignment
 	template<typename _val>
 	int score(_val x, _val y) const
 	{ 
-		// return getMatchScore((char)AlphabetAttributes<_val>::ALPHABET[x],(char)AlphabetAttributes<_val>::ALPHABET[y]);
 
 		return data_->matrix->data[(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[y]]];
 	}
+	//template<typename _val>
+	int score(DNA x, DNA y) const
+	{ 
+		return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
+	}
+
 	//lamda = 0.267
 	double lambda() const
 	{ 
@@ -109,22 +114,30 @@ struct score_matrix
 		matrix16_ (_val(), sb_)
 	{ }
 
+	score_matrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
+		sb_ (matrix, gap_open, gap_extend, reward, penalty, DNA ()),
+		bias_ ((char)(-sb_.low_score())),
+		name_ (matrix),
+		matrix8_ (DNA(), sb_),
+		matrix8u_ (DNA(), sb_, bias_),
+		matrix16_ (DNA(), sb_)
+	{ 
+		
+	}
+
+
 	template<typename _val>
 	void print() const
 	{
 		cout << "Scoring matrix = " << name_ << endl;
 		// cout << "Lambda = " << sb_.lambda() << endl;
 		// cout << "K = " << sb_.k() << endl;
-		// sb_.lambda();
-		// sb_.k(); 
-		// sb_.ln_k();
-		// sb_.low_score();
-		const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
-		for(unsigned i=0;i<n;++i) {
-			for(unsigned j=0;j<n;++j)
-				printf("%3i", (int)matrix8_.data[i*32+j]);
-			printf("\n");
-		}
+		// const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
+		// for(unsigned i=0;i<n;++i) {
+		// 	for(unsigned j=0;j<n;++j)
+		// 		printf("%3i", (int)matrix8_.data[i*32+j]);
+		// 	printf("\n");
+		// }
 	}
 
 	static const score_matrix& get()
@@ -186,6 +199,15 @@ private:
 				for(unsigned j=0;j<32;++j)
 					data[i*32+j] = i < n && j < n ? (_t)(sb.score((_val)i, (_val)j) + (int)bias) : std::numeric_limits<_t>::min();
 		}
+		// template<typename _val>
+		Scores(const DNA&, const Blast_score_blk &sb, char bias = 0)
+		{
+			const unsigned n = AlphabetAttributes<DNA>::ALPHABET_SIZE;
+			for(unsigned i=0;i<32;++i)
+				for(unsigned j=0;j<32;++j)
+					data[i*32+j] = i < n && j < n ? (_t)(sb.score((DNA)i, (DNA)j) + (int)bias) : std::numeric_limits<_t>::min();
+		}
+		
 		_t data[32*32] __attribute__ ((aligned (16)));
 	};
 

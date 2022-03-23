@@ -64,7 +64,9 @@ void align_partition(unsigned hp,
 		typename sorted_list<_locq>::Type::const_iterator j,
 		unsigned thread_id)
 {
+	cout<<"align_partition 1"<<endl;
 	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
+		cout<<"align_partition 2"<<endl;
 	while(!i.at_end() && !j.at_end() && !exception_state()) {
 		if(i.key() < j.key()) {
 			++i;

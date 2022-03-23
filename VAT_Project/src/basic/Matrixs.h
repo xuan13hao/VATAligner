@@ -529,7 +529,7 @@ static const int s_Blosum50PSM[25 * 25] = {
 };
 
 
-  int getMatchScore(const char &a, const char &b)  
+  int getNuclMatchScore(const char &a, const char &b)  
   {
     // assert(is_type_set_ && is_matrix_set_);
     // if(seq_type_ == PROT)  {
@@ -546,8 +546,8 @@ static const int s_Blosum50PSM[25 * 25] = {
       //return dna_sc_[1][dna_ch_[a]][dna_ch_[b]];
     //}
 
-   return prot_sc_[0][prot_ch_[a]][prot_ch_[b]];
-  //  return dna_sc_[1][dna_ch_[a]][dna_ch_[b]];
+  //  return prot_sc_[0][prot_ch_[a]][prot_ch_[b]];
+   return dna_sc_[1][dna_ch_[a]][dna_ch_[b]];
 
   }
 

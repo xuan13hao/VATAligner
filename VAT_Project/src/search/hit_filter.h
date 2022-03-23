@@ -33,6 +33,8 @@ struct hit_filter
 			push_hit(subject);
 		else
 			subjects_->push_back(ref_seqs<_val>::data_->fixed_window_infix(subject+VATConsts::seed_anchor));
+
+		
 	}
 
 	void finish()
@@ -60,9 +62,14 @@ struct hit_filter
 			q_num_ = l.first;
 			seed_offset_ = l.second;
 		}
+		
 		//cout << "query=" << q_num_ << " so=" << seed_offset_ << " subject=" << subject << endl;
 		assert(subject < ref_seqs<_val>::get().raw_len());
+				cout<<"push_hit 1"<<endl;
+
 		out_.push(hit<_locr,_locl> (q_num_, subject, seed_offset_));
+				// cout<<"push_hit 2"<<endl;
+
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 

@@ -58,7 +58,7 @@ void process_shape(unsigned sid,
 		verbose_stream << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
-		// cout<<"Searching alignments"<<endl;
+		cout<<"Searching alignments"<<endl;
 		task_timer timer ("Building reference index", true);
 		typename sorted_list<_locr>::Type ref_idx (ref_buffer,
 				*ref_seqs<_val>::data_,
@@ -66,6 +66,7 @@ void process_shape(unsigned sid,
 				ref_hst.get(VATParameters::index_mode, sid),
 				range);
 		ref_seqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
+		cout<<"Searching alignments 1"<<endl;
 
 		timer.go("Building query index");
 		timer_mapping.resume();
@@ -75,10 +76,15 @@ void process_shape(unsigned sid,
 				query_hst->get(VATParameters::index_mode, sid),
 				range);
 		timer.finish();
+		cout<<"Searching alignments 2"<<endl;
 
 		timer.go("Searching alignments");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
+		cout<<"Searching alignments 3"<<endl;
+
 		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
+		cout<<"Searching alignments 4"<<endl;
+
 	}
 	timer_mapping.stop();
 }
@@ -99,11 +105,11 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	ref_hst.load(db_file);
 
 	setup_search_params<_val>(query_len_bounds, ref_seqs<_val>::data_->letters());
-	cout<<"Loading reference sequences"<<endl;
 
 	ref_map.init(ref_seqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
 	char *ref_buffer = sorted_list<_locr>::Type::alloc_buffer(ref_hst);
+	cout<<"Loading reference sequences"<<endl;
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
@@ -112,9 +118,11 @@ void run_ref_chunk(Database_file<_val> &db_file,
 			VATParameters::mem_buffered());
 	timer.finish();
 	timer_mapping.stop();
+	cout<<"Loading reference sequences 1"<<endl;
 
 	for(unsigned i=0;i<ShapeConfigures::instance.count();++i)
 		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
+	cout<<"Loading reference sequences 2"<<endl;
 
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
@@ -189,14 +197,14 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 	// cout<<"Opening the output file"<<endl;
 	task_timer timer ("Opening the input file", true);
 	timer_mapping.resume();
-	// const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
-	const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
+	const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
+	// const Sequence_file_format<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
-	// cout<<"Loading query sequences 1"<<endl;
+	cout<<"Loading query sequences 1"<<endl;
 	DAA_output master_out;
-	// cout<<"Loading query sequences 2"<<endl;
+	cout<<"Loading query sequences 2"<<endl;
 	timer_mapping.stop();
 	timer.finish();
 	
@@ -207,7 +215,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		size_t n_query_seqs;
 		
 
-		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_p, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 /*
 		if(input_sequence_type() == nucleotide)
 			n_query_seqs = load_seqs<Nucleotide,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));

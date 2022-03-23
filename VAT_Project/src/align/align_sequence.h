@@ -53,6 +53,8 @@ void align_sequence(vector<Segment<_val> > &matches,
 		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
 		stat.inc(Statistics::OUT_HITS);
 	}
+
+	cout<<"align_sequence"<<endl;
 }
 
 #endif /* ALIGN_SEQUENCE_H_ */

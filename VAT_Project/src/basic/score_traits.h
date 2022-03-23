@@ -20,6 +20,10 @@ int16_t blast_load_karlin_blk(Blast_KarlinBlk* kbp,
 		const char *matrix)
 { return 0; }
 
+
+
+
+
 template<>
 int16_t blast_load_karlin_blk<Protein>(Blast_KarlinBlk* kbp,
 		Blast_KarlinBlk* kbp_ungap,
@@ -38,6 +42,10 @@ int16_t blast_load_karlin_blk<Protein>(Blast_KarlinBlk* kbp,
 template<typename _val>
 const uint8_t* blast_alphabet()
 { return 0; }
+
+// template<>
+// const uint8_t* blast_alphabet<DNA>()
+// { return IUPACNA_TO_NCBI4NA; }
 
 template<>
 const uint8_t* blast_alphabet<Protein>()
