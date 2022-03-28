@@ -18,7 +18,7 @@ void setup(const string &command, int ac, const char **av)
 	auto_append_extension(po::daa_file, ".daa");
 
 	if(po::debug_log) {
-		io::tee_filter<io::file_sink> t (io::file_sink("diamond.log", std::ios_base::out | std::ios_base::app));
+		io::tee_filter<io::file_sink> t (io::file_sink("vat.log", std::ios_base::out | std::ios_base::app));
 		verbose_stream.push(t);
 		log_stream.push(t);
 		log_stream.push(cout);
@@ -66,8 +66,10 @@ void setup(const string &command, int ac, const char **av)
 				po::penalty,
 				Protein ()));
 		score_matrix::get().print<Protein>();
-	} else {
-
+	} 
+	
+	else {
+// cout<<"dna para init"<<endl;
 		if(po::gap_open == -1)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
@@ -81,6 +83,7 @@ void setup(const string &command, int ac, const char **av)
 		score_matrix::get().print<DNA>();
 
 	}
+	
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;
 	verbose_stream << "Gap extension penalty = " << po::gap_extend << endl;
 
@@ -121,7 +124,42 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 	log_stream << "Minimum bit score = " << b << endl;
 	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
+/*
+template<>
+void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
+{
+	namespace po = VATParameters;
+	if(po::aligner_mode == po::sensitive) {
+		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/8735437)));
+	} else if (po::aligner_mode == po::fast) {
+		po::set_option(po::hit_cap, std::max(128u, (unsigned)(chunk_db_letters/17470874)));
+	}
 
+	const double b = po::min_bit_score == 0 ? score_matrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
+
+	if(query_len_bounds.second <= 40) {
+		po::set_option(po::min_identities, 10u);
+		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(27.0, b)));
+	} else {
+		po::set_option(po::min_identities, 9u);
+		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(23.0, b)));
+	}
+
+	if(query_len_bounds.second <= 80) {
+		const int band = po::read_padding<Protein>(query_len_bounds.second);
+		po::set_option(po::window, (unsigned)(query_len_bounds.second + band));
+		po::set_option(po::hit_band, band);
+		po::set_option(po::min_hit_score, score_matrix::get().rawscore(b));
+	} else {
+		po::set_option(po::window, 40u);
+		po::set_option(po::hit_band, 5);
+		po::set_option(po::min_hit_score, score_matrix::get().rawscore(std::min(29.0, b)));
+	}
+	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
+	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
+}
+
+*/
 template<>
 void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {

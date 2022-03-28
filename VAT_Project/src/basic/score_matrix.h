@@ -55,6 +55,7 @@ struct Blast_score_blk
 		return data_->matrix->data[(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[y]]];
 	}
 	//template<typename _val>
+	
 	int score(DNA x, DNA y) const
 	{ 
 		return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);

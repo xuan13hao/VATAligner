@@ -32,7 +32,7 @@ void align_read(Output_buffer<_val> &buffer,
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
-
+	cout<<"align_read 2"<<endl;
 	assert(end > begin);
 	const size_t hit_count = end - begin;
 	local->reserve(hit_count);
@@ -42,19 +42,24 @@ void align_read(Output_buffer<_val> &buffer,
 	const size_t source_query_len = query_translated() ? query_seqs<_val>::data_->reverse_translated_len(query*contexts) : query_len;
 	const size_t db_letters = ref_header.letters;
 	unsigned padding[6];
+	cout<<"align_read 3"<<endl;
 
 	typedef Map<typename vector<hit<_locr,_locl> >::iterator,typename hit<_locr,_locl>::template Query_id<1> > Map_t;
 	Map_t hits (begin, end);
+	cout<<"align_read 4"<<endl;
 	typename Map_t::Iterator i = hits.begin();
 	while(i.valid()) {
+		cout<<"align_read 5"<<endl;
 		align_sequence<_val,_locr,_locl>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf);
 		++i;
 	}
+	cout<<"align_read 6"<<endl;
 
 	if(matches->size() == 0)
 		return;
 
 	link_segments(*matches);
+	cout<<"align_read 7"<<endl;
 
 	std::sort(matches->begin(), matches->end());
 	unsigned n_hsp = 0, n_target_seq = 0;
@@ -62,6 +67,7 @@ void align_read(Output_buffer<_val> &buffer,
 	const int min_raw_score = score_matrix::get().rawscore(VATParameters::min_bit_score == 0
 			? score_matrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	const int top_score = matches->operator[](0).score_;
+	cout<<"align_read 8"<<endl;
 
 	while(it < matches->end()) {
 		const bool same_subject = it != matches->begin() && (it-1)->subject_id_ == it->subject_id_;
@@ -81,10 +87,12 @@ void align_read(Output_buffer<_val> &buffer,
 			++it;
 			continue;
 		}
+	cout<<"align_read 8.1"<<endl;
 
 		if(n_hsp == 0)
 			buffer.write_query_record(query);
 		buffer.print_match(*it, source_query_len, query_seqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
+	cout<<"align_read 8.2"<<endl;
 
 		++n_hsp;
 		if(!same_subject)
@@ -93,6 +101,7 @@ void align_read(Output_buffer<_val> &buffer,
 			stat.inc(Statistics::GAPPED);
 		++it;
 	}
+	cout<<"align_read 9"<<endl;
 
 	if(n_hsp > 0)
 		buffer.finish_query_record();
@@ -103,6 +112,7 @@ void align_read(Output_buffer<_val> &buffer,
 		if(n_hsp > 0)
 			stat.inc(Statistics::ALIGNED);
 	}
+	cout<<"align_read 10"<<endl;
 }
 
 #endif /* ALIGN_READ_H_ */

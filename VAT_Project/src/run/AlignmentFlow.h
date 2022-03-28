@@ -122,7 +122,6 @@ void run_ref_chunk(Database_file<_val> &db_file,
 
 	for(unsigned i=0;i<ShapeConfigures::instance.count();++i)
 		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
-	cout<<"Loading reference sequences 2"<<endl;
 
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
@@ -139,10 +138,11 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		out = new Output_stream (tmp_file.back());
 	} else
 		out = &master_out.stream();
-
+	cout<<"Computing alignments 1 2 3"<<endl;
 	timer.go("Computing alignments");
 	align_queries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
 	delete Trace_pt_buffer<_locr,_locl>::instance;
+	cout<<"Computing alignments 1"<<endl;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");
@@ -182,6 +182,7 @@ void run_query_chunk(Database_file<_val> &db_file,
 		timer.go("Joining output blocks");
 		join_blocks<_val>(ref_header.n_blocks, master_out, tmp_file);
 	}
+	cout<<"joining output blocks"<<endl;
 
 	timer.go("Deallocating queries");
 	delete query_seqs<_val>::data_;

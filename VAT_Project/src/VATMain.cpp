@@ -164,6 +164,7 @@ int main(int ac, const char* av[])
         	} else
         		VATParameters::chunk_size = 0;
         	if(VATParameters::command == VATParameters::blastn)
+				//cout<<"cmd = "<<VATParameters::command <<endl;
 				// master_thread<Protein>();
         		master_thread<DNA>();
         	// else if(program_options::command == program_options::blastp)

@@ -103,6 +103,7 @@ string get_temp_file()
 	}
 }
 
+
 template<typename _val>
 unsigned read_padding(size_t len)
 {
@@ -128,6 +129,20 @@ unsigned read_padding<Protein>(size_t len)
 	} else
 		return padding;
 }
+template<>
+unsigned read_padding<DNA>(size_t len)
+{
+	if(padding == 0) {
+		if(len<=35)
+			return 5;
+		else if(len<=55)
+			return 16;
+		else
+			return 32;
+	} else
+		return padding;
+}
+
 
 template void set_options<Protein>(double block_size);
 template void set_options<DNA>(double block_size);

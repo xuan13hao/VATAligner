@@ -34,6 +34,7 @@ struct hit
 		subject_ (subject),
 		seed_offset_ (seed_offset)
 	{ 
+		cout<<"init hit.."<<endl;
 	}
 	bool operator<(const hit &rhs) const
 	{ return query_ < rhs.query_; }
@@ -43,11 +44,15 @@ struct hit
 	}
 	unsigned operator%(unsigned i) const
 	{ 
+				cout<<"init hit..1"<<endl;
 		return (query_/6) % i; 
+		cout<<"init hit..1.1"<<endl;
 	}
 	unsigned operator/(unsigned i) const
 	{ 
+		cout<<"init hit..2"<<endl;
 		return (query_/6)/i; 
+		cout<<"init hit..2.1"<<endl;
 	}
 	int64_t global_diagonal() const
 	{ 
@@ -55,7 +60,13 @@ struct hit
 	}
 	template<unsigned _d>
 	static unsigned query_id(const hit& x)
-	{ return x.query_/_d; }
+	{
+				cout<<"init hit..3"<<endl;
+ 
+		return x.query_/_d; 
+						cout<<"init hit..4"<<endl;
+
+	}
 	template<unsigned _d>
 	struct Query_id
 	{

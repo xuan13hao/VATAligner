@@ -7,6 +7,16 @@
         "limits": "cpp",
         "istream": "cpp",
         "streambuf": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "iterator": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "unordered_map": "cpp"
     }
 }

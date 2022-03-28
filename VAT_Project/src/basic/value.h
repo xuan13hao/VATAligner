@@ -25,7 +25,7 @@ Sequence_type sequence_type()
 size_t query_contexts()
 {
 	switch(VATParameters::command) {
-	case VATParameters::blastn: return 2;
+	case VATParameters::blastn: return 1;
 	case VATParameters::blastx: return 6;
 	default: return 1;
 	}
