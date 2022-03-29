@@ -25,6 +25,10 @@ template<>
 unsigned get_rev_flag<Protein>(unsigned frame)
 { return frame > 2 ? 1 : 0; }
 
+template<>
+unsigned get_rev_flag<DNA>(unsigned frame)
+{ return frame > 2 ? 1 : 0; }
+
 template<typename _val>
 uint8_t get_segment_flag(const Segment<_val> &match)
 {
@@ -61,12 +65,18 @@ struct Output_buffer : public Text_buffer
 		const sequence<const _val> &query,
 		unsigned query_id,
 		const vector<char> &transcript_buf)
-	{ DAA_output::write_record(*this, match, query_source_len, query, query_id, transcript_buf); }
+	{ 
+		cout<<"print_match 1"<<endl;
+		DAA_output::write_record(*this, match, query_source_len, query, query_id, transcript_buf); 
+		cout<<"print_match 2"<<endl;
+	}
 	virtual void write_query_record(unsigned query_id)
 	{
 		query_begin_ = this->size();
-		if(query_translated())
+		if(query_translated()){
 			DAA_output::write_query_record(*this, query_ids::get()[query_id], query_source_seqs::get()[query_id]);
+			cout<<"write_query_record"<<endl;
+			}
 		else
 			DAA_output::write_query_record(*this, query_ids::get()[query_id], query_seqs<_val>::get()[query_id]);
 	}

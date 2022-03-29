@@ -58,7 +58,6 @@ void process_shape(unsigned sid,
 		verbose_stream << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
-		cout<<"Searching alignments"<<endl;
 		task_timer timer ("Building reference index", true);
 		typename sorted_list<_locr>::Type ref_idx (ref_buffer,
 				*ref_seqs<_val>::data_,
@@ -66,7 +65,6 @@ void process_shape(unsigned sid,
 				ref_hst.get(VATParameters::index_mode, sid),
 				range);
 		ref_seqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
-		cout<<"Searching alignments 1"<<endl;
 
 		timer.go("Building query index");
 		timer_mapping.resume();
@@ -76,14 +74,11 @@ void process_shape(unsigned sid,
 				query_hst->get(VATParameters::index_mode, sid),
 				range);
 		timer.finish();
-		cout<<"Searching alignments 2"<<endl;
 
 		timer.go("Searching alignments");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
-		cout<<"Searching alignments 3"<<endl;
 
 		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
-		cout<<"Searching alignments 4"<<endl;
 
 	}
 	timer_mapping.stop();
@@ -109,7 +104,6 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	ref_map.init(ref_seqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
 	char *ref_buffer = sorted_list<_locr>::Type::alloc_buffer(ref_hst);
-	cout<<"Loading reference sequences"<<endl;
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
@@ -118,7 +112,6 @@ void run_ref_chunk(Database_file<_val> &db_file,
 			VATParameters::mem_buffered());
 	timer.finish();
 	timer_mapping.stop();
-	cout<<"Loading reference sequences 1"<<endl;
 
 	for(unsigned i=0;i<ShapeConfigures::instance.count();++i)
 		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
@@ -126,7 +119,6 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
 	exception_state.sync();
-	cout<<"Closing temporary storage"<<endl;
 	timer.go("Deallocating buffers");
 	delete[] ref_buffer;
 
@@ -138,11 +130,9 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		out = new Output_stream (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	cout<<"Computing alignments 1 2 3"<<endl;
 	timer.go("Computing alignments");
 	align_queries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
 	delete Trace_pt_buffer<_locr,_locl>::instance;
-	cout<<"Computing alignments 1"<<endl;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");
@@ -169,7 +159,6 @@ void run_query_chunk(Database_file<_val> &db_file,
 	char *query_buffer = sorted_list<_locq>::Type::alloc_buffer(*query_hst);
 	vector<Temp_file> tmp_file;
 	timer.finish();
-	// cout<<"Allocating buffers"<<endl;
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)
 		run_ref_chunk<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
@@ -182,7 +171,6 @@ void run_query_chunk(Database_file<_val> &db_file,
 		timer.go("Joining output blocks");
 		join_blocks<_val>(ref_header.n_blocks, master_out, tmp_file);
 	}
-	cout<<"joining output blocks"<<endl;
 
 	timer.go("Deallocating queries");
 	delete query_seqs<_val>::data_;

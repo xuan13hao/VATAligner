@@ -25,6 +25,26 @@ void to_source_space(local_match<_val> &l, unsigned frame, unsigned source_len)
 }
 
 template<>
+void to_source_space<DNA>(local_match<DNA> &l, unsigned frame, unsigned dna_len)
+{
+	if(!query_translated())
+		return;
+	int query_begin_dna; //, query_end_dna;
+	signed f = frame <= 2 ? frame+1 : 2-frame;
+	if (f > 0) {
+		query_begin_dna = (f-1) + 3 * l.query_begin_;
+		//query_end_dna = (f-1) + 3 * (l.query_begin_+l.query_len_-1) + 3;
+	} else {
+		query_begin_dna = dna_len + f - 3 * l.query_begin_;
+		//query_end_dna = dna_len + (f + 1) - 3 * (l.query_begin_+l.query_len_-1) - 2;
+		l.query_len_ *= -1;
+	}
+	l.query_begin_ = query_begin_dna;
+	l.query_len_*= 3;
+}
+
+
+template<>
 void to_source_space<Protein>(local_match<Protein> &l, unsigned frame, unsigned dna_len)
 {
 	if(!query_translated())

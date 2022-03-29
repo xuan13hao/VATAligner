@@ -38,7 +38,6 @@ struct DAA_output
 				VATParameters::matrix,
 				(Align_mode)VATParameters::command)
 	{
-		cout<<"k = "<<score_matrix::get().k()<<", lambda = "<<score_matrix::get().lambda()<<endl;
 		DAA_header1 h1;
 		f_.write(&h1, 1);
 		h2_.block_type[0] = DAA_header2::alignments;
@@ -77,13 +76,16 @@ struct DAA_output
 			unsigned query_id,
 			const vector<char> &transcript_buf)
 	{
+		cout<<"write_record 1"<<endl;
 		buf.write(ref_map.get<_val>(current_ref_block, match.subject_id_));
 		buf.write(get_segment_flag(match));
 		buf.write_packed(match.score_);
 		buf.write_packed(match.traceback_->query_begin_);
 		buf.write_packed(match.traceback_->subject_begin_);
 		const unsigned qbegin = query_translated_begin<_val>(match.traceback_->query_begin_, match.frame_, query_source_len, query_translated());
+
 		print_packed(match.traceback_->transcript_right_, match.traceback_->transcript_left_, transcript_buf, buf, query, ref_seqs<_val>::get()[match.subject_id_], qbegin, match.traceback_->subject_begin_);
+
 	}
 
 	void finish()

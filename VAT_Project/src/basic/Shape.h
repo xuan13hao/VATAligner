@@ -30,6 +30,11 @@ template<>
 bool use_seed_freq<Protein>()
 { return true; }
 
+template<>
+bool use_seed_freq<DNA>()
+{ return true; }
+
+
 struct shape
 {
 

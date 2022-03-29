@@ -35,7 +35,6 @@ void align_queries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 	Map_t hits (begin, end);
 	typename Map_t::Iterator i = hits.begin();
 	while(i.valid() && !exception_state()) {
-		cout<<"align_read 1"<<endl;
 		align_read<_val,_locr,_locl>(buffer, st, i.begin(), i.end());
 		++i;
 	}
@@ -59,19 +58,18 @@ struct Align_context
 		while(queue.get(i, buffer, query_range) && !exception_state()) {
 			try {
 
-				cout<<"Align_context"<<endl;
-				//switch(1) {
+				switch(1) {
 				// case 6:
 				// 	align_queries<_val,_locr,_locl,6>(query_range.begin, query_range.end, *buffer, st);
 				// 	break;
 				// case 2:
 				// 	align_queries<_val,_locr,_locl,2>(query_range.begin, query_range.end, *buffer, st);
 				// 	break;
-				//default:
+				case 1:
 					align_queries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
-									cout<<"Align_context 1"<<endl;
 
-			//	}
+
+				}
 				queue.push(i);
 			} catch(std::exception &e) {
 				exception_state.set(e);

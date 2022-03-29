@@ -67,9 +67,7 @@ void setup(const string &command, int ac, const char **av)
 				Protein ()));
 		score_matrix::get().print<Protein>();
 	} 
-	
 	else {
-// cout<<"dna para init"<<endl;
 		if(po::gap_open == -1)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
@@ -124,7 +122,7 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 	log_stream << "Minimum bit score = " << b << endl;
 	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
-/*
+
 template<>
 void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
@@ -146,20 +144,24 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 	}
 
 	if(query_len_bounds.second <= 80) {
-		const int band = po::read_padding<Protein>(query_len_bounds.second);
+		const int band = po::read_padding<DNA>(query_len_bounds.second);
 		po::set_option(po::window, (unsigned)(query_len_bounds.second + band));
 		po::set_option(po::hit_band, band);
+		// cout<<"rawscore = "<<score_matrix::get().rawscore(b)<<endl;
+		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, score_matrix::get().rawscore(b));
 	} else {
 		po::set_option(po::window, 40u);
 		po::set_option(po::hit_band, 5);
+		cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
+		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, score_matrix::get().rawscore(std::min(29.0, b)));
 	}
 	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
 	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
 
-*/
+
 template<>
 void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {

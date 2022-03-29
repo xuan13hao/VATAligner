@@ -62,7 +62,9 @@ struct Link_iterator
 			i_ = right_end_-1;
 	}
 	char operator*() const
-	{ return *i_; }
+	{ 
+		return *i_; 
+	}
 	bool good() const
 	{ return i_ != right_begin_-1; }
 	Link_iterator& operator++()
@@ -129,12 +131,16 @@ void print_packed(const Edit_transcript &right,
 		unsigned qpos,
 		unsigned spos)
 {
+			
+
 	Link_iterator i (right, left, transcript_buf);
-	while(i.good())
+		
+
+	while(i.good()){
 		switch(*i) {
 		case op_match:
-			if(query[qpos] == mask_critical(subject[spos]))
-				print_match(buf, i, query, subject, qpos, spos);
+			if(query[qpos] == mask_critical(subject[spos])){
+				print_match(buf, i, query, subject, qpos, spos);}
 			else {
 				buf.write(Packed_operation(op_substitution, mask_critical(subject[spos])));
 				++qpos;
@@ -148,7 +154,10 @@ void print_packed(const Edit_transcript &right,
 		case op_deletion:
 			print_deletion(buf, i, subject, spos);
 		}
+
+	}
 	buf.write(Packed_operation::terminator());
+
 }
 
 template<typename _val>
