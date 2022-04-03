@@ -89,6 +89,8 @@ struct DAA_file
 		f_.read(ref_len_.data(), h2_.db_seqs_used);
 
 		f_.seek(sizeof(DAA_header1) + sizeof(DAA_header2));
+		cout << "DAA_file" << endl;
+
 	}
 
 	uint64_t diamond_build() const

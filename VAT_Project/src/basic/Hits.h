@@ -34,7 +34,7 @@ struct hit
 		subject_ (subject),
 		seed_offset_ (seed_offset)
 	{ 
-		cout<<"init hit.."<<endl;
+		// cout<<"init hit.."<<endl;
 	}
 	bool operator<(const hit &rhs) const
 	{ return query_ < rhs.query_; }

@@ -65,7 +65,7 @@ struct hit_filter
 		
 		//cout << "query=" << q_num_ << " so=" << seed_offset_ << " subject=" << subject << endl;
 		assert(subject < ref_seqs<_val>::get().raw_len());
-				cout<<"push_hit 1"<<endl;
+				// cout<<"push_hit 1"<<endl;
 
 		out_.push(hit<_locr,_locl> (q_num_, subject, seed_offset_));
 				// cout<<"push_hit 2"<<endl;

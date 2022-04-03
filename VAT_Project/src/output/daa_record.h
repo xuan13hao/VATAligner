@@ -76,10 +76,12 @@ private:
 			Packed_sequence seq (it, query_len, false, 5);
 			seq.unpack(context[0], 5, query_len);
 		} else {
-			const bool have_n = (flags&1) == 1;
-			Packed_sequence seq (it, query_len, have_n, have_n ? 3 : 2);
-			seq.unpack(source_seq, have_n ? 3 : 2, query_len);
-			translate_query<_val>(source_seq, context);
+			Packed_sequence seq (it, query_len, false, 5);
+			seq.unpack(context[0], 5, query_len);
+			// const bool have_n = (flags&1) == 1;
+			// Packed_sequence seq (it, query_len, have_n, have_n ? 3 : 2);
+			// seq.unpack(source_seq, have_n ? 3 : 2, query_len);
+			// translate_query<_val>(source_seq, context);
 		}
 		return it;
 	}
@@ -118,8 +120,9 @@ struct DAA_match_record
 			int len = (int)translated_query_len*3*(frame>2 ? -1 : 1);
 			return (int)query_begin + (len > 0 ? -1 : 1) + len;
 		} else if(parent_.file_.mode() == blastn) {
-			int len = (int)translated_query_len*(frame>0 ? -1 : 1);
-			return (int)query_begin + (len > 0 ? -1 : 1) + len;
+			// int len = (int)translated_query_len*(frame>0 ? -1 : 1);
+			// return (int)query_begin + (len > 0 ? -1 : 1) + len;
+			return query_begin + translated_query_len - 1;
 		} else
 			return 0;
 	}
@@ -194,10 +197,10 @@ Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, DAA_match_recor
 		r.frame = 0;
 		r.translated_query_begin = r.query_begin;
 	} else {
-		// r.frame = 0;
-		// r.translated_query_begin = r.query_begin;
-		r.frame = (flag&(1<<6)) == 0 ? 0 : 1;
-		r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), false);
+		r.frame = 0;
+		r.translated_query_begin = r.query_begin;
+		// r.frame = (flag&(1<<6)) == 0 ? 0 : 1;
+		// r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), false);
 	}
 	r.parse();
 	return it;

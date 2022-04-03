@@ -50,7 +50,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		anchored_transform(local.back(), l.second, i->seed_offset_);
 		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
 
-		//local.back().print(query, ref_seqs<_val>::get()[l.first], transcript_buf);
+		// local.back().print(query, ref_seqs<_val>::get()[l.first], transcript_buf);
 
 		to_source_space(local.back(), frame, dna_len);
 		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
@@ -59,7 +59,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 
 	}
 
-	cout<<"align_sequence 3"<<endl;
+	// cout<<"align_sequence 3"<<endl;
 
 }
 

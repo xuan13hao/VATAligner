@@ -38,12 +38,12 @@ struct Statistics
 		log_stream << "Gapped hits = " << data_[GAPPED_HITS] << endl;
 		log_stream << "Overlap hits = " << data_[DUPLICATES] << endl;
 		log_stream << "Net hits = " << data_[OUT_HITS] << endl;
-		log_stream << "Matches = " << data_[OUT_MATCHES] << endl;
-		log_stream << "Total score = " << data_[SCORE_TOTAL] << endl;
+		cout << "Matches = " << data_[OUT_MATCHES] << endl;
+		cout << "Total score = " << data_[SCORE_TOTAL] << endl;
 		log_stream << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;
 		log_stream << "Gapped matches = " << data_[GAPPED] << endl;
-		verbose_stream << "Final matches = " << data_[MATCHES] << endl;
-		verbose_stream << "Queries aligned = " << data_[ALIGNED] << endl;
+		cout << "Final matches = " << data_[MATCHES] << endl;
+		cout << "Queries aligned = " << data_[ALIGNED] << endl;
 	}
 
 	stat_type data_[COUNT];

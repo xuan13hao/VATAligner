@@ -171,7 +171,10 @@ struct score_matrix
 	{ return (bitscore*LN_2 + sb_.ln_k()) / sb_.lambda(); }
 
 	int rawscore(double bitscore) const
-	{ return (int)ceil(rawscore(bitscore, double ())); }
+	{ 
+		// return (int)ceil(rawscore(bitscore, double ())); 
+		return 10; 
+	}
 
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const
 	{ return static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); }

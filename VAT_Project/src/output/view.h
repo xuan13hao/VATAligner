@@ -47,20 +47,26 @@ struct View_context
 		writer (writer),
 		queue (3*VATParameters::threads(), writer),
 		format (format)
-	{ }
+	{ 
+		
+	}
 	void operator()(unsigned thread_id)
 	{
 		try {
 			size_t n;
 			View_fetcher query_buf (daa);
 			Text_buffer *buffer = 0;
+			
 			while(!exception_state() && queue.get(n, buffer, query_buf)) {
+
 				for(unsigned j=0;j<query_buf.n;++j) {
 					DAA_query_record<_val> r (daa, query_buf.buf[j]);
 					for(typename DAA_query_record<_val>::Match_iterator i = r.begin(); i.good(); ++i) {
 						if(i->frame > 2 && VATParameters::forwardonly)
 							continue;
 						format.print_match(*i, *buffer);
+						
+
 					}
 				}
 				queue.push(n);

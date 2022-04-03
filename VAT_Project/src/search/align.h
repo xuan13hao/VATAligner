@@ -38,7 +38,7 @@ void align(const _locq q_pos,
 
 	stats.inc(Statistics::TENTATIVE_MATCHES2);
 	hf.push(s, score);
-	    cout<<"align"<<endl;
+	    // cout<<"align"<<endl;
 
 }
 

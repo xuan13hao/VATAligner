@@ -106,7 +106,7 @@ void align_queries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream*
 			launch_thread_pool(context, VATParameters::threads());
 		}
 	}
-	cout<<"align_queries"<<endl;
+	// cout<<"align_queries"<<endl;
 }
 
 #endif /* ALIGN_QUERIES_H_ */

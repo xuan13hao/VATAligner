@@ -153,7 +153,7 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 	} else {
 		po::set_option(po::window, 40u);
 		po::set_option(po::hit_band, 5);
-		cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
+		// cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
 		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, score_matrix::get().rawscore(std::min(29.0, b)));
 	}
