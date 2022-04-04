@@ -75,13 +75,17 @@ private:
 		if(file_.mode() == blastp) {
 			Packed_sequence seq (it, query_len, false, 5);
 			seq.unpack(context[0], 5, query_len);
-		} else {
+		} else if(file_.mode() == blastn)
+		{
 			Packed_sequence seq (it, query_len, false, 5);
-			seq.unpack(context[0], 5, query_len);
-			// const bool have_n = (flags&1) == 1;
-			// Packed_sequence seq (it, query_len, have_n, have_n ? 3 : 2);
-			// seq.unpack(source_seq, have_n ? 3 : 2, query_len);
-			// translate_query<_val>(source_seq, context);
+			seq.unpack(context[0], 5, query_len);	
+		}
+		else {
+
+			const bool have_n = (flags&1) == 1;
+			Packed_sequence seq (it, query_len, have_n, have_n ? 3 : 2);
+			seq.unpack(source_seq, have_n ? 3 : 2, query_len);
+			translate_query<_val>(source_seq, context);
 		}
 		return it;
 	}
