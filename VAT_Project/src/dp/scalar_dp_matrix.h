@@ -29,9 +29,9 @@ struct Score_buffer<_score,Traceback>
 };
 
 template<typename _score, typename _traceback>
-struct Scalar_dp_matrix
+class Scalar_dp_matrix
 {
-
+	public:
 	struct Column_iterator
 	{
 

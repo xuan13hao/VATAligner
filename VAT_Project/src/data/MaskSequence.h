@@ -8,8 +8,9 @@ using std::vector;
 using std::auto_ptr;
 
 template<typename _val>
-struct Masked_sequence_set : public SequenceSet<_val>
+class Masked_sequence_set : public SequenceSet<_val>
 {
+	public:
 
 	Masked_sequence_set(Input_stream &file):
 			SequenceSet<_val> (file)

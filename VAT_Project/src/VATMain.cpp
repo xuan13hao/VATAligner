@@ -59,10 +59,9 @@ int main(int ac, const char* av[])
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
-#ifdef EXTRA
-        	("reward", po::value<int>(&program_options::reward)->default_value(2), "match reward score (blastn only)")
-        	("penalty", po::value<int>(&program_options::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
-#endif
+        	("reward", po::value<int>(&VATParameters::reward)->default_value(2), "match reward score (blastn only)")
+        	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
+
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
 			//("salltitles", "print all subject titles into the blast tabular format");

@@ -191,9 +191,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
-	cout<<"Loading query sequences 1"<<endl;
 	DAA_output master_out;
-	cout<<"Loading query sequences 2"<<endl;
 	timer_mapping.stop();
 	timer.finish();
 	

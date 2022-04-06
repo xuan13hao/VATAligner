@@ -28,9 +28,9 @@ struct score_vector
 { };
 
 template<>
-struct score_vector<uint8_t>
+class score_vector<uint8_t>
 {
-
+	public:
 	score_vector()
 	{
 		data_ = _mm_set1_epi8(score_traits<uint8_t>::zero);

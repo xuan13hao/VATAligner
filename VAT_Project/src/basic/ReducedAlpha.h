@@ -8,9 +8,9 @@ using std::vector;
 #include "value.h"
 
 template<typename _val>
-struct Reduction
+class Reduction
 {
-
+	public:
     Reduction(const char *definition_string)
 	{
 		memset(map_, 0, sizeof(map_));

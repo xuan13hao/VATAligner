@@ -7,9 +7,9 @@
 #include "../basic/PackedLocations.h"
 
 template<typename _pos>
-struct sorted_list
+class sorted_list
 {
-
+	public:
 	typedef sorted_list<typename packed_sequence_location<_pos>::type> Type;
 
 	struct entry

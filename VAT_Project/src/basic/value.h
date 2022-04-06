@@ -38,8 +38,9 @@ int query_len_factor()
 { return VATParameters::command == VATParameters::blastx ? 3 : 1; }
 
 template<typename _val>
-struct AlphabetMap
+class AlphabetMap
 {
+	public:
 	AlphabetMap(unsigned size, const char *chars, char mask, const char *mask_chars)
 	{
 		memset(data_, invalid, sizeof(data_));

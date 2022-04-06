@@ -90,9 +90,9 @@ size_t hst_size(const shape_histogram &hst, const seedp_range &range)
 	return s;
 }
 
-struct seed_histogram
+class seed_histogram
 {
-
+	public:
 	seed_histogram()
 	{ }
 

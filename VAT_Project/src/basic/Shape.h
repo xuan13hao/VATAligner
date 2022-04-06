@@ -22,6 +22,7 @@ const double background_freq[] = {-1.188861,
 		-3.027002,
 		-1.557546 };
 
+
 template<typename _val>
 bool use_seed_freq()
 { return false; }
@@ -35,9 +36,9 @@ bool use_seed_freq<DNA>()
 { return true; }
 
 
-struct shape
+class shape
 {
-
+	public:
 	shape():
 		length_ (0),
 		weight_ (0),

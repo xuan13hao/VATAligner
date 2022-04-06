@@ -7,9 +7,9 @@ class AlphatProtein { };
 class AlphatDNA { };
 
 template<typename _tag>
-struct AlphabetType
+class AlphabetType
 {
-
+	public:
 	AlphabetType():
 		value_ ()
 	{ }

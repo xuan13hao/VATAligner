@@ -19,9 +19,9 @@ void array_clear(score_vector<_score> *v, unsigned n)
 }
 
 template<typename _score>
-struct DP_matrix
+class DP_matrix
 {
-
+	public:
 	typedef score_vector<_score> sv;
 
 	struct Column_iterator

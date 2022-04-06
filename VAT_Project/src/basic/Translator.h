@@ -3,7 +3,7 @@
 #ifndef TRANSLATE_H_
 #define TRANSLATE_H_
 
-struct Translator
+class Translator
 {
 
 public:

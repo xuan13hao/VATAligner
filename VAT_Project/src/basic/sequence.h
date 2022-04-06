@@ -8,8 +8,9 @@
 #include "../util/text_buffer.h"
 
 template<typename _val>
-struct sequence
+class sequence
 {
+	public:
 	sequence():
 		len_ (0),
 		clipping_offset_ (0),

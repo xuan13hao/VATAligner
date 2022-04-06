@@ -12,9 +12,9 @@ using std::endl;
 using std::pair;
 
 template<typename _val>
-struct SequenceSet : public AlphabetSet<_val>
+class SequenceSet : public AlphabetSet<_val>
 {
-
+	public:
 	SequenceSet()
 	{ }
 

@@ -2,9 +2,9 @@
 #ifndef CONST_H_
 #define CONST_H_
 
-struct VATConsts
+class VATConsts
 {
-
+	public:
 	enum {
 		build_version = 59,
 		build_compatibility = 52,

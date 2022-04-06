@@ -4,9 +4,9 @@
 
 typedef uint64_t stat_type;
 
-struct Statistics
+class Statistics
 {
-
+	public:
 	enum value { SEED_HITS, TENTATIVE_MATCHES0, TENTATIVE_MATCHES1, TENTATIVE_MATCHES2, TENTATIVE_MATCHES3, MATCHES, ALIGNED, GAPPED, DUPLICATES,
 		GAPPED_HITS, QUERY_SEEDS, QUERY_SEEDS_HIT, REF_SEEDS, REF_SEEDS_HIT, QUERY_SIZE, REF_SIZE, OUT_HITS, OUT_MATCHES, COLLISION_LOOKUPS, QCOV, BIAS_ERRORS, SCORE_TOTAL, ALIGNED_QLEN, COUNT };
 
@@ -29,15 +29,15 @@ struct Statistics
 
 	void print() const
 	{
-		log_stream << "Used ref size = " << data_[REF_SIZE] << endl;
-		log_stream << "Traceback errors = " << data_[BIAS_ERRORS] << endl;
-		log_stream << "Seed hits = " << data_[SEED_HITS] << endl;
-		log_stream << "Tentative hits (stage 1) = " << data_[TENTATIVE_MATCHES1] << endl;
-		log_stream << "Tentative hits (stage 2) = " << data_[TENTATIVE_MATCHES2] << endl;
-		log_stream << "Tentative hits (stage 3) = " << data_[TENTATIVE_MATCHES3] << endl;
-		log_stream << "Gapped hits = " << data_[GAPPED_HITS] << endl;
-		log_stream << "Overlap hits = " << data_[DUPLICATES] << endl;
-		log_stream << "Net hits = " << data_[OUT_HITS] << endl;
+		// log_stream << "Used ref size = " << data_[REF_SIZE] << endl;
+		// log_stream << "Traceback errors = " << data_[BIAS_ERRORS] << endl;
+		// log_stream << "Seed hits = " << data_[SEED_HITS] << endl;
+		// log_stream << "Tentative hits (stage 1) = " << data_[TENTATIVE_MATCHES1] << endl;
+		// log_stream << "Tentative hits (stage 2) = " << data_[TENTATIVE_MATCHES2] << endl;
+		// log_stream << "Tentative hits (stage 3) = " << data_[TENTATIVE_MATCHES3] << endl;
+		// log_stream << "Gapped hits = " << data_[GAPPED_HITS] << endl;
+		// log_stream << "Overlap hits = " << data_[DUPLICATES] << endl;
+		// log_stream << "Net hits = " << data_[OUT_HITS] << endl;
 		cout << "Matches = " << data_[OUT_MATCHES] << endl;
 		cout << "Total score = " << data_[SCORE_TOTAL] << endl;
 		log_stream << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;

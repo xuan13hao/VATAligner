@@ -3,8 +3,9 @@
 #ifndef PACKED_LOC_H_
 #define PACKED_LOC_H_
 
-struct packed_uint40_t
+class packed_uint40_t
 {
+	public:
 	uint8_t		high;
 	uint32_t	low;
 	packed_uint40_t():

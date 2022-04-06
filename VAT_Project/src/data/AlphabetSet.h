@@ -8,9 +8,10 @@
 using std::vector;
 
 template<typename _t, char _pchar = 0xff, size_t _padding = 1>
-struct AlphabetSet
+class AlphabetSet
 {
 
+	public:
 	static const unsigned PERIMETER_PADDING = 256;
 	static const _t PADDING_CHAR;
 

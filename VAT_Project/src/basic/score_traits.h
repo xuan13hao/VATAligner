@@ -43,9 +43,11 @@ template<typename _val>
 const uint8_t* blast_alphabet()
 { return 0; }
 
-// template<>
-// const uint8_t* blast_alphabet<DNA>()
-// { return IUPACNA_TO_NCBI4NA; }
+template<>
+const uint8_t* blast_alphabet<DNA>()
+{ 
+	return IUPACNA_TO_NCBI4NA; 
+}
 
 template<>
 const uint8_t* blast_alphabet<Protein>()

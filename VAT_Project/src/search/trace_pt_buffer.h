@@ -21,8 +21,9 @@ struct Trace_pt_buffer : public Async_buffer<hit<_locr,_locl> >
 template<typename _locr, typename _locl> Trace_pt_buffer<_locr,_locl>* Trace_pt_buffer<_locr,_locl>::instance;
 
 template<typename _locr, typename _locl>
-struct Trace_pt_list : public vector<hit<_locr,_locl> >
+class Trace_pt_list : public vector<hit<_locr,_locl> >
 {
+	public:
 	void init()
 	{
 		pos_ = this->begin();

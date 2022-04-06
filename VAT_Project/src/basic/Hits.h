@@ -17,8 +17,9 @@ interval normalized_range(unsigned pos, int len, Strand strand)
 }
 
 template<typename _locr, typename _locl>
-struct hit
+class hit
 {
+	public:
 	typedef typename packed_sequence_location<_locr>::type packed_loc;
 
 	unsigned	query_;
