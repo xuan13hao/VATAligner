@@ -17,7 +17,7 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
-		st += score_matrix::get().letter_score(*q, mask_critical(*s));
+		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		--q;
 		--s;
@@ -34,7 +34,7 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
-		st += score_matrix::get().letter_score(*q, mask_critical(*s));
+		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		++q;
 		++s;
@@ -42,7 +42,7 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 	}
 
 	for(unsigned i=0;i<seed_len;++i)
-		score += score_matrix::get().letter_score(query[i], mask_critical(subject[i]));
+		score += ScoreMatrix::get().letter_score(query[i], mask_critical(subject[i]));
 
 	len = delta + n + seed_len;
 	return score;

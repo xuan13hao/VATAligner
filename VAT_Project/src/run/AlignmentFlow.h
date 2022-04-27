@@ -22,7 +22,7 @@ using boost::ptr_vector;
 template<typename _val, typename _locr, typename _locq, typename _locl>
 struct Search_context
 {
-	Search_context(unsigned sid, const typename sorted_list<_locr>::Type &ref_idx, const typename sorted_list<_locq>::Type &query_idx):
+	Search_context(unsigned sid, const typename SortedList<_locr>::Type &ref_idx, const typename SortedList<_locq>::Type &query_idx):
 		sid (sid),
 		ref_idx (ref_idx),
 		query_idx (query_idx)
@@ -39,8 +39,8 @@ struct Search_context
 		statistics += stat;
 	}
 	const unsigned sid;
-	const typename sorted_list<_locr>::Type &ref_idx;
-	const typename sorted_list<_locq>::Type &query_idx;
+	const typename SortedList<_locr>::Type &ref_idx;
+	const typename SortedList<_locq>::Type &query_idx;
 };
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
@@ -59,7 +59,7 @@ void process_shape(unsigned sid,
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
 		task_timer timer ("Building reference index", true);
-		typename sorted_list<_locr>::Type ref_idx (ref_buffer,
+		typename SortedList<_locr>::Type ref_idx (ref_buffer,
 				*ref_seqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				ref_hst.get(VATParameters::index_mode, sid),
@@ -68,7 +68,7 @@ void process_shape(unsigned sid,
 
 		timer.go("Building query index");
 		timer_mapping.resume();
-		typename sorted_list<_locq>::Type query_idx (query_buffer,
+		typename SortedList<_locq>::Type query_idx (query_buffer,
 				*query_seqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				query_hst->get(VATParameters::index_mode, sid),
@@ -91,7 +91,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		unsigned query_chunk,
 		pair<size_t,size_t> query_len_bounds,
 		char *query_buffer,
-		DAA_output &master_out,
+		VATOutput &master_out,
 		vector<Temp_file> &tmp_file)
 {
 	task_timer timer ("Loading reference sequences", true);
@@ -103,7 +103,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 
 	ref_map.init(ref_seqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
-	char *ref_buffer = sorted_list<_locr>::Type::alloc_buffer(ref_hst);
+	char *ref_buffer = SortedList<_locr>::Type::alloc_buffer(ref_hst);
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
@@ -153,10 +153,10 @@ void run_query_chunk(Database_file<_val> &db_file,
 		cpu_timer &total_timer,
 		unsigned query_chunk,
 		pair<size_t,size_t> query_len_bounds,
-		DAA_output &master_out)
+		VATOutput &master_out)
 {
 	task_timer timer ("Allocating buffers", true);
-	char *query_buffer = sorted_list<_locq>::Type::alloc_buffer(*query_hst);
+	char *query_buffer = SortedList<_locq>::Type::alloc_buffer(*query_hst);
 	vector<Temp_file> tmp_file;
 	timer.finish();
 	db_file.rewind();
@@ -191,7 +191,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
-	DAA_output master_out;
+	VATOutput master_out;
 	timer_mapping.stop();
 	timer.finish();
 	
@@ -220,7 +220,7 @@ void master_thread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_t
 		// }
 
 		timer.go("Building query histograms");
-		query_hst = auto_ptr<seed_histogram> (new seed_histogram (*query_seqs<_val>::data_, _val()));
+		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*query_seqs<_val>::data_, _val()));
 		const pair<size_t,size_t> query_len_bounds = query_seqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();

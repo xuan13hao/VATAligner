@@ -12,10 +12,10 @@ using std::vector;
 using boost::thread_specific_ptr;
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-struct hit_filter
+class HitFilter
 {
-
-	hit_filter(Statistics &stats,
+public:
+	HitFilter(Statistics &stats,
 			   _locq q_pos,
 			   typename Trace_pt_buffer<_locr,_locl>::Iterator &out):
 		q_num_ (std::numeric_limits<unsigned>::max()),

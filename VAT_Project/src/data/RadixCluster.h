@@ -7,10 +7,10 @@
 #include "../basic/PackedLocations.h"
 
 template<typename _pos>
-class sorted_list
+class SortedList
 {
 	public:
-	typedef sorted_list<typename packed_sequence_location<_pos>::type> Type;
+	typedef SortedList<typename packed_sequence_location<_pos>::type> Type;
 
 	struct entry
 	{
@@ -28,11 +28,11 @@ class sorted_list
 		_pos		value;
 	} __attribute__((packed));
 
-	static char* alloc_buffer(const seed_histogram &hst)
+	static char* alloc_buffer(const SeedHistogram &hst)
 	{ return new char[sizeof(entry) * hst.max_chunk_size()]; }
 
 	template<typename _val>
-	sorted_list(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const shape_histogram &hst, const seedp_range &range):
+	SortedList(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const shape_histogram &hst, const seedp_range &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<entry*>(buffer))
 	{
@@ -191,12 +191,12 @@ private:
 
 	struct Sort_context
 	{
-		Sort_context(sorted_list &sl):
+		Sort_context(SortedList &sl):
 			sl (sl)
 		{ }
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{ std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); }
-		sorted_list &sl;
+		SortedList &sl;
 	};
 
 	struct Limits : vector<size_t>

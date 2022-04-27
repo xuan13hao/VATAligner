@@ -4,13 +4,14 @@
 
 #include "../basic/Hits.h"
 #include "../align/match_func.h"
-#include "../output/daa_file.h"
-#include "../output/daa_record.h"
+#include "../output/VATFile.h"
+#include "../output/VATRecord.h"
 
 template<typename _val>
-struct Output_format
+class Output_format
 {
-	virtual void print_match(const DAA_match_record<_val> &r, Text_buffer &out) const = 0;
+	public:
+	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const = 0;
 	virtual void print_header(Output_stream &f) const
 	{ }
 	virtual ~Output_format()
@@ -18,16 +19,16 @@ struct Output_format
 };
 
 template<typename _val>
-struct Blast_tab_format : public Output_format<_val>
+class Blast_tab_format : public Output_format<_val>
 {
-
+	public:
 	Blast_tab_format()
 	{ }
 
-	virtual void print_match(const DAA_match_record<_val> &r, Text_buffer &out) const
+	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
-		cout<<"evalue = "<<score_matrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
-		cout<<"bitscore = "<<score_matrix::get().bitscore(r.score) <<endl;
+		cout<<"evalue = "<<ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
+		cout<<"bitscore = "<<ScoreMatrix::get().bitscore(r.score) <<endl;
 		out << r.query_name() << '\t'
 				<< r.subject_name << '\t'
 				<< (double)r.identities*100/r.len << '\t'
@@ -38,8 +39,8 @@ struct Blast_tab_format : public Output_format<_val>
 				<< r.query_end()+1 << '\t'
 				<< r.subject_begin+1 << '\t'
 				<< r.subject_begin+r.subject_len << '\t';
-		out.print_e(score_matrix::get().evalue(r.score, r.db_letters(), r.query().size()));
-		out << '\t' << score_matrix::get().bitscore(r.score) << '\n';
+		out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+		out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
 	}
 
 	virtual ~Blast_tab_format()
@@ -62,13 +63,13 @@ struct Blast_tab_format : public Output_format<_val>
 };
 
 template<typename _val>
-struct Sam_format : public Output_format<_val>
+class Sam_format : public Output_format<_val>
 {
-
+	public:
 	Sam_format()
 	{ }
 
-	virtual void print_match(const DAA_match_record<_val> &r, Text_buffer &out) const
+	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
 		out << r.query_name() << '\t'
 				<< '0' << '\t'
@@ -84,12 +85,12 @@ struct Sam_format : public Output_format<_val>
 				<< '0' << '\t'
 				<< sequence<const _val> (&r.query()[r.translated_query_begin], r.translated_query_len) << '\t'
 				<< '*' << '\t'
-				<< "AS:i:" << (uint32_t)score_matrix::get().bitscore(r.score) << '\t'
+				<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
 				<< "NM:i:" << r.len - r.identities << '\t'
 				<< "ZL:i:" << r.total_subject_len << '\t'
 				<< "ZR:i:" << r.score << '\t'
 				<< "ZE:f:";
-		out.print_e(score_matrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+		out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
 		out << '\t'
 				<< "ZI:i:" << r.identities*100/r.len << '\t'
 				<< "ZF:i:" << blast_frame(r.frame) << '\t'
@@ -100,7 +101,7 @@ struct Sam_format : public Output_format<_val>
 		out << '\n';
 	}
 
-	void print_md(const DAA_match_record<_val> &r, Text_buffer &buf) const
+	void print_md(const VATMatchRecord<_val> &r, Text_buffer &buf) const
 	{
 		unsigned matches = 0, del = 0;
 		for(Packed_transcript::Const_iterator<_val> i = r.transcript.template begin<_val>(); i.good(); ++i) {
@@ -136,7 +137,7 @@ struct Sam_format : public Output_format<_val>
 			buf << matches;
 	}
 
-	void print_cigar(const DAA_match_record<_val> &r, Text_buffer &buf) const
+	void print_cigar(const VATMatchRecord<_val> &r, Text_buffer &buf) const
 	{
 		static const unsigned map[] = { 0, 1, 2, 0 };
 		static const char letter[] = { 'M', 'I', 'D' };

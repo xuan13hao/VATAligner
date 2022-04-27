@@ -4,8 +4,9 @@
 
 const unsigned view_buf_size = 32;
 
-struct View_writer
+class View_writer
 {
+	public:
 	View_writer():
 		f_ (VATParameters::output_file + (VATParameters::compression==1?".gz":""),
 				VATParameters::compression==1,
@@ -21,7 +22,7 @@ struct View_writer
 
 struct View_fetcher
 {
-	View_fetcher(DAA_file &daa):
+	View_fetcher(VATFile &daa):
 		daa (daa)
 	{ }
 	bool operator()()
@@ -36,13 +37,14 @@ struct View_fetcher
 	}
 	Binary_buffer buf[view_buf_size];
 	unsigned n;
-	DAA_file &daa;
+	VATFile &daa;
 };
 
 template<typename _val>
-struct View_context
+class View_context
 {
-	View_context(DAA_file &daa, View_writer &writer, const Output_format<_val> &format):
+	public:
+	View_context(VATFile &daa, View_writer &writer, const Output_format<_val> &format):
 		daa (daa),
 		writer (writer),
 		queue (3*VATParameters::threads(), writer),
@@ -60,8 +62,8 @@ struct View_context
 			while(!exception_state() && queue.get(n, buffer, query_buf)) {
 
 				for(unsigned j=0;j<query_buf.n;++j) {
-					DAA_query_record<_val> r (daa, query_buf.buf[j]);
-					for(typename DAA_query_record<_val>::Match_iterator i = r.begin(); i.good(); ++i) {
+					VATQueryRecord<_val> r (daa, query_buf.buf[j]);
+					for(typename VATQueryRecord<_val>::Match_iterator i = r.begin(); i.good(); ++i) {
 						if(i->frame > 2 && VATParameters::forwardonly)
 							continue;
 						format.print_match(*i, *buffer);
@@ -76,18 +78,18 @@ struct View_context
 			queue.wake_all();
 		}
 	}
-	DAA_file &daa;
+	VATFile &daa;
 	View_writer &writer;
 	Task_queue<Text_buffer,View_writer> queue;
 	const Output_format<_val> &format;
 };
 
 template<typename _val>
-void view(DAA_file &daa)
+void view(VATFile &daa)
 {
 
 	// cout<<""<<daa.score_matrix()<<" " <<daa.gap_open_penalty()<<" "<<daa.gap_extension_penalty()<<" "<<daa.match_reward()<<" "<<daa.mismatch_penalty()<<endl;
-	score_matrix::instance = auto_ptr<score_matrix> (new score_matrix(daa.score_matrix(),
+	ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(daa.score_matrix(),
 					daa.gap_open_penalty(),
 					daa.gap_extension_penalty(),
 					daa.match_reward(),
@@ -113,7 +115,7 @@ void view(DAA_file &daa)
 
 void view()
 {
-	DAA_file daa (VATParameters::daa_file);
+	VATFile daa (VATParameters::daa_file);
 	if(daa.mode() == blastn)
 		view<DNA>(daa);
 	else

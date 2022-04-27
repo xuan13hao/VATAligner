@@ -59,26 +59,26 @@ void setup(const string &command, int ac, const char **av)
 			po::gap_open = 11;
 		if(po::gap_extend == -1)
 			po::gap_extend = 1;
-		score_matrix::instance = auto_ptr<score_matrix> (new score_matrix(po::matrix,
+		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
 				po::penalty,
 				Protein ()));
-		score_matrix::get().print<Protein>();
+		ScoreMatrix::get().print<Protein>();
 	} 
 	else {
 		if(po::gap_open == -1)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
 			po::gap_extend = 2;
-		score_matrix::instance = auto_ptr<score_matrix> (new score_matrix(po::matrix,
+		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
 				po::penalty,
 				DNA ()));
-		score_matrix::get().print<DNA>();
+		ScoreMatrix::get().print<DNA>();
 
 	}
 	
@@ -109,14 +109,14 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 		po::set_option(po::hit_cap, 32u);
 	}
 
-	const double b = po::min_bit_score == 0 ? score_matrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
+	const double b = po::min_bit_score == 0 ? ScoreMatrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
 
 	po::set_option(po::min_identities, 18u);
-	po::min_ungapped_raw_score = score_matrix::get().rawscore(std::min(po::min_ungapped_raw_score == 0 ? 19.0 : po::min_ungapped_raw_score, b));
+	po::min_ungapped_raw_score = ScoreMatrix::get().rawscore(std::min(po::min_ungapped_raw_score == 0 ? 19.0 : po::min_ungapped_raw_score, b));
 
 	po::set_option(po::window, 40u);
 	po::set_option(po::hit_band, 5);
-	po::min_hit_score = score_matrix::get().rawscore(std::min(po::min_hit_score == 0 ? 19.0 : po::min_hit_score, b));
+	po::min_hit_score = ScoreMatrix::get().rawscore(std::min(po::min_hit_score == 0 ? 19.0 : po::min_hit_score, b));
 
 	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
 	log_stream << "Minimum bit score = " << b << endl;
@@ -133,14 +133,14 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		po::set_option(po::hit_cap, std::max(128u, (unsigned)(chunk_db_letters/17470874)));
 	}
 
-	const double b = po::min_bit_score == 0 ? score_matrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
+	const double b = po::min_bit_score == 0 ? ScoreMatrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
 
 	if(query_len_bounds.second <= 40) {
 		po::set_option(po::min_identities, 10u);
-		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(27.0, b)));
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(27.0, b)));
 	} else {
 		po::set_option(po::min_identities, 9u);
-		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(23.0, b)));
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(23.0, b)));
 	}
 
 	if(query_len_bounds.second <= 80) {
@@ -149,13 +149,13 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		po::set_option(po::hit_band, band);
 		// cout<<"rawscore = "<<score_matrix::get().rawscore(b)<<endl;
 		// po::set_option(po::min_hit_score, 11);
-		po::set_option(po::min_hit_score, score_matrix::get().rawscore(b));
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(b));
 	} else {
 		po::set_option(po::window, 40u);
 		po::set_option(po::hit_band, 5);
 		// cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
 		// po::set_option(po::min_hit_score, 11);
-		po::set_option(po::min_hit_score, score_matrix::get().rawscore(std::min(29.0, b)));
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
 	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
 	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
@@ -172,25 +172,25 @@ void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t c
 		po::set_option(po::hit_cap, std::max(128u, (unsigned)(chunk_db_letters/17470874)));
 	}
 
-	const double b = po::min_bit_score == 0 ? score_matrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
+	const double b = po::min_bit_score == 0 ? ScoreMatrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
 
 	if(query_len_bounds.second <= 40) {
 		po::set_option(po::min_identities, 10u);
-		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(27.0, b)));
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(27.0, b)));
 	} else {
 		po::set_option(po::min_identities, 9u);
-		po::set_option(po::min_ungapped_raw_score, score_matrix::get().rawscore(std::min(23.0, b)));
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(23.0, b)));
 	}
 
 	if(query_len_bounds.second <= 80) {
 		const int band = po::read_padding<Protein>(query_len_bounds.second);
 		po::set_option(po::window, (unsigned)(query_len_bounds.second + band));
 		po::set_option(po::hit_band, band);
-		po::set_option(po::min_hit_score, score_matrix::get().rawscore(b));
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(b));
 	} else {
 		po::set_option(po::window, 40u);
 		po::set_option(po::hit_band, 5);
-		po::set_option(po::min_hit_score, score_matrix::get().rawscore(std::min(29.0, b)));
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
 	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
 	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;

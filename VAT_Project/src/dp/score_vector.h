@@ -75,7 +75,7 @@ class score_vector<uint8_t>
 
 	void set_generic(unsigned a, const __m128i &seq)
 	{
-		const uint8_t* row (&score_matrix::get().matrix8u()[a<<5]);
+		const uint8_t* row (&ScoreMatrix::get().matrix8u()[a<<5]);
 		const uint8_t* seq_ptr (reinterpret_cast<const uint8_t*>(&seq));
 		uint8_t* dest (reinterpret_cast<uint8_t*>(&data_));
 		for(unsigned i=0;i<16;i++)

@@ -11,7 +11,7 @@ using std::cout;
 using std::vector;
 
 template<typename _val>
-void join_blocks(unsigned ref_blocks, DAA_output &master_out, const vector<Temp_file> &tmp_file)
+void join_blocks(unsigned ref_blocks, VATOutput &master_out, const vector<Temp_file> &tmp_file)
 {
 	vector<Block_output*> files;
 	vector<Block_output::Iterator> records;
@@ -45,7 +45,7 @@ void join_blocks(unsigned ref_blocks, DAA_output &master_out, const vector<Temp_
 		const bool same_subject = n_target_seq > 0 && b == block && next.info_.subject_id == subject;
 		if(VATParameters::output_range(n_target_seq, next.info_.score, top_score) || same_subject) {
 			// printf("q=%u s=%u n=%u ss=%u\n",query, next.info_.subject_id, n_target_seq, same_subject, next.info_.score);
-			DAA_output::write_record(buf, next.info_);
+			VATOutput::write_record(buf, next.info_);
 			statistics.inc(Statistics::MATCHES);
 			if(!same_subject) {
 				block = b;

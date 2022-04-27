@@ -5,7 +5,7 @@
 
 #include "../data/Reference.h"
 #include "../basic/statistics.h"
-#include "../basic/score_matrix.h"
+#include "../basic/ScoreMatrix.h"
 #include "../basic/ShapeParameter.h"
 #include "../search/sse_dist.h"
 #include "../search/collision.h"
@@ -18,7 +18,7 @@ void align(const _locq q_pos,
 	  _locr s,
 	  Statistics &stats,
 	  const unsigned sid,
-	  hit_filter<_val,_locr,_locq,_locl> &hf)
+	  HitFilter<_val,_locr,_locq,_locl> &hf)
 {
 	stats.inc(Statistics::TENTATIVE_MATCHES0);
 	const _val* subject = ref_seqs<_val>::data_->data(s);

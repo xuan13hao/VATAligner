@@ -88,7 +88,7 @@ struct ref_ids
 
 AlphabetSet<char,0>* ref_ids::data_ = 0;
 
-seed_histogram ref_hst;
+SeedHistogram ref_hst;
 unsigned current_ref_block;
 
 size_t max_id_len(const AlphabetSet<char,0> &ids)
@@ -151,7 +151,7 @@ private:
 	vector<uint32_t> len_;
 	ptr_vector<string> name_;
 	uint32_t next_;
-	friend struct DAA_output;
+	friend struct VATOutput;
 } ref_map;
 
 #endif /* REFERENCE_H_ */

@@ -3,10 +3,11 @@
 #ifndef DAA_WRITE_H_
 #define DAA_WRITE_H_
 
-#include "daa_file.h"
+#include "VATFile.h"
 
-struct Intermediate_record
+class Intermediate_record
 {
+	public:
 	void read(Buffered_file &f)
 	{
 		f.read(query_id);
@@ -22,10 +23,10 @@ struct Intermediate_record
 	Packed_transcript transcript;
 };
 
-struct DAA_output
+class VATOutput
 {
-
-	DAA_output():
+	public:
+	VATOutput():
 		f_ (VATParameters::daa_file),
 		h2_ (ref_header.sequences,
 				VATParameters::db_size == 0 ? ref_header.letters : VATParameters::db_size,
@@ -33,16 +34,16 @@ struct DAA_output
 				VATParameters::gap_extend,
 				VATParameters::reward,
 				VATParameters::penalty,
-				score_matrix::get().k(),
-				score_matrix::get().lambda(),
+				ScoreMatrix::get().k(),
+				ScoreMatrix::get().lambda(),
 				VATParameters::matrix,
 				(Align_mode)VATParameters::command)
 	{
-		DAA_header1 h1;
+		VATHeaderOne h1;
 		f_.write(&h1, 1);
-		h2_.block_type[0] = DAA_header2::alignments;
-		h2_.block_type[1] = DAA_header2::ref_names;
-		h2_.block_type[2] = DAA_header2::ref_lengths;
+		h2_.block_type[0] = VATHeaderTwo::alignments;
+		h2_.block_type[1] = VATHeaderTwo::ref_names;
+		h2_.block_type[2] = VATHeaderTwo::ref_lengths;
 		f_.write(&h2_, 1);
 	}
 
@@ -92,7 +93,7 @@ struct DAA_output
 	{
 		uint32_t size = 0;
 		f_.write(&size, 1);
-		h2_.block_size[0] = f_.tell() - sizeof(DAA_header1) - sizeof(DAA_header2);
+		h2_.block_size[0] = f_.tell() - sizeof(VATHeaderOne) - sizeof(VATHeaderTwo);
 		h2_.db_seqs_used = ref_map.next_;
 		h2_.query_records = statistics.get(Statistics::ALIGNED);
 
@@ -106,7 +107,7 @@ struct DAA_output
 		f_.write(ref_map.len_, false);
 		h2_.block_size[2] = ref_map.len_.size() * sizeof(uint32_t);
 
-		f_.seek(sizeof(DAA_header1));
+		f_.seek(sizeof(VATHeaderOne));
 		f_.write(&h2_, 1);
 
 		f_.close();
@@ -118,7 +119,7 @@ struct DAA_output
 private:
 
 	Output_stream f_;
-	DAA_header2 h2_;
+	VATHeaderTwo h2_;
 
 };
 

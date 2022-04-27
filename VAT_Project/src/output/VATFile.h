@@ -5,9 +5,10 @@
 
 using std::string;
 
-struct DAA_header1
+class VATHeaderOne
 {
-	DAA_header1():
+	public:
+	VATHeaderOne():
 		magic_number (0x3c0e53476d3ee36bllu),
 		version (0)
 	{ }
@@ -16,11 +17,12 @@ struct DAA_header1
 
 typedef enum { blastp=2, blastx=3, blastn=4 } Align_mode;
 
-struct DAA_header2
+class VATHeaderTwo
 {
-	DAA_header2()
+	public:
+	VATHeaderTwo()
 	{ }
-	DAA_header2(uint64_t db_seqs,
+	VATHeaderTwo(uint64_t db_seqs,
 			uint64_t db_letters,
 			int32_t gap_open,
 			int32_t gap_extend,
@@ -30,7 +32,7 @@ struct DAA_header2
 			double lambda,
 			const string &score_matrix,
 			Align_mode mode):
-		diamond_build (VATConsts::build_version),
+		vat_build_ (VATConsts::build_version),
 		db_seqs (db_seqs),
 		db_seqs_used (0),
 		db_letters (db_letters),
@@ -54,7 +56,7 @@ struct DAA_header2
 		strcpy(this->score_matrix, score_matrix.c_str());
 	}
 	typedef enum { empty = 0, alignments = 1, ref_names = 2, ref_lengths = 3 } Block_type;
-	uint64_t diamond_build, db_seqs, db_seqs_used, db_letters, flags, query_records;
+	uint64_t vat_build_, db_seqs, db_seqs_used, db_letters, flags, query_records;
 	int32_t mode, gap_open, gap_extend, reward, penalty, reserved1, reserved2, reserved3;
 	double k, lambda, reserved4, reserved5;
 	char score_matrix[16];
@@ -62,14 +64,14 @@ struct DAA_header2
 	char block_type[256];
 };
 
-struct DAA_file
+class VATFile
 {
-
-	DAA_file(const string& file_name):
+public:
+	VATFile(const string& file_name):
 		f_ (file_name)
 	{
 		f_.read(&h1_, 1);
-		if(h1_.magic_number != DAA_header1().magic_number)
+		if(h1_.magic_number != VATHeaderOne().magic_number)
 			throw std::runtime_error("Input file is not a DAA file.");
 		if(h1_.version > VATConsts::daa_version)
 			throw std::runtime_error("DAA version requires later version of DIAMOND.");
@@ -78,7 +80,7 @@ struct DAA_file
 		if(h2_.block_size[0] == 0)
 			throw std::runtime_error("Invalid DAA file. DIAMOND run probably has not completed successfully.");
 
-		f_.seek(sizeof(DAA_header1) + sizeof(DAA_header2) + h2_.block_size[0]);
+		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo) + h2_.block_size[0]);
 		string s;
 		ref_name_.reserve(h2_.db_seqs_used);
 		for(uint64_t i=0;i<h2_.db_seqs_used;++i) {
@@ -88,13 +90,13 @@ struct DAA_file
 		ref_len_.resize(h2_.db_seqs_used);
 		f_.read(ref_len_.data(), h2_.db_seqs_used);
 
-		f_.seek(sizeof(DAA_header1) + sizeof(DAA_header2));
+		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo));
 		cout << "DAA_file" << endl;
 
 	}
 
 	uint64_t diamond_build() const
-	{ return h2_.diamond_build; }
+	{ return h2_.vat_build_; }
 
 	uint64_t db_seqs() const
 	{ return h2_.db_seqs; }
@@ -146,8 +148,8 @@ struct DAA_file
 private:
 
 	Input_stream f_;
-	DAA_header1 h1_;
-	DAA_header2 h2_;
+	VATHeaderOne h1_;
+	VATHeaderTwo h2_;
 	ptr_vector<string> ref_name_;
 	vector<uint32_t> ref_len_;
 

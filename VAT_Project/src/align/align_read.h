@@ -67,8 +67,8 @@ void align_read(Output_buffer<_val> &buffer,
 	unsigned n_hsp = 0, n_target_seq = 0;
 	typename vector<Segment<_val> >::iterator it = matches->begin();
 	const int min_raw_score = 0;
-	// const int min_raw_score = score_matrix::get().rawscore(VATParameters::min_bit_score == 0
-	// 		? score_matrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+	// const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
+	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	const int top_score = matches->operator[](0).score_;
 
 

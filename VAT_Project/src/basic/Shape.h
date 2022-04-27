@@ -7,7 +7,7 @@
 #include "value.h"
 #include "SeedPartition.h"
 #include "../util/hash_function.h"
-#include "score_matrix.h"
+#include "ScoreMatrix.h"
 #include "ReducedAlpha.h"
 
 const double background_freq[] = {-1.188861,
@@ -82,9 +82,9 @@ class shape
 			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
-			unsigned r = Reduction<_val>::reduction(l);
+			unsigned r = ReducedAlpha<_val>::reduction(l);
 			f += background_freq[r];
-			s *= Reduction<_val>::reduction.size();
+			s *= ReducedAlpha<_val>::reduction.size();
 			s += uint64_t(r);
 		}
 		if(use_seed_freq<_val>() && f > VATParameters::max_seed_freq) return false;
@@ -103,7 +103,7 @@ class shape
 			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
-			unsigned r = Reduction<_val>::reduction(l);
+			unsigned r = ReducedAlpha<_val>::reduction(l);
 			f += background_freq[r];
 		}
 		return !use_seed_freq<_val>() || f <= VATParameters::max_seed_freq;
@@ -118,7 +118,7 @@ class shape
 			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
-			unsigned r = Reduction<_val>::reduction(l);
+			unsigned r = ReducedAlpha<_val>::reduction(l);
 			f += background_freq[r];
 		}
 		return !use_seed_freq<_val>() || f <= VATParameters::max_seed_freq;

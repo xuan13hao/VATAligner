@@ -52,7 +52,7 @@ void smith_waterman(const sequence<const _val> &query,
 
 	sv open_penalty (static_cast<char>(op));
 	sv extend_penalty (static_cast<char>(ep));
-	sv vbias (score_matrix::get().bias());
+	sv vbias (ScoreMatrix::get().bias());
 	sequence_stream dseq;
 	score_profile<_score> profile;
 

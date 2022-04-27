@@ -8,9 +8,9 @@
 
 using std::string;
 
-struct Block_output : public Buffered_file
+class Block_output : public Buffered_file
 {
-
+public:
 	struct Iterator
 	{
 		unsigned block_;

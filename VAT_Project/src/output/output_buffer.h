@@ -5,7 +5,7 @@
 
 #include "../util/text_buffer.h"
 #include "output_format.h"
-#include "daa_write.h"
+#include "VATWrite.h"
 
 unsigned get_length_flag(unsigned x)
 {
@@ -58,8 +58,9 @@ void write_intermediate_record(Text_buffer &buf,
 }
 
 template<typename _val>
-struct Output_buffer : public Text_buffer
+class Output_buffer : public Text_buffer
 {
+	public:
 	virtual void print_match(const Segment<_val> &match,
 		size_t query_source_len,
 		const sequence<const _val> &query,
@@ -67,18 +68,18 @@ struct Output_buffer : public Text_buffer
 		const vector<char> &transcript_buf)
 	{ 
 		// cout<<"print_match 1"<<endl;
-		DAA_output::write_record(*this, match, query_source_len, query, query_id, transcript_buf); 
+		VATOutput::write_record(*this, match, query_source_len, query, query_id, transcript_buf); 
 		// cout<<"print_match 2"<<endl;
 	}
 	virtual void write_query_record(unsigned query_id)
 	{
 		query_begin_ = this->size();
 		if(query_translated()){
-			DAA_output::write_query_record(*this, query_ids::get()[query_id], query_source_seqs::get()[query_id]);
+			VATOutput::write_query_record(*this, query_ids::get()[query_id], query_source_seqs::get()[query_id]);
 			// cout<<"write_query_record"<<endl;
 			}
 		else
-			DAA_output::write_query_record(*this, query_ids::get()[query_id], query_seqs<_val>::get()[query_id]);
+			VATOutput::write_query_record(*this, query_ids::get()[query_id], query_seqs<_val>::get()[query_id]);
 	}
 	virtual void finish_query_record()
 	{ *(uint32_t*)(this->data_+query_begin_) = this->size() - query_begin_ - sizeof(uint32_t); }
@@ -89,8 +90,9 @@ private:
 };
 
 template<typename _val>
-struct Temp_output_buffer : public Output_buffer<_val>
+class Temp_output_buffer : public Output_buffer<_val>
 {
+	public:
 	virtual void print_match(const Segment<_val> &match,
 				size_t query_source_len,
 				const sequence<const _val> &query,

@@ -8,7 +8,7 @@
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void align_range(_locq q_pos,
-				 const typename sorted_list<_locr>::Type::const_iterator &s,
+				 const typename SortedList<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
 				 unsigned sid)
@@ -16,7 +16,7 @@ void align_range(_locq q_pos,
 	unsigned i = 0, n=0;
 
 	const _val* query = query_seqs<_val>::data_->data(q_pos);
-	hit_filter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
+	HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
 
 	if(s.n <= VATParameters::hit_cap) {
 		stats.inc(Statistics::SEED_HITS, s.n);
@@ -42,8 +42,8 @@ void align_range(_locq q_pos,
 }
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void align_range(const typename sorted_list<_locq>::Type::const_iterator &q,
-				 const typename sorted_list<_locr>::Type::const_iterator &s,
+void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
+				 const typename SortedList<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
 				 const unsigned sid)
@@ -60,8 +60,8 @@ template<typename _val, typename _locr, typename _locq, typename _locl>
 void align_partition(unsigned hp,
 		Statistics &stats,
 		unsigned sid,
-		typename sorted_list<_locr>::Type::const_iterator i,
-		typename sorted_list<_locq>::Type::const_iterator j,
+		typename SortedList<_locr>::Type::const_iterator i,
+		typename SortedList<_locq>::Type::const_iterator j,
 		unsigned thread_id)
 {
 	//cout<<"align_partition 1"<<endl;

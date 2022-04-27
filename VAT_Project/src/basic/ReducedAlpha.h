@@ -8,10 +8,10 @@ using std::vector;
 #include "value.h"
 
 template<typename _val>
-class Reduction
+class ReducedAlpha
 {
 	public:
-    Reduction(const char *definition_string)
+    ReducedAlpha(const char *definition_string)
 	{
 		memset(map_, 0, sizeof(map_));
 		memset(map8_, 0, sizeof(map8_));
@@ -34,7 +34,7 @@ class Reduction
 	const char* map8() const
 	{ return map8_; }
 
-	static const Reduction reduction;
+	static const ReducedAlpha reduction;
 
 private:
 
@@ -44,8 +44,8 @@ private:
 
 };
 
-template<> const Reduction<Protein> Reduction<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
-template<> const Reduction<DNA> Reduction<DNA>::reduction ("A C G T");
+template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
+template<> const ReducedAlpha<DNA> ReducedAlpha<DNA>::reduction ("A C G T");
 
 
 #endif /* REDUCTION_H_ */

@@ -3,14 +3,14 @@
 #ifndef DAA_RECORD_H_
 #define DAA_RECORD_H_
 
-#include "daa_file.h"
+#include "VATFile.h"
 #include "../basic/PackedSequence.h"
 
 using std::string;
 using std::vector;
 
 template<typename _val>
-struct DAA_match_record;
+struct VATMatchRecord;
 
 template<typename _val>
 void translate_query(const vector<DNA>& query, vector<_val> *context)
@@ -26,31 +26,31 @@ void translate_query<Protein>(const vector<DNA>& query, vector<Protein> *context
 }
 
 template<typename _val>
-struct DAA_query_record
+class VATQueryRecord
 {
-
+public:
 	struct Match_iterator
 	{
-		Match_iterator(const DAA_query_record &parent, Binary_buffer::Iterator it):
+		Match_iterator(const VATQueryRecord &parent, Binary_buffer::Iterator it):
 			r_ (parent),
 			it_ (it),
 			good_ (true)
 		{ operator++(); }
-		const DAA_match_record<_val>& operator*() const
+		const VATMatchRecord<_val>& operator*() const
 		{ return r_; }
-		const DAA_match_record<_val>* operator->() const
+		const VATMatchRecord<_val>* operator->() const
 		{ return &r_; }
 		bool good() const
 		{ return good_; }
 		Match_iterator& operator++()
 		{ if(it_.good()) it_ >> r_; else good_ = false; return *this; }
 	private:
-		DAA_match_record<_val> r_;
+		VATMatchRecord<_val> r_;
 		Binary_buffer::Iterator it_;
 		bool good_;
 	};
 
-	DAA_query_record(const DAA_file& file, const Binary_buffer &buf):
+	VATQueryRecord(const VATFile& file, const Binary_buffer &buf):
 		file_ (file),
 		it_ (init(buf))
 	{ }
@@ -90,20 +90,20 @@ private:
 		return it;
 	}
 
-	const DAA_file& file_;
+	const VATFile& file_;
 	const Binary_buffer::Iterator it_;
 
-	friend struct DAA_match_record<_val>;
+	friend struct VATMatchRecord<_val>;
 
-	template<typename _val2> friend Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, DAA_match_record<_val2> &r);
+	template<typename _val2> friend Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<_val2> &r);
 
 };
 
 template<typename _val>
-struct DAA_match_record
+class VATMatchRecord
 {
-
-	DAA_match_record(const DAA_query_record<_val> &query_record):
+public:
+	VATMatchRecord(const VATQueryRecord<_val> &query_record):
 		parent_ (query_record)
 	{ }
 
@@ -175,14 +175,14 @@ private:
 		}
 	}
 
-	const DAA_query_record<_val> &parent_;
+	const VATQueryRecord<_val> &parent_;
 
-	template<typename _val2> friend Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, DAA_match_record<_val2> &r);
+	template<typename _val2> friend Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<_val2> &r);
 
 };
 
 template<typename _val>
-Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, DAA_match_record<_val> &r)
+Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<_val> &r)
 {
 	uint32_t subject_id;
 	it >> subject_id;

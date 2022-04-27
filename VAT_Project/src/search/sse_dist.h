@@ -60,7 +60,7 @@ __m128i reduce_seq_generic(const __m128i &seq)
 	_val* s = (_val*)&seq;
 	uint8_t* d = (uint8_t*)&r;
 	for(unsigned i=0;i<16;++i)
-		*(d++) = Reduction<_val>::reduction(*(s++));
+		*(d++) = ReducedAlpha<_val>::reduction(*(s++));
 	return r;
 }
 

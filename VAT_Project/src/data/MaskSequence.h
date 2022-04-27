@@ -17,7 +17,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 	{ }
 
 	template<typename _loc>
-	void build_masking(unsigned sid, const seedp_range &range, typename sorted_list<_loc>::Type &idx)
+	void build_masking(unsigned sid, const seedp_range &range, typename SortedList<_loc>::Type &idx)
 	{
 		task_timer timer ("Counting low complexity seeds", false);
 		vector<unsigned> counts (VATConsts::seedp);
@@ -61,14 +61,14 @@ private:
 	template<typename _loc>
 	struct Count_context
 	{
-		Count_context(const typename sorted_list<_loc>::Type &idx, vector<unsigned> &counts):
+		Count_context(const typename SortedList<_loc>::Type &idx, vector<unsigned> &counts):
 			idx (idx),
 			counts (counts)
 		{ }
 		void operator()(unsigned thread_id, unsigned seedp) const
 		{
 			unsigned n = 0;
-			typename sorted_list<_loc>::Type::const_iterator i = idx.get_partition_cbegin(seedp);
+			typename SortedList<_loc>::Type::const_iterator i = idx.get_partition_cbegin(seedp);
 			while(!i.at_end()) {
 				if(i.n > VATParameters::hit_cap)
 					++n;
@@ -76,14 +76,14 @@ private:
 			}
 			counts[seedp] = n;
 		}
-		const typename sorted_list<_loc>::Type &idx;
+		const typename SortedList<_loc>::Type &idx;
 		vector<unsigned> &counts;
 	};
 
 	template<typename _loc>
 	struct Build_context
 	{
-		Build_context(const typename sorted_list<_loc>::Type &idx, unsigned sid, vector<unsigned> &counts, Masked_sequence_set<_val> &seqs):
+		Build_context(const typename SortedList<_loc>::Type &idx, unsigned sid, vector<unsigned> &counts, Masked_sequence_set<_val> &seqs):
 			idx (idx),
 			sid (sid),
 			counts (counts),
@@ -92,7 +92,7 @@ private:
 		void operator()(unsigned thread_id, unsigned seedp)
 		{
 			unsigned n = 0;
-			typename sorted_list<_loc>::Type::iterator i = idx.get_partition_begin(seedp);
+			typename SortedList<_loc>::Type::iterator i = idx.get_partition_begin(seedp);
 			while(!i.at_end()) {
 				if(i.n > VATParameters::hit_cap)
 					n += seqs.mask_seed_pos<_loc>(i, sid, seedp);
@@ -100,14 +100,14 @@ private:
 			}
 			counts[seedp] = n;
 		}
-		const typename sorted_list<_loc>::Type &idx;
+		const typename SortedList<_loc>::Type &idx;
 		const unsigned sid;
 		vector<unsigned> &counts;
 		Masked_sequence_set<_val> &seqs;
 	};
 
 	template<typename _loc>
-	unsigned mask_seed_pos(typename sorted_list<_loc>::Type::iterator &i, unsigned sid, unsigned p)
+	unsigned mask_seed_pos(typename SortedList<_loc>::Type::iterator &i, unsigned sid, unsigned p)
 	{
 		const unsigned treshold (filter_treshold(i.n));
 		unsigned count (0), k (0);

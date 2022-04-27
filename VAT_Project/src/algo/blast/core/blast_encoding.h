@@ -94,8 +94,7 @@ NCBI_XBLAST_EXPORT extern const char NCBI4NA_TO_IUPACNA[];
 #define BLASTAA_SIZE 28     /**< Size of aminoacid alphabet */
 
 
-#define BLASTNA_SEQ_CODE 99 /**< Identifies the blastna alphabet, for use in 
-                                blast only. */
+#define BLASTNA_SEQ_CODE 99 /**< Identifies the blastna alphabet, for use in blast only. */
 #define BLASTAA_SEQ_CODE 11 /**< == Seq_code_ncbistdaa */
 #define NCBI4NA_SEQ_CODE 4  /**< == Seq_code_ncbi4na */	
 

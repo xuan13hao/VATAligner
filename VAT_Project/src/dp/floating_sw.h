@@ -27,11 +27,11 @@ local_match<_val> floating_sw_dir(const _val *query, const _val *subject, int ba
 			column_max = std::numeric_limits<_score>::min();
 		} else {
 			++i_max;
-			column_max += score_matrix::get().letter_score(mask_critical(*y), get_dir(x, i_max, _dir()));
+			column_max += ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, i_max, _dir()));
 		}
 
 		for(; it.valid() && get_dir(x, it.row(), _dir()) != AlphabetSet<_val>::PADDING_CHAR; ++it) {
-			const _score match_score = score_matrix::get().letter_score(mask_critical(*y), get_dir(x, it.row(), _dir()));
+			const _score match_score = ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, it.row(), _dir()));
 			const _score s = max(max(it.diag() + match_score, vgap), it.hgap_in());
 			if(s > column_max) {
 				column_max = s;
@@ -66,7 +66,7 @@ void floating_sw(const _val *query, local_match<_val> &segment, int band, _score
 		segment.query_begin_--;
 		segment.subject_begin_--;
 		const _val q = *query, s = mask_critical(*segment.subject_);
-		segment.score_ -= score_matrix::get().letter_score(q, s);
+		segment.score_ -= ScoreMatrix::get().letter_score(q, s);
 		if(q == s)
 			segment.identities_--;
 		else

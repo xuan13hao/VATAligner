@@ -90,14 +90,14 @@ size_t hst_size(const shape_histogram &hst, const seedp_range &range)
 	return s;
 }
 
-class seed_histogram
+class SeedHistogram
 {
 	public:
-	seed_histogram()
+	SeedHistogram()
 	{ }
 
 	template<typename _val>
-	seed_histogram(const SequenceSet<_val> &seqs, const _val&)
+	SeedHistogram(const SequenceSet<_val> &seqs, const _val&)
 	{
 		memset(data_, 0, sizeof(data_));
 		Build_context<_val> context (seqs, *this);
@@ -132,7 +132,7 @@ private:
 	template<typename _val>
 	struct Build_context
 	{
-		Build_context(const SequenceSet<_val> &seqs, seed_histogram &hst):
+		Build_context(const SequenceSet<_val> &seqs, SeedHistogram &hst):
 			seqs (seqs),
 			cfgs (shape_configs<_val>()),
 			seq_partition (seqs.partition()),
@@ -143,7 +143,7 @@ private:
 		const SequenceSet<_val> &seqs;
 		const vector<ShapeConfigures> cfgs;
 		const vector<size_t> seq_partition;
-		seed_histogram &hst;
+		SeedHistogram &hst;
 	};
 
 	template<typename _val>

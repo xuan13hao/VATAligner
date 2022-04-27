@@ -8,7 +8,7 @@
 #include "../basic/statistics.h"
 #include "SequenceSet.h"
 
-auto_ptr<seed_histogram> query_hst;
+auto_ptr<SeedHistogram> query_hst;
 unsigned current_query_chunk;
 
 struct query_source_seqs

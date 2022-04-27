@@ -10,6 +10,11 @@ template<>
 uint8_t blast_seq_code<Protein>()
 { return BLASTAA_SEQ_CODE; }
 
+
+template<>
+uint8_t blast_seq_code<DNA>()
+{ return BLASTNA_SEQ_CODE; }
+
 template<typename _val>
 int16_t blast_load_karlin_blk(Blast_KarlinBlk* kbp,
 		Blast_KarlinBlk* kbp_ungap,
@@ -21,7 +26,20 @@ int16_t blast_load_karlin_blk(Blast_KarlinBlk* kbp,
 { return 0; }
 
 
-
+template<>
+int16_t blast_load_karlin_blk<DNA>(Blast_KarlinBlk* kbp,
+		Blast_KarlinBlk* kbp_ungap,
+		int gap_open,
+		int gap_extend,
+		int reward,
+		int penalty,
+		const char *matrix)
+{
+	return Blast_KarlinBlkGappedCalc(kbp,
+			gap_open,
+			gap_extend,
+			0,0);
+}
 
 
 template<>
@@ -33,6 +51,7 @@ int16_t blast_load_karlin_blk<Protein>(Blast_KarlinBlk* kbp,
 		int penalty,
 		const char *matrix)
 {
+
 	return Blast_KarlinBlkGappedLoadFromTables(kbp,
 			gap_open,
 			gap_extend,
@@ -46,7 +65,7 @@ const uint8_t* blast_alphabet()
 template<>
 const uint8_t* blast_alphabet<DNA>()
 { 
-	return IUPACNA_TO_NCBI4NA; 
+	return IUPACNA_TO_BLASTNA; 
 }
 
 template<>

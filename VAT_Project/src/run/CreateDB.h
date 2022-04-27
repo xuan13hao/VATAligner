@@ -44,7 +44,7 @@ void make_db(_val)
 		ref_seqs<_val>::data_->print_stats();
 
 		timer.go("Building histograms");
-		seed_histogram *hst = new seed_histogram (*ref_seqs<_val>::data_, _val());
+		SeedHistogram *hst = new SeedHistogram (*ref_seqs<_val>::data_, _val());
 
 		timer.go("Saving to disk");
 		ref_seqs<_val>::data_->save(main);
