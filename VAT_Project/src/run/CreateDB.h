@@ -11,20 +11,17 @@
 #include "../util/seq_file_format.h"
 
 template<class _val>
-void make_db(_val)
+void CreateDB(_val)
 {
 	using std::cout;
 	using std::endl;
 
-	verbose_stream << "Database file = " << VATParameters::input_ref_file << endl;
-
+	cout << "Database File = " << VATParameters::input_ref_file << endl;
 	boost::timer::cpu_timer total;
 	task_timer timer ("Opening the database file", true);
 	Input_stream db_file (VATParameters::input_ref_file, true);
 	timer.finish();
-
 	ref_header.block_size = VATParameters::chunk_size;
-
 	size_t chunk = 0;
 	Output_stream main(VATParameters::database);
 	main.write(&ref_header, 1);
@@ -33,7 +30,6 @@ void make_db(_val)
 		timer.go("Loading sequences");
 		SequenceSet<DNA>* ss;
 		size_t n_seq = load_seqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ref_seqs<_val>::data_, ref_ids::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
-		log_stream << "load_seqs n=" << n_seq << endl;
 		if(n_seq == 0)
 			break;
 		ref_header.letters += ref_seqs<_val>::data_->letters();
@@ -60,14 +56,11 @@ void make_db(_val)
 
 	timer.finish();
 	ref_header.n_blocks = chunk;
-	log_stream << "db seek" << endl;
 	main.seekp(0);
-	log_stream << "db write" << endl;
 	main.write(&ref_header, 1);
-	log_stream << "db close" << endl;
 	main.close();
 
-	verbose_stream << "Total time = " << boost::timer::format(total.elapsed(), 1, "%ws\n");
+	cout << "Total time = " << boost::timer::format(total.elapsed(), 1, "%ws\n");
 }
 
 #endif /* MAKE_DB_H_ */

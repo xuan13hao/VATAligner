@@ -6,8 +6,7 @@
 #include "basic/VATParameters.h"
 #include "util/log_stream.h"
 #include "data/Reference.h"
-#include "run/CreateDB.h"
-#include "run/AlignmentFlow.h"
+#include "run/RunModel.h"
 #include "util/complexity_filter.h"
 #include "basic/ContextSet.h"
 #include "output/view.h"
@@ -31,7 +30,7 @@ int main(int ac, const char* av[])
             ("help,h", "produce help message")
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(0), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
-            ("daa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (DAA) file")
+            ("daa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (VAT) file")
             ("verbose,v", "enable verbose out")
             ("log", "enable debug log");
 
@@ -97,11 +96,6 @@ int main(int ac, const char* av[])
         po::options_description hidden("Hidden options");
         hidden.add_options()
         	("command", po::value<string>(&command))
-#ifdef EXTRA
-        	("match1", po::value<string>(&program_options::match_file1))
-        	("match2", po::value<string>(&program_options::match_file2))
-        	("tab", "tabular format")
-#endif
         	;
 
         po::options_description cmd_line_options("Command line options");
@@ -132,61 +126,37 @@ int main(int ac, const char* av[])
 
         if (vm.count("help")) {
         	cout << endl << "Syntax:" << endl;
-        	cout << "  diamond COMMAND [OPTIONS]" << endl << endl;
+        	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
-        	cout << "  makedb\tBuild diamond database from a FASTA file" << endl;
-        	cout << "  blastp\tAlign amino acid query sequences against a protein reference database" << endl;
-        	cout << "  blastx\tAlign DNA query sequences against a protein reference database" << endl;
-        	cout << "  view\tView DIAMOND alignment archive (DAA) formatted file" << endl;
+        	cout << "  makedb\tBuild VAT database from a FASTA file" << endl;
+        	cout << "  protein\tAlign amino acid query sequences against a protein reference database" << endl;
+        	cout << "  nucl\tAlign DNA query sequences against a DNA reference database" << endl;
+        	cout << "  view\tView VAT alignment archive (VAT) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
         } else if (VATParameters::command == VATParameters::makedb && vm.count("in") && vm.count("db")) 
 		{
         	if(vm.count("block-size") == 0)
         		VATParameters::chunk_size = 2;
-        		// make_db(Amino_acid());
-				make_db(DNA());
-				// make_db(Protein());
+			//create db here
 
-
-        } else if ((VATParameters::command == VATParameters::blastp
+        } else if ((VATParameters::command == VATParameters::protein
         		|| VATParameters::command == VATParameters::blastx
-				|| VATParameters::command == VATParameters::blastn
-#ifdef EXTRA
-        		|| program_options::command == program_options::blastn
-#endif
-        		)
+				|| VATParameters::command == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("daa")) 
 		{
         	if(vm.count("block-size") > 0) {
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
         		VATParameters::chunk_size = 0;
-        	if(VATParameters::command == VATParameters::blastn)
-				//cout<<"cmd = "<<VATParameters::command <<endl;
-				// master_thread<Protein>();
-        		master_thread<DNA>();
-        	// else if(program_options::command == program_options::blastp)
-        	// 	master_thread<Protein>();
+        	if(VATParameters::command == VATParameters::dna)
+				//dna alignment
+				cout<<"testing"<<endl;
+
         } else if(VATParameters::command == VATParameters::view && vm.count("daa") > 0)
         	view();
-		#ifdef EXTRA
-        else if (command == "stat" && vm.count("match1"))
-        	if(program_options::db_type == "nucl")
-        		blast_stat<Nucleotide>(vm.count("tab") > 0);
-        	else
-        		blast_stat<Amino_acid>(vm.count("tab") > 0);
-        //else if (command == "comp" && vm.count("query") && vm.count("match1") && vm.count("match2"))
-        	//compare();
-        //else if (command == "random" && vm.count("query") && vm.count("out"))
-        	//random_seq();
-		#endif
-		#ifdef EXTRA
-        else if (command == "test")
-        	test_io();
-		#endif
         else
-        	cout << "Insufficient arguments. Use diamond -h for help.\n";
+        	cout << "Insufficient arguments. Use VAT -h for help.\n";
 	}
 	catch(std::bad_alloc &e) {
 		cerr << "Failed to allocate sufficient memory. Please refer to the readme for instructions on memory usage." << endl;

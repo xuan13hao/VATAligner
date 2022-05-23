@@ -45,10 +45,10 @@ void setup(const string &command, int ac, const char **av)
 		po::command = po::makedb;
 	else if(command == "blastx")
 		po::command = po::blastx;
-	else if(command == "blastp")
-		po::command = po::blastp;
-	else if(command == "blastn")
-		po::command = po::blastn;
+	else if(command == "protein")
+		po::command = po::protein;
+	else if(command == "dna")
+		po::command = po::dna;
 	else if(command == "view")
 		po::command = po::view;
 	else

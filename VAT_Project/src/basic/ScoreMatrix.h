@@ -96,34 +96,34 @@ class Blastscoreblk
 	//lamda = 0.267
 	double lambda() const
 	{ 
-		// double lamda = 0.267;
-		// return lamda;
-		cout<<"lamda = "<<data_->kbp_gap_std[0]->Lambda<<endl;
-		return data_->kbp_gap_std[0]->Lambda; 
+		double lamda = 0.267;
+		return lamda;
+		// cout<<"lamda = "<<data_->kbp_gap_std[0]->Lambda<<endl;
+		// return data_->kbp_gap_std[0]->Lambda; 
 	}
 	//k = 0.041
 	double k() const
 	{ 
-		// double k = 0.041;
-		// return k;
-		cout<<"k = "<<data_->kbp_gap_std[0]->K<<endl;
-		return data_->kbp_gap_std[0]->K; 
+		double k = 0.041;
+		return k;
+		// cout<<"k = "<<data_->kbp_gap_std[0]->K<<endl;
+		// return data_->kbp_gap_std[0]->K; 
 	}
 	//lnk = -3.19
 	double ln_k() const
 	{ 
-		// double lnk = -3.19;
-		// return lnk;
-		cout<<"ln k = "<<data_->kbp_gap_std[0]->logK<<endl;
-		return data_->kbp_gap_std[0]->logK; 
+		double lnk = -3.19;
+		return lnk;
+		// cout<<"ln k = "<<data_->kbp_gap_std[0]->logK<<endl;
+		// return data_->kbp_gap_std[0]->logK; 
 	}
 	//low socre = -4
 	int low_score() const
 	{ 
-		// int lowscore = -4;
-		// return lowscore;
-		cout<<"low_score = "<<data_->loscore<<endl;
-		return data_->loscore; 
+		int lowscore = -4;
+		return lowscore;
+		// cout<<"low_score = "<<data_->loscore<<endl;
+		// return data_->loscore; 
 	}
 
 private:
@@ -162,15 +162,15 @@ class ScoreMatrix
 	template<typename _val>
 	void print() const
 	{
-		cout << "Scoring matrix = " << name_ << endl;
+		// cout << "Scoring matrix = " << name_ << endl;
 		// cout << "Lambda = " << sb_.lambda() << endl;
 		// cout << "K = " << sb_.k() << endl;
-		const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
-		for(unsigned i=0;i<n;++i) {
-			for(unsigned j=0;j<n;++j)
-				printf("%3i", (int)matrix8_.data[i*32+j]);
-			printf("\n");
-		}
+		// const unsigned n = AlphabetAttributes<_val>::ALPHABET_SIZE;
+		// for(unsigned i=0;i<n;++i) {
+		// 	for(unsigned j=0;j<n;++j)
+		// 		printf("%3i", (int)matrix8_.data[i*32+j]);
+		// 	printf("\n");
+		// }
 	}
 
 	static const ScoreMatrix& get()
@@ -204,8 +204,8 @@ class ScoreMatrix
 
 	int rawscore(double bitscore) const
 	{ 
-		return (int)ceil(rawscore(bitscore, double ())); 
-		// return 10; 
+		// return (int)ceil(rawscore(bitscore, double ())); 
+		return 10; 
 	}
 
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const

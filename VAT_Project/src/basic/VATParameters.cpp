@@ -96,7 +96,7 @@ void set_options(double block_size)
 string get_temp_file()
 {
 	if(strlen(getenv("TMPDIR")) > 0)
-		return string(getenv("TMPDIR")) + "/diamond.tmp";
+		return string(getenv("TMPDIR")) + "/VAT.tmp";
 	else {
 		std::cerr << "Warning: TMPDIR environment variable not set - using output directory for temporary storage.\n";
 		return output_file + ".tmp";

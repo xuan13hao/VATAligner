@@ -17,15 +17,15 @@ Sequence_type sequence_type<DNA>(const DNA&)
 { return nucleotide; }
 
 Sequence_type input_sequence_type()
-{ return VATParameters::command == VATParameters::blastp ? amino_acid : nucleotide; }
+{ return VATParameters::command == VATParameters::protein ? amino_acid : nucleotide; }
 
 Sequence_type sequence_type()
-{ return VATParameters::command == VATParameters::blastn ? nucleotide : amino_acid; }
+{ return VATParameters::command == VATParameters::dna ? nucleotide : amino_acid; }
 
 size_t query_contexts()
 {
 	switch(VATParameters::command) {
-	case VATParameters::blastn: return 1;
+	case VATParameters::dna: return 1;
 	case VATParameters::blastx: return 6;
 	default: return 1;
 	}
