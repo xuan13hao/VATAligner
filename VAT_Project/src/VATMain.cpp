@@ -138,6 +138,7 @@ int main(int ac, const char* av[])
 		{
         	if(vm.count("block-size") == 0)
         		VATParameters::chunk_size = 2;
+				RunModel::CreateDNADB();
 			//create db here
 
         } else if ((VATParameters::command == VATParameters::protein
@@ -151,7 +152,7 @@ int main(int ac, const char* av[])
         		VATParameters::chunk_size = 0;
         	if(VATParameters::command == VATParameters::dna)
 				//dna alignment
-				cout<<"testing"<<endl;
+				RunModel::DNAAlign();
 
         } else if(VATParameters::command == VATParameters::view && vm.count("daa") > 0)
         	view();

@@ -42,6 +42,7 @@ class Search_context
 	const typename SortedList<_locr>::Type &ref_idx;
 	const typename SortedList<_locq>::Type &query_idx;
 };
+
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void process_shape(unsigned sid,
 		cpu_timer &timer_mapping,

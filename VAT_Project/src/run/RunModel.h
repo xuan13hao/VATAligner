@@ -9,7 +9,7 @@
 class RunModel
 {
     public:
-    void CreateDNADB()
+    void static CreateDNADB()
     {
         CreateDB(DNA());
     }
@@ -18,7 +18,7 @@ class RunModel
         CreateDB(Protein());
     }
 
-    void DNAAlign()
+    void static DNAAlign()
     {
         DNAMasterThread<DNA>();
     }

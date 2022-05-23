@@ -10,19 +10,22 @@
 #include "ScoreMatrix.h"
 #include "ReducedAlpha.h"
 
-const double background_freq[] = {-1.188861,
-		-4.343446,
-		-2.648093,
-		-3.806941,
-		-3.742636,
-		-3.221182,
-		-3.498273,
-		-1.498637,
-		-4.339607,
-		-3.027002,
-		-1.557546 };
+// const double background_freq[] = {-1.188861,
+// 		-4.343446,
+// 		-2.648093,
+// 		-3.806941,
+// 		-3.742636,
+// 		-3.221182,
+// 		-3.498273,
+// 		-1.498637,
+// 		-4.339607,
+// 		-3.027002,
+// 		-1.557546 };
 
 
+//const double background_freq[] = {-1.38,-1.38,-1.38,-1.38};
+
+const double background_freq[] = {-3,-3,-3,-3};
 template<typename _val>
 bool use_seed_freq()
 { return false; }

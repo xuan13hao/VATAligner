@@ -43,8 +43,14 @@ private:
 	unsigned size_;
 
 };
-
-template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
+/*
+//hsdm.4
+char hsdm4s[500][20] = {"LIVFMYW", "C", "DNTSKEQRAGP", "H"};
+DIAMOND 11
+KREDQN C G H M F Y ILV W P STA"
+*/
+// template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
+template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("LIVFMYW C DNTSKEQRAGP H");
 template<> const ReducedAlpha<DNA> ReducedAlpha<DNA>::reduction ("A C G T");
 
 
