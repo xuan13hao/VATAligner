@@ -30,7 +30,7 @@ int main(int ac, const char* av[])
             ("help,h", "produce help message")
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(0), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
-            ("daa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (VAT) file")
+            ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (VAT) file")
             ("verbose,v", "enable verbose out")
             ("log", "enable debug log");
 
@@ -131,7 +131,7 @@ int main(int ac, const char* av[])
         	cout << "  makedb\tBuild VAT database from a FASTA file" << endl;
         	cout << "  protein\tAlign amino acid query sequences against a protein reference database" << endl;
         	cout << "  nucl\tAlign DNA query sequences against a DNA reference database" << endl;
-        	cout << "  view\tView VAT alignment archive (VAT) formatted file" << endl;
+        	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
         } else if (VATParameters::command == VATParameters::makedb && vm.count("in") && vm.count("db")) 
@@ -144,7 +144,7 @@ int main(int ac, const char* av[])
         } else if ((VATParameters::command == VATParameters::protein
         		|| VATParameters::command == VATParameters::blastx
 				|| VATParameters::command == VATParameters::dna)
-        		&& vm.count("query") && vm.count("db") && vm.count("daa")) 
+        		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{
         	if(vm.count("block-size") > 0) {
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
@@ -154,7 +154,7 @@ int main(int ac, const char* av[])
 				//dna alignment
 				RunModel::DNAAlign();
 
-        } else if(VATParameters::command == VATParameters::view && vm.count("daa") > 0)
+        } else if(VATParameters::command == VATParameters::view && vm.count("vaa") > 0)
         	view();
         else
         	cout << "Insufficient arguments. Use VAT -h for help.\n";

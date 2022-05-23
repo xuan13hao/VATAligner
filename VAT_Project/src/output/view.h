@@ -116,7 +116,7 @@ void view(VATFile &daa)
 void view()
 {
 	VATFile daa (VATParameters::daa_file);
-	if(daa.mode() == blastn)
+	if(daa.mode() == dna)
 		view<DNA>(daa);
 	else
 		view<Protein>(daa);

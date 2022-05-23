@@ -75,7 +75,7 @@ private:
 		if(file_.mode() == blastp) {
 			Packed_sequence seq (it, query_len, false, 5);
 			seq.unpack(context[0], 5, query_len);
-		} else if(file_.mode() == blastn)
+		} else if(file_.mode() == dna)
 		{
 			Packed_sequence seq (it, query_len, false, 5);
 			seq.unpack(context[0], 5, query_len);	
@@ -123,7 +123,7 @@ public:
 		} else if(parent_.file_.mode() == blastx) {
 			int len = (int)translated_query_len*3*(frame>2 ? -1 : 1);
 			return (int)query_begin + (len > 0 ? -1 : 1) + len;
-		} else if(parent_.file_.mode() == blastn) {
+		} else if(parent_.file_.mode() == dna) {
 			// int len = (int)translated_query_len*(frame>0 ? -1 : 1);
 			// return (int)query_begin + (len > 0 ? -1 : 1) + len;
 			return query_begin + translated_query_len - 1;

@@ -24,11 +24,12 @@ Sequence_type sequence_type()
 
 size_t query_contexts()
 {
-	switch(VATParameters::command) {
-	case VATParameters::dna: return 1;
-	case VATParameters::blastx: return 6;
-	default: return 1;
-	}
+	// switch(VATParameters::command) {
+	// case VATParameters::dna: return 1;
+	// case VATParameters::blastx: return 6;
+	// default: return 1;
+	// }
+	return 1;
 }
 
 bool query_translated()

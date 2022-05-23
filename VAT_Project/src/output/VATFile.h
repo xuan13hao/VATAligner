@@ -15,7 +15,7 @@ class VATHeaderOne
 	uint64_t magic_number, version;
 };
 
-typedef enum { blastp=2, blastx=3, blastn=4 } Align_mode;
+typedef enum { blastp=2, blastx=3, dna=4 } Align_mode;
 
 class VATHeaderTwo
 {
@@ -78,7 +78,7 @@ public:
 		f_.read(&h2_, 1);
 
 		if(h2_.block_size[0] == 0)
-			throw std::runtime_error("Invalid DAA file. DIAMOND run probably has not completed successfully.");
+			throw std::runtime_error("Invalid DAA file. VAT run probably has not completed successfully.");
 
 		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo) + h2_.block_size[0]);
 		string s;
@@ -91,7 +91,7 @@ public:
 		f_.read(ref_len_.data(), h2_.db_seqs_used);
 
 		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo));
-		cout << "DAA_file" << endl;
+		// cout << "DAA_file" << endl;
 
 	}
 
