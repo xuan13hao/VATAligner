@@ -14,8 +14,8 @@ void setup(const string &command, int ac, const char **av)
 	namespace io = boost::iostreams;
 	namespace po = VATParameters;
 
-	auto_append_extension(po::database, ".dmnd");
-	auto_append_extension(po::daa_file, ".daa");
+	auto_append_extension(po::database, ".vatf");
+	auto_append_extension(po::daa_file, ".vatr");
 
 	if(po::debug_log) {
 		io::tee_filter<io::file_sink> t (io::file_sink("vat.log", std::ios_base::out | std::ios_base::app));
