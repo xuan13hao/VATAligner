@@ -12,9 +12,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-narrowing")
 
 
 add_subdirectory("src/algo/blast/core")
-include_directories(
-  "${CMAKE_SOURCE_DIR}/src"
-  "${Boost_INCLUDE_DIR}")
+# include_directories(
+#   #"${CMAKE_SOURCE_DIR}"
+#   "${Boost_INCLUDE_DIR}")
 
 add_executable(VAT src/VATMain.cpp
   src/basic/VATParameters.cpp
