@@ -6,11 +6,11 @@
 using std::pair;
 
 template<typename _val>
-struct Sequence_file_format
+class SequenceFileFormat
 {
-
+	public:
 	virtual bool get_seq(vector<char> &id, vector<_val> &seq, Input_stream &s) const = 0;
-	virtual ~Sequence_file_format()
+	virtual ~SequenceFileFormat()
 	{ }
 
 protected:
@@ -79,7 +79,7 @@ protected:
 };
 
 template<typename _val>
-struct FASTA_format : public Sequence_file_format<_val>
+struct FASTA_format : public SequenceFileFormat<_val>
 {
 
 	FASTA_format()
@@ -87,12 +87,12 @@ struct FASTA_format : public Sequence_file_format<_val>
 
 	virtual bool get_seq(vector<char> &id, vector<_val> &seq, Input_stream &s) const
 	{
-		if(!Sequence_file_format<_val>::have_char(s, '>'))
+		if(!SequenceFileFormat<_val>::have_char(s, '>'))
 			return false;
 		id.clear();
 		seq.clear();
-		Sequence_file_format<_val>::copy_line(s, id);
-		Sequence_file_format<_val>::copy_until(s, '>', seq);
+		SequenceFileFormat<_val>::copy_line(s, id);
+		SequenceFileFormat<_val>::copy_until(s, '>', seq);
 		return true;
 	}
 
@@ -102,7 +102,7 @@ struct FASTA_format : public Sequence_file_format<_val>
 };
 
 template<typename _val>
-struct FASTQ_format : public Sequence_file_format<_val>
+struct FASTQ_format : public SequenceFileFormat<_val>
 {
 
 	FASTQ_format()
@@ -110,15 +110,15 @@ struct FASTQ_format : public Sequence_file_format<_val>
 
 	virtual bool get_seq(vector<char> &id, vector<_val> &seq, Input_stream &s) const
 	{
-		if(!Sequence_file_format<_val>::have_char(s, '@'))
+		if(!SequenceFileFormat<_val>::have_char(s, '@'))
 			return false;
 		id.clear();
 		seq.clear();
-		Sequence_file_format<_val>::copy_line(s, id);
-		Sequence_file_format<_val>::copy_line(s, seq);
-		Sequence_file_format<_val>::skip_char(s, '+');
-		Sequence_file_format<_val>::skip_line(s);
-		Sequence_file_format<_val>::skip_line(s);
+		SequenceFileFormat<_val>::copy_line(s, id);
+		SequenceFileFormat<_val>::copy_line(s, seq);
+		SequenceFileFormat<_val>::skip_char(s, '+');
+		SequenceFileFormat<_val>::skip_line(s);
+		SequenceFileFormat<_val>::skip_line(s);
 		return true;
 	}
 
@@ -128,7 +128,7 @@ struct FASTQ_format : public Sequence_file_format<_val>
 };
 
 template<typename _val>
-const Sequence_file_format<_val>* guess_format(const string &file)
+const SequenceFileFormat<_val>* guess_format(const string &file)
 {
 	static const FASTA_format<_val> fasta;
 	static const FASTQ_format<_val> fastq;

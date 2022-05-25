@@ -52,7 +52,7 @@ size_t push_seq<Nucleotide,Nucleotide,Double_strand>(String_set<Nucleotide> &ss,
 
 template<typename _ival, typename _val, typename _strand>
 size_t load_seqs(Input_stream &file,
-		const Sequence_file_format<_ival> &format,
+		const SequenceFileFormat<_ival> &format,
 		SequenceSet<_val>** seqs,
 		AlphabetSet<char,0>*& ids,
 		SequenceSet<DNA>*& source_seqs,

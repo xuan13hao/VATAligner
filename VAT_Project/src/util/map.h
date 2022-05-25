@@ -3,9 +3,9 @@
 #define MAP_H_
 
 template<typename _it, typename _key>
-struct Map
+class Map
 {
-
+	public:
 	struct Iterator
 	{
 		Iterator(const _it& begin, const _it& parent_end):

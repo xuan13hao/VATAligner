@@ -30,7 +30,7 @@ int main(int ac, const char* av[])
             ("help,h", "produce help message")
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(0), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
-            ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (VAT) file")
+            ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vaa) file")
             ("verbose,v", "enable verbose out")
             ("log", "enable debug log");
 
@@ -124,7 +124,8 @@ int main(int ac, const char* av[])
 
         setup(command, ac, av);
 
-        if (vm.count("help")) {
+        if (vm.count("help")) 
+		{
         	cout << endl << "Syntax:" << endl;
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
@@ -142,7 +143,7 @@ int main(int ac, const char* av[])
 			//create db here
 
         } else if ((VATParameters::command == VATParameters::protein
-        		|| VATParameters::command == VATParameters::blastx
+        		//|| VATParameters::command == VATParameters::blastx
 				|| VATParameters::command == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{

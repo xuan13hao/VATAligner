@@ -27,7 +27,7 @@ void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu
 	ShapeConfigures::instance = ShapeConfigures (VATParameters::index_mode, _val ());
 	task_timer timer ("Opening the input file", true);
 	timer_mapping.resume();
-	const Sequence_file_format<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
+	const SequenceFileFormat<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");

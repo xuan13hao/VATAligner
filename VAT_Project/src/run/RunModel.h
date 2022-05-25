@@ -23,7 +23,7 @@ class RunModel
         DNAMasterThread<DNA>();
     }
 
-    void ProteinAlign()
+    void static ProteinAlign()
     {
         ProteinMasterThread<Protein>();
     }
