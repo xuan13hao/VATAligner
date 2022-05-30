@@ -85,7 +85,7 @@ void process_shape(unsigned sid,
 }
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void run_ref_chunk(Database_file<_val> &db_file,
+void ProcessRefsChunks(Database_file<_val> &db_file,
 		cpu_timer &timer_mapping,
 		cpu_timer &total_timer,
 		unsigned query_chunk,
@@ -148,7 +148,7 @@ void run_ref_chunk(Database_file<_val> &db_file,
 }
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void run_query_chunk(Database_file<_val> &db_file,
+void ProcessQueryChunks(Database_file<_val> &db_file,
 		cpu_timer &timer_mapping,
 		cpu_timer &total_timer,
 		unsigned query_chunk,
@@ -161,7 +161,7 @@ void run_query_chunk(Database_file<_val> &db_file,
 	timer.finish();
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)
-		run_ref_chunk<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
+		ProcessRefsChunks<_val,_locr,_locq,_locl>(db_file, timer_mapping, total_timer, query_chunk, query_len_bounds, query_buffer, master_out, tmp_file);
 
 	timer.go("Deallocating buffers");
 	timer_mapping.resume();
