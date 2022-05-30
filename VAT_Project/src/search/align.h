@@ -21,7 +21,7 @@ void align(const _locq q_pos,
 	  HitFilter<_val,_locr,_locq,_locl> &hf)
 {
 	stats.inc(Statistics::TENTATIVE_MATCHES0);
-	const _val* subject = ref_seqs<_val>::data_->data(s);
+	const _val* subject = ReferenceSeqs<_val>::data_->data(s);
 
 	if(fast_match(query, subject) < VATParameters::min_identities)
 		return;

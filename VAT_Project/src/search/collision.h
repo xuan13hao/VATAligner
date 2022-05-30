@@ -49,7 +49,7 @@ inline bool shape_collision_right(uint64_t mask, uint64_t shape_mask, const _val
 	if(!match_shape_mask(mask, shape_mask)) return false;
 	return is_lower_chunk(subject, sid)
 			&& is_low_freq(subject, sid)
-			&& (!get_critical(*subject) || (need_lookup(sid) && !ref_seqs<_val>::get().get_masking(subject, sid)));
+			&& (!get_critical(*subject) || (need_lookup(sid) && !ReferenceSeqs<_val>::get().get_masking(subject, sid)));
 }
 
 template <typename _val, typename _pos>
@@ -58,7 +58,7 @@ inline bool shape_collision_left(uint64_t mask, uint64_t shape_mask, const _val 
 	if(!match_shape_mask(mask, shape_mask)) return false;
 	return (!chunked || is_lower_or_equal_chunk(subject, sid))
 			&& is_low_freq(subject, sid)
-			&& (!get_critical(*subject) || (need_lookup(sid) && !ref_seqs<_val>::get().get_masking(subject, sid)));
+			&& (!get_critical(*subject) || (need_lookup(sid) && !ReferenceSeqs<_val>::get().get_masking(subject, sid)));
 }
 
 template <typename _val, typename _pos>
@@ -66,7 +66,7 @@ inline bool previous_shape_collision(uint64_t mask, uint64_t shape_mask, const _
 {
 	if(!match_shape_mask(mask, shape_mask)) return false;
 	return is_low_freq(subject, sid)
-			&& (!get_critical(*subject) || !ref_seqs<_val>::get().get_masking(subject, sid));
+			&& (!get_critical(*subject) || !ReferenceSeqs<_val>::get().get_masking(subject, sid));
 }
 
 template<typename _val, typename _pos>
@@ -127,7 +127,7 @@ bool is_primary_hit(const _val *query,
 		if(len-i > 32)
 			mask |= reduced_match32(query+32,subject+32,len-i-32) << 32;
 		for(unsigned j=0;j<32 && i<shape_len;++j) {
-			assert(&subject[j] >= ref_seqs<_val>::data_->data(0) && &subject[j] <= ref_seqs<_val>::data_->data(ref_seqs<_val>::data_->raw_len()-1));
+			assert(&subject[j] >= ReferenceSeqs<_val>::data_->data(0) && &subject[j] <= ReferenceSeqs<_val>::data_->data(ReferenceSeqs<_val>::data_->raw_len()-1));
 			for(unsigned k=0;k<sid;++k)
 				if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(k).mask_, &subject[j], k))
 					return false;

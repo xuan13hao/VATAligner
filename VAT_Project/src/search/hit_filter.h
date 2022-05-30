@@ -32,7 +32,7 @@ public:
 		if(score >= VATParameters::min_hit_score)
 			push_hit(subject);
 		else
-			subjects_->push_back(ref_seqs<_val>::data_->fixed_window_infix(subject+VATConsts::seed_anchor));
+			subjects_->push_back(ReferenceSeqs<_val>::data_->fixed_window_infix(subject+VATConsts::seed_anchor));
 
 		
 	}
@@ -64,7 +64,7 @@ public:
 		}
 		
 		//cout << "query=" << q_num_ << " so=" << seed_offset_ << " subject=" << subject << endl;
-		assert(subject < ref_seqs<_val>::get().raw_len());
+		assert(subject < ReferenceSeqs<_val>::get().raw_len());
 				// cout<<"push_hit 1"<<endl;
 
 		out_.push(hit<_locr,_locl> (q_num_, subject, seed_offset_));
@@ -74,7 +74,7 @@ public:
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)
-	{ push_hit(ref_seqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); stats_.inc(Statistics::GAPPED_HITS); }
+	{ push_hit(ReferenceSeqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); stats_.inc(Statistics::GAPPED_HITS); }
 
 private:
 

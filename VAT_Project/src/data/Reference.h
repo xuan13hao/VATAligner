@@ -7,7 +7,7 @@
 #include <string>
 #include <numeric>
 #include "../util/binary_file.h"
-#include "RadixCluster.h"
+#include "SortedList.h"
 #include "../basic/statistics.h"
 #include "../data/SeedHistogram.h"
 #include "../util/hash_table.h"
@@ -68,7 +68,7 @@ struct Database_file : public Input_stream
 };
 
 template<typename _val>
-struct ref_seqs
+struct ReferenceSeqs
 {
 	static const Masked_sequence_set<_val>& get()
 	{ return *(const Masked_sequence_set<_val>*)data_; }
@@ -77,16 +77,16 @@ struct ref_seqs
 	static SequenceSet<_val> *data_;
 };
 
-template<typename _val> SequenceSet<_val>* ref_seqs<_val>::data_ = 0;
+template<typename _val> SequenceSet<_val>* ReferenceSeqs<_val>::data_ = 0;
 
-struct ref_ids
+struct ReferenceIds
 {
 	static const AlphabetSet<char,0>& get()
 	{ return *data_; }
 	static AlphabetSet<char,0> *data_;
 };
 
-AlphabetSet<char,0>* ref_ids::data_ = 0;
+AlphabetSet<char,0>* ReferenceIds::data_ = 0;
 
 SeedHistogram ref_hst;
 unsigned current_ref_block;
@@ -125,8 +125,8 @@ struct Ref_map
 				return n;
 			n = next_++;
 			data_[block][i] = n;
-			len_.push_back(ref_seqs<_val>::get().length(i));
-			name_.push_back(get_str(ref_ids::get()[i].c_str(), VATConsts::id_delimiters));
+			len_.push_back(ReferenceSeqs<_val>::get().length(i));
+			name_.push_back(get_str(ReferenceIds::get()[i].c_str(), VATConsts::id_delimiters));
 			return n;
 		}
 	}

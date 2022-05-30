@@ -60,11 +60,11 @@ void process_shape(unsigned sid,
 		current_range = range;
 		task_timer timer ("Building reference index", true);
 		typename SortedList<_locr>::Type ref_idx (ref_buffer,
-				*ref_seqs<_val>::data_,
+				*ReferenceSeqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				ref_hst.get(VATParameters::index_mode, sid),
 				range);
-		ref_seqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
+		ReferenceSeqs<_val>::get_nc().template build_masking<_locr>(sid, range, ref_idx);
 
 		timer.go("Building query index");
 		timer_mapping.resume();
@@ -95,13 +95,13 @@ void run_ref_chunk(Database_file<_val> &db_file,
 		vector<Temp_file> &tmp_file)
 {
 	task_timer timer ("Loading reference sequences", true);
-	ref_seqs<_val>::data_ = new Masked_sequence_set<_val> (db_file);
-	ref_ids::data_ = new AlphabetSet<char,0> (db_file);
+	ReferenceSeqs<_val>::data_ = new Masked_sequence_set<_val> (db_file);
+	ReferenceIds::data_ = new AlphabetSet<char,0> (db_file);
 	ref_hst.load(db_file);
 
-	setup_search_params<_val>(query_len_bounds, ref_seqs<_val>::data_->letters());
+	setup_search_params<_val>(query_len_bounds, ReferenceSeqs<_val>::data_->letters());
 
-	ref_map.init(ref_seqs<_val>::get().get_length());
+	ref_map.init(ReferenceSeqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
 	char *ref_buffer = SortedList<_locr>::Type::alloc_buffer(ref_hst);
 
@@ -142,8 +142,8 @@ void run_ref_chunk(Database_file<_val> &db_file,
 	timer_mapping.stop();
 
 	timer.go("Deallocating reference");
-	delete ref_seqs<_val>::data_;
-	delete ref_ids::data_;
+	delete ReferenceSeqs<_val>::data_;
+	delete ReferenceIds::data_;
 	timer.finish();
 }
 

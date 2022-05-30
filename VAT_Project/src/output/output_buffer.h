@@ -54,7 +54,7 @@ void write_intermediate_record(Text_buffer &buf,
 		.write_packed(match.traceback_->query_begin_)
 		.write_packed(match.traceback_->subject_begin_);
 	const unsigned qbegin = query_translated_begin<_val>(match.traceback_->query_begin_, match.frame_, query_source_len, query_translated());
-	print_packed(match.traceback_->transcript_right_, match.traceback_->transcript_left_, transcript_buf, buf, query, ref_seqs<_val>::get()[match.subject_id_], qbegin, match.traceback_->subject_begin_);
+	print_packed(match.traceback_->transcript_right_, match.traceback_->transcript_left_, transcript_buf, buf, query, ReferenceSeqs<_val>::get()[match.subject_id_], qbegin, match.traceback_->subject_begin_);
 }
 
 template<typename _val>

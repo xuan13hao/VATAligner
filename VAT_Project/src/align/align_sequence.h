@@ -27,7 +27,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	padding[frame] = VATParameters::read_padding<_val>(query_len);
 
 
-	const SequenceSet<_val> *ref = ref_seqs<_val>::data_;
+	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
 	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
 	{
 
@@ -45,7 +45,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 				transcript_buf,
 				Traceback ());
 		const int score = local.back().score_;
-		std::pair<size_t,size_t> l = ref_seqs<_val>::data_->local_position(i->subject_);
+		std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(i->subject_);
 		matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
 		anchored_transform(local.back(), l.second, i->seed_offset_);
 		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);

@@ -40,7 +40,7 @@ void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu
 		timer_mapping.resume();
 		size_t n_query_seqs;
 
-		n_query_seqs = load_seqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+		n_query_seqs = ReadingSeqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 
 		if(n_query_seqs == 0)
 			break;

@@ -4,7 +4,7 @@
 
 #include "../basic/Translator.h"
 #include "../util/complexity_filter.h"
-#include "RadixCluster.h"
+#include "SortedList.h"
 #include "../basic/statistics.h"
 #include "SequenceSet.h"
 
