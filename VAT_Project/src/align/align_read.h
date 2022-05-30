@@ -39,7 +39,7 @@ void align_read(Output_buffer<_val> &buffer,
 	const unsigned contexts = query_contexts();
 
 	const unsigned query = begin->query_/contexts;
-	const size_t query_len (query_seqs<_val>::data_->length(query*contexts));
+	const size_t query_len (QuerySeqs<_val>::data_->length(query*contexts));
 	const size_t source_query_len = query_len;
 	// const size_t source_query_len = query_translated() ? query_seqs<_val>::data_->reverse_translated_len(query*contexts) : query_len;
 	const size_t db_letters = ref_header.letters;
@@ -94,7 +94,7 @@ void align_read(Output_buffer<_val> &buffer,
 		if(n_hsp == 0)
 			buffer.write_query_record(query);
 
-		buffer.print_match(*it, source_query_len, query_seqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
+		buffer.print_match(*it, source_query_len, QuerySeqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
 
 		++n_hsp;
 		if(!same_subject)

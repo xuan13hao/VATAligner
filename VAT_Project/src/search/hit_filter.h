@@ -42,7 +42,7 @@ public:
 		if(subjects_->size() == 0)
 			return;
 		unsigned left;
-		sequence<const _val> query (query_seqs<_val>::data_->window_infix(q_pos_ + VATConsts::seed_anchor, left));
+		sequence<const _val> query (QuerySeqs<_val>::data_->window_infix(q_pos_ + VATConsts::seed_anchor, left));
 		smith_waterman(query,
 				*subjects_,
 				VATParameters::hit_band,
@@ -58,7 +58,7 @@ public:
 	void push_hit(_locr subject)
 	{
 		if(q_num_ == std::numeric_limits<unsigned>::max()) {
-			std::pair<size_t,size_t> l (query_seqs<_val>::data_->local_position(q_pos_));
+			std::pair<size_t,size_t> l (QuerySeqs<_val>::data_->local_position(q_pos_));
 			q_num_ = l.first;
 			seed_offset_ = l.second;
 		}

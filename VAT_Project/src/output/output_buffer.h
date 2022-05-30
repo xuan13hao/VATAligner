@@ -79,7 +79,7 @@ class Output_buffer : public Text_buffer
 			// cout<<"write_query_record"<<endl;
 			}
 		else
-			VATOutput::write_query_record(*this, query_ids::get()[query_id], query_seqs<_val>::get()[query_id]);
+			VATOutput::write_query_record(*this, query_ids::get()[query_id], QuerySeqs<_val>::get()[query_id]);
 	}
 	virtual void finish_query_record()
 	{ *(uint32_t*)(this->data_+query_begin_) = this->size() - query_begin_ - sizeof(uint32_t); }

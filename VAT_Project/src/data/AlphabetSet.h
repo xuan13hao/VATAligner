@@ -71,7 +71,7 @@ class AlphabetSet
 		file.skip_vector<size_t>();
 		file.skip_vector<_t>();
 	}
-
+	//raw data size
 	size_t raw_len() const
 	{ return limits_.back(); }
 

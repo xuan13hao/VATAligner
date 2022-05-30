@@ -21,7 +21,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 {
 	std::sort(begin, end, hit<_locr,_locl>::cmp_normalized_subject);
 	const unsigned q_num (begin->query_);
-	const sequence<const _val> query (query_seqs<_val>::get()[q_num]);
+	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
 	const unsigned frame = q_num % query_contexts();
 	const unsigned query_len = query.length();
 	padding[frame] = VATParameters::read_padding<_val>(query_len);

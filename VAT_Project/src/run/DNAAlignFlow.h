@@ -40,19 +40,19 @@ void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu
 		timer_mapping.resume();
 		size_t n_query_seqs;
 
-		n_query_seqs = ReadingSeqs<_val,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+		n_query_seqs = ReadingSeqs<_val,_val,Single_strand>(query_file, *format_n, &QuerySeqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
 
 		if(n_query_seqs == 0)
 			break;
 		timer.finish();
-		query_seqs<_val>::data_->print_stats();
+		QuerySeqs<_val>::data_->print_stats();
 
 		timer.go("Building query histograms");
-		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*query_seqs<_val>::data_, _val()));
-		const pair<size_t,size_t> query_len_bounds = query_seqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
+		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
+		const pair<size_t,size_t> query_len_bounds = QuerySeqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();
-		const bool long_addressing_query = query_seqs<_val>::data_->raw_len() > (size_t)std::numeric_limits<uint32_t>::max();
+		const bool long_addressing_query = QuerySeqs<_val>::data_->raw_len() > (size_t)std::numeric_limits<uint32_t>::max();
 
 		if(query_len_bounds.second <= (size_t)std::numeric_limits<uint8_t>::max()) {
 			if(long_addressing_query)

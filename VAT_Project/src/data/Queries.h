@@ -21,14 +21,14 @@ struct query_source_seqs
 SequenceSet<DNA>* query_source_seqs::data_ = 0;
 
 template<typename _val>
-struct query_seqs
+struct QuerySeqs
 {
 	static const SequenceSet<_val>& get()
 	{ return *data_; }
 	static SequenceSet<_val> *data_;
 };
 
-template<typename _val> SequenceSet<_val>* query_seqs<_val>::data_ = 0;
+template<typename _val> SequenceSet<_val>* QuerySeqs<_val>::data_ = 0;
 
 struct query_ids
 {

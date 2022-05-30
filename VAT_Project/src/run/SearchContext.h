@@ -69,7 +69,7 @@ void process_shape(unsigned sid,
 		timer.go("Building query index");
 		timer_mapping.resume();
 		typename SortedList<_locq>::Type query_idx (query_buffer,
-				*query_seqs<_val>::data_,
+				*QuerySeqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				query_hst->get(VATParameters::index_mode, sid),
 				range);
@@ -107,7 +107,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
-	Trace_pt_buffer<_locr,_locl>::instance = new Trace_pt_buffer<_locr,_locl> (query_seqs<_val>::data_->get_length()/query_contexts(),
+	Trace_pt_buffer<_locr,_locl>::instance = new Trace_pt_buffer<_locr,_locl> (QuerySeqs<_val>::data_->get_length()/query_contexts(),
 			VATParameters::tmpdir,
 			VATParameters::mem_buffered());
 	timer.finish();
@@ -173,7 +173,7 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 	}
 
 	timer.go("Deallocating queries");
-	delete query_seqs<_val>::data_;
+	delete QuerySeqs<_val>::data_;
 	delete query_ids::data_;
 	delete query_source_seqs::data_;
 	timer_mapping.stop();
