@@ -18,14 +18,19 @@ void align_range(_locq q_pos,
 	const _val* query = QuerySeqs<_val>::data_->data(q_pos);
 	HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
 
-	if(s.n <= VATParameters::hit_cap) {
+	if(s.n <= VATParameters::hit_cap) 
+	{
 		stats.inc(Statistics::SEED_HITS, s.n);
-		while(i < s.n) {
+		while(i < s.n) 
+		{
 			align<_val,_locr,_locq,_locl>(q_pos, query, s[i], stats, sid, hf);
 			++i;
 		}
-	} else {
-		while(i < s.n && s[i] != 0) {
+	} 
+	else 
+	{
+		while(i < s.n && s[i] != 0) 
+		{
 			assert(position_filter(s[i], filter_treshold(s.n), s.key()));
 			align<_val,_locr,_locq,_locl>(q_pos, query, s[i], stats, sid, hf);
 			stats.inc(Statistics::SEED_HITS);
@@ -67,12 +72,17 @@ void align_partition(unsigned hp,
 	//cout<<"align_partition 1"<<endl;
 	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
 	//	cout<<"align_partition 2"<<endl;
-	while(!i.at_end() && !j.at_end() && !exception_state()) {
-		if(i.key() < j.key()) {
+	while(!i.at_end() && !j.at_end() && !exception_state()) 
+	{
+		if(i.key() < j.key()) 
+		{
 			++i;
-		} else if(j.key() < i.key()) {
+		} else if(j.key() < i.key()) 
+		{
 			++j;
-		} else {
+		} 
+		else 
+		{
 			align_range<_val,_locr,_locq,_locl>(j, i, stats, *out, sid);
 			++i;
 			++j;
