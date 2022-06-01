@@ -48,7 +48,7 @@ void decode_zero_rle(int32_t *data, size_t len, Input_stream &in)
 	}
 }
 
-typedef int32_t shape_histogram[VATConsts::seqp][VATConsts::seedp];
+typedef int32_t ShapeHistogram[VATConsts::seqp][VATConsts::seedp];
 
 struct seedp_range
 {
@@ -74,7 +74,7 @@ private:
 	unsigned begin_, end_;
 } current_range;
 
-size_t partition_size(const shape_histogram &hst, unsigned p)
+size_t partition_size(const ShapeHistogram &hst, unsigned p)
 {
 	size_t s (0);
 	for(unsigned i=0;i<VATConsts::seqp;++i)
@@ -82,7 +82,7 @@ size_t partition_size(const shape_histogram &hst, unsigned p)
 	return s;
 }
 
-size_t hst_size(const shape_histogram &hst, const seedp_range &range)
+size_t hst_size(const ShapeHistogram &hst, const seedp_range &range)
 {
 	size_t s (0);
 	for(unsigned i=range.begin();i<range.end();++i)
@@ -104,7 +104,7 @@ class SeedHistogram
 		launch_scheduled_thread_pool(context, VATConsts::seqp, VATParameters::threads());
 	}
 
-	const shape_histogram& get(unsigned index_mode, unsigned sid) const
+	const ShapeHistogram& get(unsigned index_mode, unsigned sid) const
 	{ return data_[index_mode-1][sid]; }
 
 	size_t max_chunk_size() const
@@ -153,6 +153,7 @@ private:
 			const size_t end,
 			const vector<ShapeConfigures> &cfgs)
 	{
+		int count = 0;
 		assert(seqp < VATConsts::seqp);
 		uint64_t key;
 		for(size_t i=begin;i<end;++i) {
@@ -166,7 +167,12 @@ private:
 					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)
 						if(j+cfg->get_shape(k).length_ < seq.length()+1 && cfg->get_shape(k).set_seed(key, &seq[j]))
+						{
+							// count++;
 							++data_[cfg->mode()][k][seqp][seed_partition(key)];
+							// cout<<"index = "<<count<<", data = "<<****data_<<", model = "<<cfg->mode()<<",k = "<<k<<",seqp = "<<seqp<<", key = "<<seed_partition(key)<<endl;
+						}
+
 				}
 
 		}
@@ -184,7 +190,7 @@ private:
 		return v;
 	}
 
-	shape_histogram data_[VATConsts::index_modes][VATConsts::max_shapes];
+	ShapeHistogram data_[VATConsts::index_modes][VATConsts::max_shapes];
 
 };
 

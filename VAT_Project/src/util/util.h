@@ -39,11 +39,18 @@ struct partition
 		}
 	}
 	size_t getMin(size_t i) const
-	{ size_t b = std::min(i, remainder); return b*(size+1) + (i-b)*size; }
+	{ 
+		size_t b = std::min(i, remainder); 
+		return b*(size+1) + (i-b)*size; 
+	}
 	size_t getMax(size_t i) const
-	{ return getMin(i) + getCount(i); }
+	{ 
+		return getMin(i) + getCount(i); 
+	}
 	size_t getCount(size_t i) const
-	{ return i < remainder ? (size + 1) : size; }
+	{ 
+		return i < remainder ? (size + 1) : size; 
+	}
 };
 
 template<typename _val> _val set_critical(_val v)

@@ -32,7 +32,7 @@ class SortedList
 	{ return new char[sizeof(entry) * hst.max_chunk_size()]; }
 
 	template<typename _val>
-	SortedList(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const shape_histogram &hst, const seedp_range &range):
+	SortedList(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const ShapeHistogram &hst, const seedp_range &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<entry*>(buffer))
 	{
@@ -176,7 +176,7 @@ private:
 		it->flush();
 	}
 
-	Ptr_set* build_iterators(const shape_histogram &hst) const
+	Ptr_set* build_iterators(const ShapeHistogram &hst) const
 	{
 		Ptr_set *iterators = new Ptr_set;
 		for(unsigned i=0;i<VATConsts::seedp;++i)
@@ -184,7 +184,12 @@ private:
 
 		for(unsigned i=1;i<VATConsts::seqp;++i) {
 			for(unsigned j=0;j<VATConsts::seedp;++j)
+			{
 				(*iterators)[i][j] = (*iterators)[i-1][j] + hst[i-1][j];
+				//cout<<"iterator = "<<(*iterators)[i][j]<<", hst = "<<(hst[i-1][j])<<endl;
+			}
+				
+
 		}
 		return iterators;
 	}
@@ -201,7 +206,7 @@ private:
 
 	struct Limits : vector<size_t>
 	{
-		Limits(const shape_histogram &hst, const seedp_range &range)
+		Limits(const ShapeHistogram &hst, const seedp_range &range)
 		{
 			task_timer timer ("Computing limits", false);
 			this->push_back(0);
