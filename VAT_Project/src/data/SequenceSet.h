@@ -81,6 +81,11 @@ class SequenceSet : public AlphabetSet<_val>
 		}
 		for(unsigned i=v.size();i<VATConsts::seqp+1;++i)
 			v.push_back(this->get_length());
+		
+		// for(int i = 0; i <v.size();i++)
+		// {
+		// 	cout<<"partition = "<<v[i]<<endl;
+		// }
 		return v;
 	}
 

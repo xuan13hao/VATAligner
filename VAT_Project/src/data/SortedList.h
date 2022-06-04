@@ -24,6 +24,7 @@ class SortedList
 		{ }
 		bool operator<(const entry &rhs) const
 		{ return key < rhs.key; }
+
 		unsigned	key;
 		_pos		value;
 	} __attribute__((packed));
@@ -123,7 +124,10 @@ private:
 	};
 
 	entry* ptr_begin(unsigned i) const
-	{ return &data_[limits_[i]]; }
+	{ 
+		// cout<<"data_[limits_[i]] = "<<&data_[limits_[i]]<<endl;
+		return &data_[limits_[i]]; 
+	}
 
 	entry* ptr_end(unsigned i) const
 	{ return &data_[limits_[i+1]]; }
@@ -164,15 +168,17 @@ private:
 	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, entry **ptr, const shape &sh, const seedp_range &range)
 	{
 		uint64_t key;
+		//init buffered iterator via entry size
 		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
 		for(size_t i=begin;i<end;++i) {
 			const sequence<const _val> seq = seqs[i];
 			if(seq.length()<sh.length_) continue;
 			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) {
-				if(sh.set_seed(key, &seq[j]))
+				if(sh.set_seed(key, &seq[j]))//get key via seq
 					it->push(key, seqs.position(i, j), range);
 			}
 		}
+		//clear all data from the buffer 
 		it->flush();
 	}
 
@@ -200,7 +206,31 @@ private:
 			sl (sl)
 		{ }
 		void operator()(unsigned thread_id ,unsigned seedp) const
-		{ std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); }
+		{
+			
+			std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
+			// cout<<"sl.ptr_begin(seedp)= "<<(int64_t)sl.ptr_begin(seedp)<<", sl.ptr_end(seedp)"<<(int64_t)sl.ptr_end(seedp)<<endl;
+			cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))<<endl;
+			// cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))++<<endl;
+			// for(int i = 1; i<VATConsts::seedp;i++)
+			// {
+			// 	cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))[i]<<endl;
+			// }
+			
+			// for(SortedList::iterator it = sl.ptr_begin(seedp); it.at_end();it++)
+			// {
+			// 	//cout<<"sort list = "<<it<<endl;
+			// }
+			// while(true)
+			// {
+			// 	if ((sl.ptr_begin(seedp)++) != sl.ptr_end(seedp))
+			// 	{
+			// 		cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp)++)<<endl;	
+			// 	}
+				
+				
+			// }
+		}
 		SortedList &sl;
 	};
 
@@ -215,6 +245,7 @@ private:
 				log_stream << i << ' ' << partition_size(hst, i) << endl;
 #endif
 				this->push_back(this->operator[](i) + (range.contains(i) ? partition_size(hst, i) : 0));
+				// cout<<"limit = "<<this->operator[](i)<<endl;
 			}
 		}
 	};
