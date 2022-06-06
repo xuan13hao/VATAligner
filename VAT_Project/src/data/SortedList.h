@@ -24,7 +24,8 @@ class SortedList
 		{ }
 		bool operator<(const entry &rhs) const
 		{ return key < rhs.key; }
-
+		// entry operator++() const
+		// { return key < rhs.key; }
 		unsigned	key;
 		_pos		value;
 	} __attribute__((packed));
@@ -126,6 +127,11 @@ private:
 	entry* ptr_begin(unsigned i) const
 	{ 
 		// cout<<"data_[limits_[i]] = "<<&data_[limits_[i]]<<endl;
+		// for (size_t j = 0; j < limits_[i].size(); j++)
+		// {
+		// 	cout<<"limit = "<<limits_[i][j]<<endl;
+		// }
+		
 		return &data_[limits_[i]]; 
 	}
 
@@ -207,10 +213,31 @@ private:
 		{ }
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{
+			// SortedList::const_iterator j = sl.get_partition_cbegin(seedp);
+			// while(!j.at_end()) 
+			// {
+			// 	cout<<"key = "<<j.key()<<endl;
+			// 	++j;
+			// }
 			
 			std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
-			// cout<<"sl.ptr_begin(seedp)= "<<(int64_t)sl.ptr_begin(seedp)<<", sl.ptr_end(seedp)"<<(int64_t)sl.ptr_end(seedp)<<endl;
-			cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))<<endl;
+			// cout<<"after sort"<<endl;
+			// sl.get_partition_cbegin(seedp);
+			// const typename SortedList<_loc>::Type &idx,
+			// SortedList::const_iterator i = sl.get_partition_cbegin(seedp);
+			// while(!i.at_end()) 
+			// {
+			// 	cout<<"key = "<<i.key()<<endl;
+			// 	++i;
+			// }
+			// cout<<endl;
+			// entry* s = sl.ptr_begin(seedp);
+			// cout<<"s = "<<s->key<<endl;
+			// entry* e = sl.ptr_end(seedp);
+			// cout<<"e = "<<e->key<<endl;
+			// cout<<endl;
+			// cout<<"sl.ptr_begin(seedp) = "<<sl.ptr_begin(seedp)<<", sl.ptr_end(seedp) = "<<sl.ptr_end(seedp)<<endl;
+			// cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))<<endl;
 			// cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))++<<endl;
 			// for(int i = 1; i<VATConsts::seedp;i++)
 			// {

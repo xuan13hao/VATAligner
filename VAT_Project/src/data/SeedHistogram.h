@@ -73,7 +73,7 @@ struct seedp_range
 private:
 	unsigned begin_, end_;
 } current_range;
-
+//shape histogram partition size 
 size_t partition_size(const ShapeHistogram &hst, unsigned p)
 {
 	size_t s (0);
