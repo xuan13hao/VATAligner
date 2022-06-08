@@ -1,4 +1,4 @@
-./VAT makedb --in ../data/MT-human.fa -d r
-./VAT dna -d r -q ../data/q2.fa -a match
+./VAT makedb --in ../data/marine.ref.fn -d marine
+./VAT dna -d marine.vatf -q ../data/marine.sim.duplex.fn -a match
 ./VAT view -a match.vatr -o match
 vim match

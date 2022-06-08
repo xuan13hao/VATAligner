@@ -94,12 +94,14 @@ local_match<_val> traceback(const _val *query,
 
 	int gap_len;
 
-	while(i>0 || j>0) {
+	while(i>0 || j>0) 
+	{
 		const _val lq = get_dir(query, j, _dir()), ls = mask_critical(get_dir(subject, i, _dir()));
 		const int match_score = ScoreMatrix::get().letter_score(lq, ls);
-		//printf("i=%i j=%i score=%i subject=%c query=%c\n",i,j,dp(i, j),Value_traits<_val>::ALPHABET[ls],Value_traits<_val>::ALPHABET[lq]);
+		// printf("i=%i j=%i score=%i subject=%c query=%c\n",i,j,dp(i, j),AlphabetAttributes<_val>::ALPHABET[ls],AlphabetAttributes<_val>::ALPHABET[lq]);
 
-		if(dp(i, j) == match_score + dp(i-1, j-1)) {
+		if(dp(i, j) == match_score + dp(i-1, j-1)) 
+		{
 			if(lq == ls)
 				++l.identities_;
 			else
@@ -118,7 +120,9 @@ local_match<_val> traceback(const _val *query,
 			l.len_ += gap_len;
 			j -= gap_len;
 			transcript_buf.insert(transcript_buf.end(), gap_len ,op_insertion);
-		} else {
+		} else 
+		{
+			// dp.print(i,j);
 			throw std::runtime_error("Traceback error.");
 		}
 	}
