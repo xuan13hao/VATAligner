@@ -5,7 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include "VATParameters.h"
-#include "value_type.h"
+#include "AlphabetType.h"
 
 namespace VATParameters {
 

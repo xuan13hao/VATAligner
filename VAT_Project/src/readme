@@ -2,3 +2,6 @@
 ./VAT dna -d marine.vatf -q ../data/marine.sim.duplex.fn -a match
 ./VAT view -a match.vatr -o match
 vim match
+
+
+./VAT protein -d Pfam.vatf -q /media/xuan/VAT/Pfam.sim.singular.fa -a match

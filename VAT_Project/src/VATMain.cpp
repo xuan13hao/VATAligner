@@ -52,7 +52,7 @@ int main(int ac, const char* av[])
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
-        	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
+        	("id", po::value<double>(&VATParameters::min_id)->default_value(30), "minimum identity% to report an alignment")
         	("sensitive", "enable sensitive mode (default: fast)")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
@@ -71,7 +71,7 @@ int main(int ac, const char* av[])
 			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-15), "maximum seed frequency")
 			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
-       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(0), "minimum number of identities for stage 1 hit")
+       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(30), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(20), "xdrop for ungapped alignment")
         	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
@@ -139,7 +139,8 @@ int main(int ac, const char* av[])
 		{
         	if(vm.count("block-size") == 0)
         		VATParameters::chunk_size = 2;
-				RunModel::CreateDNADB();
+				RunModel::CreateProteinDB();
+				// RunModel::CreateDNADB();
 			//create db here
 
         } else if ((VATParameters::command == VATParameters::protein
@@ -151,9 +152,10 @@ int main(int ac, const char* av[])
         		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
         	} else
         		VATParameters::chunk_size = 0;
-        	if(VATParameters::command == VATParameters::dna)
+        	if(VATParameters::command == VATParameters::protein)
 				//dna alignment
-				RunModel::DNAAlign();
+				// RunModel::DNAAlign();
+				RunModel::ProteinAlign();
 
         } else if(VATParameters::command == VATParameters::view && vm.count("vaa") > 0)
         	view();

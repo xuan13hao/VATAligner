@@ -3,7 +3,7 @@
 #ifndef VALUE_H_
 #define VALUE_H_
 
-#include "value_type.h"
+#include "AlphabetType.h"
 #include "VATConsts.h"
 
 typedef enum { amino_acid=0, nucleotide=1 } Sequence_type;

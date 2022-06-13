@@ -23,37 +23,37 @@ class ScoreParamsException : public std::exception
 class Blastscoreblk
 {
 	public:
-	template<typename _val>
-	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
-		data_ (BlastScoreBlkNew(blast_seq_code<_val>(), 1))
-	{
-		if(data_ == 0)
-			throw ScoreParamsException ();
-		if((data_->kbp_gap_std[0] = Blast_KarlinBlkNew()) == 0
-				|| (data_->kbp_std[0] = Blast_KarlinBlkNew()) == 0)
-			throw ScoreParamsException ();
-		if(blast_load_karlin_blk<_val>(data_->kbp_gap_std[0],
-				data_->kbp_std[0],
-				gap_open,
-				gap_extend,
-				reward,
-				penalty,
-				matrix.c_str()) != 0)
-			throw ScoreParamsException ();
-		data_->name = const_cast<char*>(matrix.c_str());
-		data_->reward = reward;
-		data_->penalty = penalty;
-		if(Blast_ScoreBlkMatrixFill (data_, 0) != 0)
-			throw ScoreParamsException ();
-		data_->name = 0;
-	}
+	// template<typename _val>
+	// Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
+	// 	data_ (BlastScoreBlkNew(blast_seq_code<_val>(), 1))
+	// {
+	// 	if(data_ == 0)
+	// 		throw Score_params_exception ();
+	// 	if((data_->kbp_gap_std[0] = Blast_KarlinBlkNew()) == 0
+	// 			|| (data_->kbp_std[0] = Blast_KarlinBlkNew()) == 0)
+	// 		throw Score_params_exception ();
+	// 	if(blast_load_karlin_blk<_val>(data_->kbp_gap_std[0],
+	// 			data_->kbp_std[0],
+	// 			gap_open,
+	// 			gap_extend,
+	// 			reward,
+	// 			penalty,
+	// 			matrix.c_str()) != 0)
+	// 		throw Score_params_exception ();
+	// 	data_->name = const_cast<char*>(matrix.c_str());
+	// 	data_->reward = reward;
+	// 	data_->penalty = penalty;
+	// 	if(Blast_ScoreBlkMatrixFill (data_, 0) != 0)
+	// 		throw Score_params_exception ();
+	// 	data_->name = 0;
+	// }
 
 
 	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
 		data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
 	{
-		// if(data_ == 0)
-		// 	throw Score_params_exception ();
+		if(data_ == 0)
+			throw ScoreParamsException ();
 		// if((data_->kbp_gap_std[0] = Blast_KarlinBlkNew()) == 0
 		// 		|| (data_->kbp_std[0] = Blast_KarlinBlkNew()) == 0)
 		// 	throw Score_params_exception ();
@@ -77,14 +77,6 @@ class Blastscoreblk
 
 	~Blastscoreblk()
 	{ BlastScoreBlkFree(data_); }
-	// for protein alignment
-	template<typename _val>
-	int score(_val x, _val y) const
-	{ 
-
-		return data_->matrix->data[(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[x]]][(long)blast_alphabet<_val>()[(long)AlphabetAttributes<_val>::ALPHABET[y]]];
-	}
-	//template<typename _val>
 	
 	int score(DNA x, DNA y) const
 	{ 
@@ -93,8 +85,7 @@ class Blastscoreblk
 			return 1;
 		}
 		return 0;
-		
-		// return data_->matrix->data[(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[x]]][(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[y]]];
+
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;
@@ -102,34 +93,28 @@ class Blastscoreblk
 	//lamda = 0.267
 	double lambda() const
 	{ 
-		// double lamda = 0.267;
-		// return lamda;
-		// cout<<"lamda = "<<data_->kbp_gap_std[0]->Lambda<<endl;
-		return data_->kbp_gap_std[0]->Lambda; 
+		double lamda = 0.267;
+		return lamda;
 	}
 	//k = 0.041
 	double k() const
 	{ 
-		// double k = 0.041;
-		// return k;
-		// cout<<"k = "<<data_->kbp_gap_std[0]->K<<endl;
-		return data_->kbp_gap_std[0]->K; 
+		double k = 0.041;
+		return k;
 	}
 	//lnk = -3.19
 	double ln_k() const
 	{ 
-		// double lnk = -3.19;
-		// return lnk;
-		// cout<<"ln k = "<<data_->kbp_gap_std[0]->logK<<endl;
-		return data_->kbp_gap_std[0]->logK; 
+		double lnk = -3.19;
+		return lnk;
 	}
-	//low socre = -4
+
 	int low_score() const
 	{ 
-		// int lowscore = -4;
-		// return lowscore;
 		// cout<<"low_score = "<<data_->loscore<<endl;
-		return data_->loscore; 
+		int lowscore = -4;
+		return lowscore;
+
 	}
 
 private:
@@ -140,11 +125,11 @@ private:
 
 const double LN_2 = 0.69314718055994530941723212145818;
 
-class ScoreMatrix
+class NuclScoreMatrix
 {
 	public:
 	template<typename _val>
-	ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
+	NuclScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
 		sb_ (matrix, gap_open, gap_extend, reward, penalty, _val ()),
 		bias_ ((char)(-sb_.low_score())),
 		name_ (matrix),
@@ -226,7 +211,7 @@ class ScoreMatrix
 	double lambda() const
 	{ return sb_.lambda(); }
 
-	static auto_ptr<ScoreMatrix> instance;
+	static auto_ptr<NuclScoreMatrix> instance;
 
 private:
 

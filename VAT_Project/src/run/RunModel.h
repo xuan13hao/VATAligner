@@ -13,7 +13,7 @@ class RunModel
     {
         CreateDB(DNA());
     }
-    void CreateProteinDB()
+    void static CreateProteinDB()
     {
         CreateDB(Protein());
     }
