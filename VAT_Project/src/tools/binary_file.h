@@ -18,17 +18,17 @@ using std::auto_ptr;
 using std::vector;
 using std::endl;
 
-struct File_read_exception : public diamond_exception
+struct File_read_exception : public VATException
 {
 	File_read_exception(const char* file_name, size_t count, ssize_t n):
-		diamond_exception (string("Error reading file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
+		VATException (string("Error reading file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
 	{ }
 };
 
-struct File_write_exception : public diamond_exception
+struct File_write_exception : public VATException
 {
 	File_write_exception(const char* file_name, size_t count, ssize_t n):
-		diamond_exception (string("Error writing file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
+		VATException (string("Error writing file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
 	{ }
 };
 
@@ -57,7 +57,7 @@ struct Input_stream : public io::filtering_istream
 		this->push(f);
 	}
 
-	Input_stream(const Temp_file &tmp_file)
+	Input_stream(const TempFile &tmp_file)
 	{
 		if(lseek(tmp_file.file_descriptor(), 0, SEEK_SET) == -1)
 			throw std::runtime_error("Error executing seek on temporary file.");
@@ -185,7 +185,7 @@ struct Output_stream : public io::filtering_ostream
 			this->push(std::cout);
 	}
 
-	Output_stream(const Temp_file &tmp_file)
+	Output_stream(const TempFile &tmp_file)
 	{
 		this->push(io::file_descriptor_sink(tmp_file.file_descriptor(), io::never_close_handle));
 	}
@@ -243,7 +243,7 @@ struct Buffered_file : public Input_stream
 		Input_stream (file_name, gzipped)
 	{ init(); }
 
-	Buffered_file(const Temp_file &tmp_file):
+	Buffered_file(const TempFile &tmp_file):
 		Input_stream (tmp_file)
 	{ init(); }
 

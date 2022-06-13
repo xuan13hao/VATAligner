@@ -5,7 +5,7 @@
 
 #include "../basic/Hits.h"
 #include "scalar_dp_matrix.h"
-#include "../util/direction.h"
+#include "../tools/direction.h"
 #include "scalar_traceback.h"
 
 template<typename _val, typename _dir, typename _score, typename _traceback>

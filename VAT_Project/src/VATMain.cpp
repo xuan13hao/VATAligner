@@ -4,10 +4,10 @@
 #include <iterator>
 #include <boost/program_options.hpp>
 #include "basic/VATParameters.h"
-#include "util/log_stream.h"
+#include "tools/TimerTools.h"
 #include "data/Reference.h"
-#include "run/RunModel.h"
-#include "util/complexity_filter.h"
+#include "model/RunModel.h"
+#include "tools/complexity_filter.h"
 #include "basic/ContextSet.h"
 #include "output/view.h"
 

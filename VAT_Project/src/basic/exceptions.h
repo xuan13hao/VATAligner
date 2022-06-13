@@ -4,45 +4,45 @@
 
 #include <string>
 #include <boost/lexical_cast.hpp>
-#include "../util/tinythread.h"
+#include "../tools/tinythread.h"
 
 using std::exception;
 using std::string;
 
 #define THROW_EXCEPTION(exception, p1) throw exception(p1, __PRETTY_FUNCTION__, __LINE__)
 
-struct diamond_exception : public exception
+struct VATException : public exception
 {
 	string msg;
-	diamond_exception(const char *function, unsigned line):
+	VATException(const char *function, unsigned line):
 		msg(string("function ") + function + " line " + boost::lexical_cast<string>(line))
 	{ }
-	diamond_exception(const string &msg):
+	VATException(const string &msg):
 		msg (msg)
 	{ }
-	~diamond_exception() throw() { }
+	~VATException() throw() { }
 	virtual const char* what() const throw()
 	{ return msg.c_str(); }
 };
 
-struct file_io_exception : public diamond_exception
+struct file_io_exception : public VATException
 {
 	file_io_exception(const string &file_name, const char* function, unsigned line):
-		diamond_exception(function, line)
+		VATException(function, line)
 	{ msg += ". Error reading file " + file_name; }
 };
 
-struct file_open_exception: public diamond_exception
+struct file_open_exception: public VATException
 {
 	file_open_exception(const string &file_name, const char* function, unsigned line):
-		diamond_exception(function, line)
+		VATException(function, line)
 	{ msg += ". Error opening file " + file_name; }
 };
 
-struct file_io_write_exception: public diamond_exception
+struct file_io_write_exception: public VATException
 {
 	file_io_write_exception(const string &file_name, const char* function, unsigned line):
-		diamond_exception(function, line)
+		VATException(function, line)
 	{ msg += ". Error writing file " + file_name; }
 };
 

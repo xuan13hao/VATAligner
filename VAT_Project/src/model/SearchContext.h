@@ -58,7 +58,7 @@ void process_shape(unsigned sid,
 		// cout << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
-		task_timer timer ("Building reference index", true);
+		TimerTools timer ("Building reference index", true);
 		typename SortedList<_locr>::Type ref_idx (ref_buffer,
 				*ReferenceSeqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
@@ -92,9 +92,9 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		pair<size_t,size_t> query_len_bounds,
 		char *query_buffer,
 		VATOutput &master_out,
-		vector<Temp_file> &tmp_file)
+		vector<TempFile> &tmp_file)
 {
-	task_timer timer ("Loading reference sequences", true);
+	TimerTools timer ("Loading reference sequences", true);
 	ReferenceSeqs<_val>::data_ = new Masked_sequence_set<_val> (db_file);
 	ReferenceIds::data_ = new AlphabetSet<char,0> (db_file);
 	ref_hst.load(db_file);
@@ -126,7 +126,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 	Output_stream* out;
 	if(ref_header.n_blocks > 1) {
 		timer.go ("Opening temporary output file");
-		tmp_file.push_back(Temp_file ());
+		tmp_file.push_back(TempFile ());
 		out = new Output_stream (tmp_file.back());
 	} else
 		out = &master_out.stream();
@@ -155,9 +155,9 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 		pair<size_t,size_t> query_len_bounds,
 		VATOutput &master_out)
 {
-	task_timer timer ("Allocating buffers", true);
+	TimerTools timer ("Allocating buffers", true);
 	char *query_buffer = SortedList<_locq>::Type::alloc_buffer(*query_hst);
-	vector<Temp_file> tmp_file;
+	vector<TempFile> tmp_file;
 	timer.finish();
 	db_file.rewind();
 	for(current_ref_block=0;current_ref_block<ref_header.n_blocks;++current_ref_block)

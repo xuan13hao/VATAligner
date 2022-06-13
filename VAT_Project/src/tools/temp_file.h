@@ -2,10 +2,10 @@
 #ifndef TEMP_FILE_H_
 #define TEMP_FILE_H_
 
-struct Temp_file
+class TempFile
 {
-
-	Temp_file():
+	public:
+	TempFile():
 		file_des_ (-1)
 	{
 		char *name = new char[VATParameters::tmpdir.length()+20];

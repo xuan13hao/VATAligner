@@ -3,11 +3,11 @@
 #ifndef ALIGN_QUERIES_H_
 #define ALIGN_QUERIES_H_
 
-#include "../util/merge_sort.h"
+#include "../tools/merge_sort.h"
 #include "../search/trace_pt_buffer.h"
-#include "../util/map.h"
+#include "../tools/map.h"
 #include "align_read.h"
-#include "../util/task_queue.h"
+#include "../tools/task_queue.h"
 
 using std::vector;
 
@@ -31,7 +31,7 @@ void align_queries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 		Output_buffer<_val> &buffer,
 		Statistics &st)
 {
-	typedef Map<typename vector<hit<_locr,_locl> >::iterator,typename hit<_locr,_locl>::template Query_id<_d> > Map_t;
+	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<_d> > Map_t;
 	Map_t hits (begin, end);
 	typename Map_t::Iterator i = hits.begin();
 	while(i.valid() && !exception_state()) {
@@ -92,7 +92,7 @@ void align_queries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream*
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
 	{
 		log_stream << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
-		task_timer timer ("Loading trace points", false);
+		TimerTools timer ("Loading trace points", false);
 		trace_pts.load(v, bin);
 		timer.go("Sorting trace points");
 		merge_sort(v.begin(), v.end(), VATParameters::threads());

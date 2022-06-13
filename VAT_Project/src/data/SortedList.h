@@ -2,7 +2,7 @@
 #ifndef SORTED_LIST_H_
 #define SORTED_LIST_H_
 
-#include "../util/util.h"
+#include "../tools/util.h"
 #include "SeedHistogram.h"
 #include "../basic/PackedLocations.h"
 
@@ -38,7 +38,7 @@ class SortedList
 		limits_ (hst, range),
 		data_ (reinterpret_cast<entry*>(buffer))
 	{
-		task_timer timer ("Building seed list", false);
+		TimerTools timer ("Building seed list", false);
 		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
 		launch_scheduled_thread_pool(build_context, VATConsts::seqp, VATParameters::threads());
 		timer.go("Sorting seed list");
@@ -265,7 +265,7 @@ private:
 	{
 		Limits(const ShapeHistogram &hst, const seedp_range &range)
 		{
-			task_timer timer ("Computing limits", false);
+			TimerTools timer ("Computing limits", false);
 			this->push_back(0);
 			for(unsigned i=0;i<VATConsts::seedp;++i) {
 #ifdef EXTRA

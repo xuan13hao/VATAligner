@@ -11,7 +11,7 @@ using std::cout;
 using std::vector;
 
 template<typename _val>
-void join_blocks(unsigned ref_blocks, VATOutput &master_out, const vector<Temp_file> &tmp_file)
+void join_blocks(unsigned ref_blocks, VATOutput &master_out, const vector<TempFile> &tmp_file)
 {
 	vector<Block_output*> files;
 	vector<Block_output::Iterator> records;

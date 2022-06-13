@@ -4,8 +4,8 @@
 #define SEQUENCE_H_
 
 #include "../basic/value.h"
-#include "../util/binary_buffer.h"
-#include "../util/text_buffer.h"
+#include "../tools/binary_buffer.h"
+#include "../tools/text_buffer.h"
 
 template<typename _val>
 class sequence

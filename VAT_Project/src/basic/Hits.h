@@ -4,7 +4,7 @@
 #define MATCH_H_
 
 #include "sequence.h"
-#include "../util/async_buffer.h"
+#include "../tools/async_buffer.h"
 #include "EditTranscript.h"
 
 enum Strand { FORWARD, REVERSE };
@@ -17,7 +17,7 @@ interval normalized_range(unsigned pos, int len, Strand strand)
 }
 
 template<typename _locr, typename _locl>
-class hit
+class Hits
 {
 	public:
 	typedef typename packed_sequence_location<_locr>::type packed_loc;
@@ -25,19 +25,19 @@ class hit
 	unsigned	query_;
 	packed_loc	subject_;
 	_locl		seed_offset_;
-	hit():
+	Hits():
 		query_ (),
 		subject_ (),
 		seed_offset_ ()
 	{ }
-	hit(unsigned query, _locr subject, _locl seed_offset):
+	Hits(unsigned query, _locr subject, _locl seed_offset):
 		query_ (query),
 		subject_ (subject),
 		seed_offset_ (seed_offset)
 	{ 
 		// cout<<"init hit.."<<endl;
 	}
-	bool operator<(const hit &rhs) const
+	bool operator<(const Hits &rhs) const
 	{ return query_ < rhs.query_; }
 	bool blank() const
 	{ 
@@ -56,7 +56,7 @@ class hit
 		return (int64_t)subject_ - (int64_t)seed_offset_; 
 	}
 	template<unsigned _d>
-	static unsigned query_id(const hit& x)
+	static unsigned query_id(const Hits& x)
 	{
  
 		return x.query_/_d; 
@@ -65,17 +65,17 @@ class hit
 	template<unsigned _d>
 	struct Query_id
 	{
-		unsigned operator()(const hit& x) const
+		unsigned operator()(const Hits& x) const
 		{ return query_id<_d>(x); }
 	};
-	static bool cmp_subject(const hit &lhs, const hit &rhs)
+	static bool cmp_subject(const Hits &lhs, const Hits &rhs)
 	{ return lhs.subject_ < rhs.subject_; }
-	static bool cmp_normalized_subject(const hit &lhs, const hit &rhs)
+	static bool cmp_normalized_subject(const Hits &lhs, const Hits &rhs)
 	{
 		const uint64_t x = (uint64_t)lhs.subject_ + (uint64_t)rhs.seed_offset_, y = (uint64_t)rhs.subject_ + (uint64_t)lhs.seed_offset_;
 		return x < y || (x == y && lhs.seed_offset_ < rhs.seed_offset_);
 	}
-	friend std::ostream& operator<<(std::ostream &s, const hit &me)
+	friend std::ostream& operator<<(std::ostream &s, const Hits &me)
 	{
 		s << me.query_ << '\t' << me.subject_ << '\t' << me.seed_offset_ << '\n';
 		return s;

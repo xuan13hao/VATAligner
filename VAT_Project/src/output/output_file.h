@@ -32,7 +32,7 @@ public:
 		return true;
 	}
 
-	Block_output(unsigned ref_block, const Temp_file &tmp_file):
+	Block_output(unsigned ref_block, const TempFile &tmp_file):
 		Buffered_file (tmp_file),
 		block_ (ref_block)
 	{ }

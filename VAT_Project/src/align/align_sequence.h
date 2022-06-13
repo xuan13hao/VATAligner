@@ -19,7 +19,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end,
 		vector<char> &transcript_buf)
 {
-	std::sort(begin, end, hit<_locr,_locl>::cmp_normalized_subject);
+	std::sort(begin, end, Hits<_locr,_locl>::cmp_normalized_subject);
 	const unsigned q_num (begin->query_);
 	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
 	const unsigned frame = q_num % query_contexts();

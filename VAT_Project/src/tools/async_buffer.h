@@ -12,10 +12,10 @@ using std::string;
 using std::endl;
 using boost::ptr_vector;
 
-struct Buffer_file_read_exception : public diamond_exception
+struct Buffer_file_read_exception : public VATException
 {
 	Buffer_file_read_exception(const char* file_name, size_t count, size_t n):
-		diamond_exception (string("Error reading buffer file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
+		VATException (string("Error reading buffer file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
 	{ }
 };
 
@@ -34,7 +34,7 @@ struct Async_buffer
 		log_stream << "Async_buffer() " << input_count << ',' << bin_size_ << endl;
 		for(unsigned j=0;j<VATParameters::threads();++j)
 			for(unsigned i=0;i<bins;++i) {
-				tmp_file_.push_back(Temp_file ());
+				tmp_file_.push_back(TempFile ());
 				out_.push_back(new Output_stream (tmp_file_.back()));
 				size_.push_back(0);
 			}
@@ -120,7 +120,7 @@ private:
 	const unsigned bins_, bin_size_;
 	ptr_vector<Output_stream> out_;
 	vector<size_t> size_;
-	vector<Temp_file> tmp_file_;
+	vector<TempFile> tmp_file_;
 
 };
 

@@ -5,12 +5,12 @@
 
 #include <vector>
 #include <assert.h>
-#include "../util/async_buffer.h"
+#include "../tools/async_buffer.h"
 #include "../basic/Hits.h"
 #include "../basic/statistics.h"
 #include "../search/align_ungapped.h"
 #include "align_sequence.h"
-#include "../util/text_buffer.h"
+#include "../tools/text_buffer.h"
 #include "../output/output_buffer.h"
 #include "link_segments.h"
 
@@ -46,7 +46,7 @@ void align_read(Output_buffer<_val> &buffer,
 	unsigned padding[6];
 
 
-	typedef Map<typename vector<hit<_locr,_locl> >::iterator,typename hit<_locr,_locl>::template Query_id<1> > Map_t;
+	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<1> > Map_t;
 	Map_t hits (begin, end);
 
 	typename Map_t::Iterator i = hits.begin();

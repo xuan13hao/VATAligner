@@ -1,5 +1,6 @@
-#ifndef __PROTEINALIGNFLOW_H__
-#define __PROTEINALIGNFLOW_H__
+#ifndef __DNAALIGNFLOW_H__
+#define __DNAALIGNFLOW_H__
+
 
 
 #include <iostream>
@@ -20,14 +21,13 @@ using boost::timer::cpu_timer;
 using boost::ptr_vector;
 
 
-
 template<typename _val, typename _locr>
-void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
+void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
 {
 	ShapeConfigures::instance = ShapeConfigures (VATParameters::index_mode, _val ());
-	task_timer timer ("Opening the input file", true);
+	TimerTools timer ("Opening the input file", true);
 	timer_mapping.resume();
-	const SequenceFileFormat<Protein> *format_p (guess_format<Protein>(VATParameters::query_file));
+	const SequenceFileFormat<DNA> *format_n (guess_format<DNA>(VATParameters::query_file));
 	Input_stream query_file (VATParameters::query_file, true);
 	current_query_chunk=0;
 	timer.go("Opening the output file");
@@ -35,29 +35,17 @@ void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping,
 	timer_mapping.stop();
 	timer.finish();
 	
-
 	for(;;++current_query_chunk) {
-		task_timer timer ("Loading query sequences", true);
+		TimerTools timer ("Loading query sequences", true);
 		timer_mapping.resume();
 		size_t n_query_seqs;
-		
 
-		n_query_seqs = ReadingSeqs<_val,_val,Single_strand>(query_file, *format_p, &QuerySeqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
-		/*
-		if(input_sequence_type() == nucleotide)
-			n_query_seqs = load_seqs<Nucleotide,_val,Single_strand>(query_file, *format_n, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
-		else
-			n_query_seqs = load_seqs<Protein,_val,Single_strand>(query_file, *format_a, &query_seqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(program_options::chunk_size * 1e9));
-		*/
+		n_query_seqs = ReadingSeqs<_val,_val,Single_strand>(query_file, *format_n, &QuerySeqs<_val>::data_, query_ids::data_, query_source_seqs::data_, (size_t)(VATParameters::chunk_size * 1e9));
+
 		if(n_query_seqs == 0)
 			break;
 		timer.finish();
 		QuerySeqs<_val>::data_->print_stats();
-
-		// if(sequence_type() == amino_acid && program_options::seg == "yes") {
-		// 	timer.go("Running complexity filter");
-		// 	Complexity_filter<_val>::get().run(*query_seqs<_val>::data_);
-		// }
 
 		timer.go("Building query histograms");
 		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
@@ -99,7 +87,7 @@ void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping,
 }
 
 template<typename _val>
-void ProteinMasterThread()
+void DNAMasterThread()
 {
 	cpu_timer timer2, timer_mapping;
 	timer_mapping.stop();
@@ -107,7 +95,7 @@ void ProteinMasterThread()
 	if(!check_dir(VATParameters::tmpdir))
 		throw std::runtime_error("Temporary directory " + VATParameters::tmpdir + " does not exist or is not a directory. Please use option -t to specify a different directory.");
 
-	task_timer timer ("Opening the database", 1);
+	TimerTools timer ("Opening the database", 1);
 	Database_file<_val> db_file;
 	timer.finish();
 	VATParameters::set_options<_val>(ref_header.block_size);
@@ -117,10 +105,10 @@ void ProteinMasterThread()
 	verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;
 
 	if(ref_header.long_addressing)
-		ProteinMasterThread<_val,uint64_t>(db_file, timer_mapping, timer2);
+		DNAMasterThread<_val,uint64_t>(db_file, timer_mapping, timer2);
 	else
-		ProteinMasterThread<_val,uint32_t>(db_file, timer_mapping, timer2);
+		DNAMasterThread<_val,uint32_t>(db_file, timer_mapping, timer2);
 }
 
 
-#endif // __PROTEINALIGNFLOW_H__
+#endif // __DNAALIGNFLOW_H__

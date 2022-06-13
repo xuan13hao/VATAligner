@@ -8,7 +8,7 @@
 #include "../basic/exceptions.h"
 #include "../basic/statistics.h"
 #include "../data/LoadSequence.h"
-#include "../util/seq_file_format.h"
+#include "../tools/seq_file_format.h"
 
 template<class _val>
 void CreateDB(_val)
@@ -18,7 +18,7 @@ void CreateDB(_val)
 
 	cout << "Database File = " << VATParameters::input_ref_file << endl;
 	boost::timer::cpu_timer total;
-	task_timer timer ("Opening the database file", true);
+	TimerTools timer ("Opening the database file", true);
 	Input_stream db_file (VATParameters::input_ref_file, true);
 	timer.finish();
 	ref_header.block_size = VATParameters::chunk_size;

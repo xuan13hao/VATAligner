@@ -3,16 +3,16 @@
 #ifndef TRACE_PT_BUFFER_H_
 #define TRACE_PT_BUFFER_H_
 
-#include "../util/async_buffer.h"
+#include "../tools/async_buffer.h"
 #include "../basic/Hits.h"
 
 using std::auto_ptr;
 
 template<typename _locr, typename _locl>
-struct Trace_pt_buffer : public Async_buffer<hit<_locr,_locl> >
+struct Trace_pt_buffer : public Async_buffer<Hits<_locr,_locl> >
 {
 	Trace_pt_buffer(size_t input_size, const string &tmpdir, bool mem_buffered):
-		Async_buffer<hit<_locr,_locl> > (input_size, tmpdir, mem_buffered ? mem_bins : file_bins)
+		Async_buffer<Hits<_locr,_locl> > (input_size, tmpdir, mem_buffered ? mem_bins : file_bins)
 	{ }
 	enum { mem_bins = 1, file_bins = 4 };
 	static Trace_pt_buffer *instance;
@@ -21,7 +21,7 @@ struct Trace_pt_buffer : public Async_buffer<hit<_locr,_locl> >
 template<typename _locr, typename _locl> Trace_pt_buffer<_locr,_locl>* Trace_pt_buffer<_locr,_locl>::instance;
 
 template<typename _locr, typename _locl>
-class Trace_pt_list : public vector<hit<_locr,_locl> >
+class Trace_pt_list : public vector<Hits<_locr,_locl> >
 {
 	public:
 	void init()
@@ -89,7 +89,7 @@ class Trace_pt_list : public vector<hit<_locr,_locl> >
 	Query_range get_range()
 	{ return Query_range (*this); }
 private:
-	typename vector<hit<_locr,_locl> >::iterator pos_;
+	typename vector<Hits<_locr,_locl> >::iterator pos_;
 #ifdef PRE_PARTITION
 	vector<size_t> p_;
 	unsigned idx_;

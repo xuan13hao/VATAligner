@@ -3,7 +3,7 @@
 #ifndef OUTPUT_BUFFER_H_
 #define OUTPUT_BUFFER_H_
 
-#include "../util/text_buffer.h"
+#include "../tools/text_buffer.h"
 #include "output_format.h"
 #include "VATWrite.h"
 

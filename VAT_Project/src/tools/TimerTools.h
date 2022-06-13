@@ -13,13 +13,14 @@ using std::endl;
 boost::iostreams::filtering_ostream verbose_stream;
 boost::iostreams::filtering_ostream log_stream;
 
-struct task_timer : public boost::timer::cpu_timer
+class TimerTools : public boost::timer::cpu_timer
 {
-	task_timer(const char *msg, bool print):
+	public:
+	TimerTools(const char *msg, bool print):
 		print_ (print),
 		msg_ (msg)
 	{ start(msg); }
-	~task_timer()
+	~TimerTools()
 	{ finish(); }
 	void go(const char *msg)
 	{

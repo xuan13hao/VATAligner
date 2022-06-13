@@ -19,7 +19,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 	template<typename _loc>
 	void build_masking(unsigned sid, const seedp_range &range, typename SortedList<_loc>::Type &idx)
 	{
-		task_timer timer ("Counting low complexity seeds", false);
+		TimerTools timer ("Counting low complexity seeds", false);
 		vector<unsigned> counts (VATConsts::seedp);
 		Count_context<_loc> count_context (idx, counts);
 		launch_scheduled_thread_pool(count_context, VATConsts::seedp, VATParameters::threads());
