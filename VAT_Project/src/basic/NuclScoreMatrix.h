@@ -1,11 +1,12 @@
+#ifndef __NUCLSCOREMATRIX_H__
+#define __NUCLSCOREMATRIX_H__
 
-#ifndef SCORE_MATRIX_H_
-#define SCORE_MATRIX_H_
 
 #include "../algo/blast/core/blast_stat.h"
 #include "../algo/blast/core/blast_encoding.h"
 #include "ProteinProfile.h"
 #include "Matrixs.h"
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -164,7 +165,7 @@ class NuclScoreMatrix
 		// }
 	}
 
-	static const ScoreMatrix& get()
+	static const NuclScoreMatrix& get()
 	{ return *instance; }
 
 	const int8_t* matrix8() const
@@ -248,6 +249,8 @@ private:
 
 };
 
-auto_ptr<ScoreMatrix> ScoreMatrix::instance;
+auto_ptr<NuclScoreMatrix> NuclScoreMatrix::instance;
 
-#endif /* SCORE_MATRIX_H_ */
+
+
+#endif // __NUCLSCOREMATRIX_H__

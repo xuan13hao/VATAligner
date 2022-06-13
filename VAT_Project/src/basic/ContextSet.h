@@ -41,8 +41,8 @@ void setup(const string &command, int ac, const char **av)
 	po::set_option(po::threads_, tthread::thread::hardware_concurrency());
 	verbose_stream << "#Threads = " << po::threads() << endl;
 
-	if(command == "makedb")
-		po::command = po::makedb;
+	if(command == "makevatdb")
+		po::command = po::makevatdb;
 	else if(command == "blastx")
 		po::command = po::blastx;
 	else if(command == "protein")

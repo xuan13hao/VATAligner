@@ -32,17 +32,14 @@ int main(int ac, const char* av[])
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vaa) file")
             ("verbose,v", "enable verbose out")
-            ("log", "enable debug log");
+            ("log", "enable debug log")
+        	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
 
         po::options_description makedb("Makedb options");
         makedb.add_options()
         	("in", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
         	("block-size,b", po::value<double>(&VATParameters::chunk_size), "sequence block size in billions of letters (default=2)")
-#ifdef EXTRA
-        	("dbtype", po::value<string>(&program_options::db_type), "database type (nucl/prot)")
-#endif
         	;
-        	//("kegg-map", po::value<string>(&program_options::kegg_file), "KEGG mapping file");
 
         po::options_description aligner("Aligner options");
         aligner.add_options()
@@ -63,8 +60,6 @@ int main(int ac, const char* av[])
 
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
-			//("salltitles", "print all subject titles into the blast tabular format");
-        	//("very-sensitive", "enable very sensitive mode (default: fast)");
 
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
@@ -110,8 +105,6 @@ int main(int ac, const char* av[])
 
         if(vm.count("sensitive"))
         	VATParameters::aligner_mode = VATParameters::sensitive;
-        //else if(vm.count("very-sensitive"))
-        //	program_options::aligner_mode = program_options::very_sensitive;
         else
         	VATParameters::aligner_mode = VATParameters::fast;
         VATParameters::alignment_traceback = (vm.count("no-traceback") == 0);
@@ -135,11 +128,26 @@ int main(int ac, const char* av[])
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
-        } else if (VATParameters::command == VATParameters::makedb && vm.count("in") && vm.count("db")) 
+        } 
+		else if (VATParameters::command == VATParameters::makevatdb && vm.count("in") && vm.count("db")) 
 		{
         	if(vm.count("block-size") == 0)
-        		VATParameters::chunk_size = 2;
-				RunModel::CreateProteinDB();
+			{
+				VATParameters::chunk_size = 2;
+				if (vm.count("dbtype") == VATParameters::dna)
+				{
+					RunModel::CreateDNADB();
+				}
+				else if (vm.count("dbtype") == VATParameters::protein)
+				{
+					RunModel::CreateProteinDB();
+				}else
+				{
+					cerr << "Failed to get databasetype Please refer to the readme for instructions." << endl;
+				}
+				
+			}
+				// RunModel::CreateProteinDB();
 				// RunModel::CreateDNADB();
 			//create db here
 
@@ -148,15 +156,25 @@ int main(int ac, const char* av[])
 				|| VATParameters::command == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{
-        	if(vm.count("block-size") > 0) {
-        		cerr << "Warning: --block-size option should be set for the makedb command." << endl;
+        	if(vm.count("block-size") > 0) 
+			{
+        		cerr << "Warning: --block-size option should be set for the makevatdb command." << endl;
         	} else
-        		VATParameters::chunk_size = 0;
-        	if(VATParameters::command == VATParameters::protein)
-				//dna alignment
-				// RunModel::DNAAlign();
-				RunModel::ProteinAlign();
-
+			{
+				VATParameters::chunk_size = 0;
+				if(VATParameters::command == VATParameters::protein)
+				{
+					RunModel::ProteinAlign();
+				}else if (VATParameters::command == VATParameters::dna)
+				{
+					RunModel::DNAAlign();
+				}else
+				{
+					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
+				}
+					//dna alignment
+					// RunModel::DNAAlign();
+			}
         } else if(VATParameters::command == VATParameters::view && vm.count("vaa") > 0)
         	view();
         else
