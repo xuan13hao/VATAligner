@@ -32,11 +32,10 @@ void align(const _locq q_pos,
 	int score;
 	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
 		return;
-
 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 		return;
 
-	stats.inc(Statistics::TENTATIVE_MATCHES2);
+	// stats.inc(Statistics::TENTATIVE_MATCHES2);
 	hf.push(s, score);
 	    // cout<<"align"<<endl;
 

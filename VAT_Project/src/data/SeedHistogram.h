@@ -182,7 +182,7 @@ private:
 	static vector<ShapeConfigures> shape_configs()
 	{
 		vector<ShapeConfigures> v;
-		if(VATParameters::command == VATParameters::makedb) {
+		if(VATParameters::command == VATParameters::makevatdb) {
 			for(unsigned i=1;i<=VATConsts::index_modes;++i)
 				v.push_back(ShapeConfigures (i, _val()));
 		} else
