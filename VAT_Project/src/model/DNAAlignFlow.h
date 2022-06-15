@@ -48,7 +48,7 @@ void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu
 		QuerySeqs<_val>::data_->print_stats();
 
 		timer.go("Building query histograms");
-		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
+		query_hst = unique_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
 		const pair<size_t,size_t> query_len_bounds = QuerySeqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();
@@ -99,9 +99,9 @@ void DNAMasterThread()
 	Database_file<_val> db_file;
 	timer.finish();
 	VATParameters::set_options<_val>(ref_header.block_size);
-	verbose_stream << "Reference = " << VATParameters::database << endl;
-	verbose_stream << "Sequences = " << ref_header.sequences << endl;
-	verbose_stream << "Letters = " << ref_header.letters << endl;
+	cout << "Reference = " << VATParameters::database << endl;
+	cout << "Sequences = " << ref_header.sequences << endl;
+	cout << "Letters = " << ref_header.letters << endl;
 	verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;
 
 	if(ref_header.long_addressing)

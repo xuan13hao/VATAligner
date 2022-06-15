@@ -5,12 +5,14 @@
 #include "../algo/blast/core/blast_stat.h"
 #include "../algo/blast/core/blast_encoding.h"
 #include "ProteinProfile.h"
-#include "Matrixs.h"
+// #include "Matrixs.h"
 #include "AlphabetType.h"
 using std::string;
 using std::cout;
 using std::endl;
-using std::auto_ptr;
+// using std::auto_ptr;
+using std::unique_ptr;
+
 
 class ScoreParamsException : public std::exception
 {
@@ -48,19 +50,16 @@ class Blastscoreblk
 			throw ScoreParamsException ();
 		data_->name = 0;
 
-		initProteinParas();
+
 	}
 
-
-	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&)
+	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
+	data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
 	{
 		data_->name = 0;
 		data_->reward = reward;
 		data_->penalty = penalty;
-
-		initNuclParas();
 	}
-
 
 
 	~Blastscoreblk()
@@ -86,50 +85,98 @@ class Blastscoreblk
 	//lamda = 0.267
 
 	double lambda() const
-	{ 
+	{
+		double lamda ;
+		if (sequence_type() == amino_acid)
+		{
+			lamda = data_->kbp_gap_std[0]->Lambda;
+		}else if (sequence_type() == nucleotide)
+		{
+			lamda = 0.267;
+		}
+		else
+		{
+			throw ScoreParamsException ();
+		}
 		return lamda;
 	}
 
 
 	double k() const
 	{ 
-		return kvalue;
+		double k ;
+		if (sequence_type() == amino_acid)
+		{
+			k = data_->kbp_gap_std[0]->K;
+		}else if (sequence_type() == nucleotide)
+		{
+			k = 0.041;
+		}
+		else
+		{
+			throw ScoreParamsException ();
+		}
+		return k;
 	}
 
 
 	double ln_k() const
 	{ 
+		double lnk ;
+		if (sequence_type() == amino_acid)
+		{
+			lnk = data_->kbp_gap_std[0]->logK;
+		}else if (sequence_type() == nucleotide)
+		{
+			lnk = -3.19;
+		}
+		else
+		{
+			throw ScoreParamsException ();
+		}
 		return lnk;
 	}
 
 
 	int low_score() const
 	{ 
+		int lowscore;
+		if (sequence_type() == amino_acid)
+		{
+			lowscore = data_->loscore;
+		}else if (sequence_type() == nucleotide)
+		{
+			lowscore = -4;
+		}
+		else
+		{
+			throw ScoreParamsException ();
+		}
 		return lowscore;
 	}
 
-	void initNuclParas()
-	{
-		lamda = 0.267;
-		kvalue = 0.041;
-		lnk = -3.19;
-		lowscore = -4;
-	}
+	// void initNuclParas()
+	// {
+	// 	lamda = 0.267;
+	// 	kvalue = 0.041;
+	// 	lnk = -3.19;
+	// 	lowscore = -4;
+	// }
 
-	void initProteinParas()
-	{
-		lamda = data_->kbp_gap_std[0]->Lambda;
-		kvalue = data_->kbp_gap_std[0]->K; 
-		lnk = data_->kbp_gap_std[0]->logK; 
-		lowscore = data_->loscore; 
-	}
+	// void initProteinParas()
+	// {
+	// 	lamda = data_->kbp_gap_std[0]->Lambda;
+	// 	kvalue = data_->kbp_gap_std[0]->K; 
+	// 	lnk = data_->kbp_gap_std[0]->logK; 
+	// 	lowscore = data_->loscore; 
+	// }
 
 
 private:
-	int kvalue;
-	int lowscore;
-	int lnk;
-	int lamda;
+	// int kvalue;
+	// int lowscore;
+	// int lnk;
+	// int lamda;
 	BlastScoreBlk *data_;
 
 };
@@ -141,26 +188,29 @@ class ScoreMatrix
 	public:
 	template<typename _val>
 	ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
-		sb_ (matrix, gap_open, gap_extend, reward, penalty, _val ()),
+	sb_ (matrix, gap_open, gap_extend, reward, penalty, _val ()),
 		bias_ ((char)(-sb_.low_score())),
 		name_ (matrix),
 		matrix8_ (_val(), sb_),
 		matrix8u_ (_val(), sb_, bias_),
 		matrix16_ (_val(), sb_)
-	{ }
-/*
-	score_matrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
-		sb_ (matrix, gap_open, gap_extend, reward, penalty, DNA ()),
-		bias_ ((char)(-sb_.low_score())),
-		name_ (matrix),
-		matrix8_ (DNA(), sb_),
-		matrix8u_ (DNA(), sb_, bias_),
-		matrix16_ (DNA(), sb_)
+		
 	{ 
 		
 	}
 
-*/
+	ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
+		bias_ ((char)(-sb_.low_score())),
+		name_ (matrix),
+		matrix8_ (DNA(), sb_),
+		matrix8u_ (DNA(), sb_, bias_),
+		matrix16_ (DNA(), sb_),
+		sb_ (matrix, gap_open, gap_extend, reward, penalty, DNA ())
+	{ 
+
+	}
+
+
 	template<typename _val>
 	void print() const
 	{
@@ -225,7 +275,7 @@ class ScoreMatrix
 	double lambda() const
 	{ return sb_.lambda(); }
 
-	static auto_ptr<ScoreMatrix> instance;
+	static unique_ptr<ScoreMatrix> instance;
 
 private:
 
@@ -262,7 +312,7 @@ private:
 
 };
 
-auto_ptr<ScoreMatrix> ScoreMatrix::instance;
+unique_ptr<ScoreMatrix> ScoreMatrix::instance;
 
 
 

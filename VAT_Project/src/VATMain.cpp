@@ -163,9 +163,11 @@ int main(int ac, const char* av[])
 				VATParameters::chunk_size = 0;
 				if(VATParameters::command == VATParameters::protein)
 				{
+					cout<<"protein"<<endl;
 					RunModel::ProteinAlign();
 				}else if (VATParameters::command == VATParameters::dna)
 				{
+					cout<<"dna"<<endl;
 					RunModel::DNAAlign();
 				}else
 				{

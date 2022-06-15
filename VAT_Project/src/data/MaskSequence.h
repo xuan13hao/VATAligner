@@ -6,7 +6,7 @@
 
 using std::vector;
 using std::auto_ptr;
-
+using std::unique_ptr;
 template<typename _val>
 class Masked_sequence_set : public SequenceSet<_val>
 {
@@ -29,7 +29,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 		for(unsigned i=range.begin();i<range.end();++i) {
 			n += counts[i];
 			const size_t ht_size (std::max(static_cast<size_t>(static_cast<float>(counts[i]) * 1.3), static_cast<size_t>(counts[i] + 1)));
-			pos_filters[sid][i] = auto_ptr<filter_table> (new filter_table(ht_size));
+			pos_filters[sid][i] = unique_ptr<filter_table> (new filter_table(ht_size));
 		}
 		log_stream << "Hit cap = " << VATParameters::hit_cap << std::endl;
 		log_stream << "Low complexity seeds = " << n << std::endl;
@@ -132,7 +132,7 @@ private:
 private:
 
 	typedef hash_table<uint32_t, uint8_t, value_compare<uint8_t, 0>, murmur_hash> filter_table;
-	auto_ptr<filter_table> pos_filters[VATConsts::max_shapes][VATConsts::seedp];
+	unique_ptr<filter_table> pos_filters[VATConsts::max_shapes][VATConsts::seedp];
 
 };
 

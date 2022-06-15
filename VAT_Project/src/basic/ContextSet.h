@@ -59,7 +59,7 @@ void setup(const string &command, int ac, const char **av)
 			po::gap_open = 11;
 		if(po::gap_extend == -1)
 			po::gap_extend = 1;
-		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
+		ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
@@ -72,14 +72,13 @@ void setup(const string &command, int ac, const char **av)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
 			po::gap_extend = 2;
-		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
+		ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
 				po::penalty,
 				DNA ()));
 		ScoreMatrix::get().print<DNA>();
-
 	}
 	
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;

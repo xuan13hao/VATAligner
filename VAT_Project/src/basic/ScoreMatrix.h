@@ -5,12 +5,12 @@
 #include "../algo/blast/core/blast_stat.h"
 #include "../algo/blast/core/blast_encoding.h"
 #include "ProteinProfile.h"
-#include "Matrixs.h"
+// #include "Matrixs.h"
 using std::string;
 using std::cout;
 using std::endl;
 using std::auto_ptr;
-
+using std::unique_ptr;
 class ScoreParamsException : public std::exception
 {
 	public:

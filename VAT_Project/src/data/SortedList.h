@@ -166,7 +166,7 @@ private:
 		const SequenceSet<_val> &seqs;
 		const shape &sh;
 		const seedp_range &range;
-		const auto_ptr<Ptr_set> iterators;
+		const unique_ptr<Ptr_set> iterators;
 		const vector<size_t> seq_partition;
 	};
 
@@ -175,7 +175,7 @@ private:
 	{
 		uint64_t key;
 		//init buffered iterator via entry size
-		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
+		unique_ptr<buffered_iterator> it (new buffered_iterator(ptr));
 		for(size_t i=begin;i<end;++i) {
 			const sequence<const _val> seq = seqs[i];
 			if(seq.length()<sh.length_) continue;

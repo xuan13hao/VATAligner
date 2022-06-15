@@ -89,7 +89,7 @@ void view(VATFile &daa)
 {
 
 	// cout<<""<<daa.score_matrix()<<" " <<daa.gap_open_penalty()<<" "<<daa.gap_extension_penalty()<<" "<<daa.match_reward()<<" "<<daa.mismatch_penalty()<<endl;
-	ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(daa.score_matrix(),
+	ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(daa.score_matrix(),
 					daa.gap_open_penalty(),
 					daa.gap_extension_penalty(),
 					daa.match_reward(),
