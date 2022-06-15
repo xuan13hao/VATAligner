@@ -50,8 +50,7 @@ class Blastscoreblk
 	}
 
 
-	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
-		data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
+	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&)
 	{
 		data_->name = 0;
 		data_->reward = reward;
@@ -62,6 +61,8 @@ class Blastscoreblk
 
 	~Blastscoreblk()
 	{ BlastScoreBlkFree(data_); }
+
+
 	template<typename _val>
 	int score(_val x, _val y) const
 	{ 
