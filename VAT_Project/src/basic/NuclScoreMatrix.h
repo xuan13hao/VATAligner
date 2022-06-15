@@ -29,10 +29,10 @@ class Blastscoreblk
 		data_ (BlastScoreBlkNew(blast_seq_code<_val>(), 1))
 	{
 		if(data_ == 0)
-			throw Score_params_exception ();
+			throw ScoreParamsException ();
 		if((data_->kbp_gap_std[0] = Blast_KarlinBlkNew()) == 0
 				|| (data_->kbp_std[0] = Blast_KarlinBlkNew()) == 0)
-			throw Score_params_exception ();
+			throw ScoreParamsException ();
 		if(blast_load_karlin_blk<_val>(data_->kbp_gap_std[0],
 				data_->kbp_std[0],
 				gap_open,
@@ -40,13 +40,15 @@ class Blastscoreblk
 				reward,
 				penalty,
 				matrix.c_str()) != 0)
-			throw Score_params_exception ();
+			throw ScoreParamsException ();
 		data_->name = const_cast<char*>(matrix.c_str());
 		data_->reward = reward;
 		data_->penalty = penalty;
 		if(Blast_ScoreBlkMatrixFill (data_, 0) != 0)
-			throw Score_params_exception ();
+			throw ScoreParamsException ();
 		data_->name = 0;
+
+		initProteinParas();
 	}
 
 
@@ -55,6 +57,8 @@ class Blastscoreblk
 		data_->name = 0;
 		data_->reward = reward;
 		data_->penalty = penalty;
+
+		initNuclParas();
 	}
 
 
@@ -80,68 +84,63 @@ class Blastscoreblk
         // const int blast_lambbda = 1.28;
         // const double blast_k = 0.46;
 	//lamda = 0.267
-	template<typename _val>
-	double lambda(_val&) const
+
+	double lambda() const
 	{ 
-		double lamda = 0.267;
 		return lamda;
 	}
 
-	double lambda(DNA()) const
+
+	double k() const
 	{ 
-		double lamda = 0.267;
-		return lamda;
+		return kvalue;
 	}
-	//k = 0.041
-	template<typename _val>
-	double k(_val&) const
+
+
+	double ln_k() const
 	{ 
-		double k = 0.041;
-		return k;
-	}
-	double k(DNA()) const
-	{ 
-		double k = 0.041;
-		return k;
-	}
-	template<typename _val>
-	double ln_k(_val&) const
-	{ 
-		double lnk = -3.19;
-		return lnk;
-	}
-	double ln_k(DNA()) const
-	{ 
-		double lnk = -3.19;
 		return lnk;
 	}
 
-	template<typename _val>
-	int low_score(_val&) const
+
+	int low_score() const
 	{ 
-		// cout<<"low_score = "<<data_->loscore<<endl;
-		int lowscore = -4;
 		return lowscore;
 	}
-	int low_score(DNA()) const
-	{ 
-		// cout<<"low_score = "<<data_->loscore<<endl;
-		int lowscore = -4;
-		return lowscore;
+
+	void initNuclParas()
+	{
+		lamda = 0.267;
+		kvalue = 0.041;
+		lnk = -3.19;
+		lowscore = -4;
 	}
+
+	void initProteinParas()
+	{
+		lamda = data_->kbp_gap_std[0]->Lambda;
+		kvalue = data_->kbp_gap_std[0]->K; 
+		lnk = data_->kbp_gap_std[0]->logK; 
+		lowscore = data_->loscore; 
+	}
+
+
 private:
-
+	int kvalue;
+	int lowscore;
+	int lnk;
+	int lamda;
 	BlastScoreBlk *data_;
 
 };
 
 const double LN_2 = 0.69314718055994530941723212145818;
 
-class NuclScoreMatrix
+class ScoreMatrix
 {
 	public:
 	template<typename _val>
-	NuclScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
+	ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const _val&):
 		sb_ (matrix, gap_open, gap_extend, reward, penalty, _val ()),
 		bias_ ((char)(-sb_.low_score())),
 		name_ (matrix),
@@ -176,7 +175,7 @@ class NuclScoreMatrix
 		// }
 	}
 
-	static const NuclScoreMatrix& get()
+	static const ScoreMatrix& get()
 	{ return *instance; }
 
 	const int8_t* matrix8() const
@@ -198,35 +197,35 @@ class NuclScoreMatrix
 
 	char bias() const
 	{ return bias_; }
-	template<typename _val>
+	
 	double bitscore(int raw_score) const
-	{ return ( sb_.lambda(_val&) * raw_score - sb_.ln_k(_val&)) / LN_2; }
+	{ return ( sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; }
 
-	template<typename _val>
+
 	double rawscore(double bitscore, double) const
-	{ return (bitscore*LN_2 + sb_.ln_k(_val&)) / sb_.lambda(_val&); }
-	template<typename _val>
-	int rawscore(double bitscore,_val&) const
+	{ return (bitscore*LN_2 + sb_.ln_k()) / sb_.lambda(); }
+
+
+	int rawscore(double bitscore) const
 	{ 
 		int i =  (int)ceil(rawscore(bitscore, double ())); 
 		return i; 
 	}
-	template<typename _val>
+
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const
 	{ return static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); }
 
 	double bitscore(double evalue, size_t db_letters, unsigned query_len) const
 	{ return -log(evalue/db_letters/query_len)/log(2); }
 
-	template<typename _val>
 	double k() const
-	{ return sb_.k(_val&); }
+	{ return sb_.k(); }
 
-	template<typename _val>
+
 	double lambda() const
-	{ return sb_.lambda(_val&); }
+	{ return sb_.lambda(); }
 
-	static auto_ptr<NuclScoreMatrix> instance;
+	static auto_ptr<ScoreMatrix> instance;
 
 private:
 
@@ -250,7 +249,7 @@ private:
 				for(unsigned j=0;j<32;++j)
 					data[i*32+j] = i < n && j < n ? (_t)(sb.score((DNA)i, (DNA)j) + (int)bias) : std::numeric_limits<_t>::min();
 		}
-		
+		//Tells the compiler to allocate the variable x at a 16-byte aligned memory address instead of the default 4-byte alignment.
 		_t data[32*32] __attribute__ ((aligned (16)));
 	};
 
@@ -263,7 +262,7 @@ private:
 
 };
 
-auto_ptr<NuclScoreMatrix> NuclScoreMatrix::instance;
+auto_ptr<ScoreMatrix> ScoreMatrix::instance;
 
 
 

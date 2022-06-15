@@ -8,7 +8,7 @@
 #include "../tools/async_buffer.h"
 #include "../basic/Hits.h"
 #include "../basic/statistics.h"
-#include "../search/align_ungapped.h"
+#include "../search/XdropUngapped.h"
 #include "align_sequence.h"
 #include "../tools/text_buffer.h"
 #include "../output/output_buffer.h"

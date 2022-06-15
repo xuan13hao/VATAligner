@@ -7,7 +7,7 @@
 #include "value.h"
 #include "SeedPartition.h"
 #include "../tools/hash_function.h"
-#include "ScoreMatrix.h"
+#include "NuclScoreMatrix.h"
 #include "ReducedAlpha.h"
 
 // const double background_freq[] = {-1.188861,

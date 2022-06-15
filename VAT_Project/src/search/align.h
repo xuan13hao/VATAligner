@@ -5,12 +5,13 @@
 
 #include "../data/Reference.h"
 #include "../basic/statistics.h"
-#include "../basic/ScoreMatrix.h"
+#include "../basic/NuclScoreMatrix.h"
+// #include "../basic/ScoreMatrix.h"
 #include "../basic/ShapeParameter.h"
 #include "../search/sse_dist.h"
 #include "../search/collision.h"
 #include "../search/hit_filter.h"
-#include "../search/align_ungapped.h"
+#include "../search/XdropUngapped.h"
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void align(const _locq q_pos,
