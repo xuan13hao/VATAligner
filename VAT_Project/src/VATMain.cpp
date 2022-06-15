@@ -75,7 +75,7 @@ int main(int ac, const char* av[])
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
-        	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode (1=4x12, 2=16x9)")
+        	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
         	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
@@ -122,9 +122,9 @@ int main(int ac, const char* av[])
         	cout << endl << "Syntax:" << endl;
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
-        	cout << "  makedb\tBuild VAT database from a FASTA file" << endl;
+        	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
         	cout << "  protein\tAlign amino acid query sequences against a protein reference database" << endl;
-        	cout << "  nucl\tAlign DNA query sequences against a DNA reference database" << endl;
+        	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
@@ -149,9 +149,6 @@ int main(int ac, const char* av[])
 				}
 				
 			}
-				// RunModel::CreateProteinDB();
-				// RunModel::CreateDNADB();
-			//create db here
 
         } else if ((VATParameters::command == VATParameters::protein
         		//|| VATParameters::command == VATParameters::blastx
@@ -174,23 +171,24 @@ int main(int ac, const char* av[])
 				{
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
 				}
-					//dna alignment
-					// RunModel::DNAAlign();
 			}
         } else if(VATParameters::command == VATParameters::view && vm.count("vaa") > 0)
         	view();
         else
         	cout << "Insufficient arguments. Use VAT -h for help.\n";
 	}
-	catch(std::bad_alloc &e) {
+	catch(std::bad_alloc &e) 
+	{
 		cerr << "Failed to allocate sufficient memory. Please refer to the readme for instructions on memory usage." << endl;
 		log_stream << "Error: " << e.what() << endl;
-	} catch(exception& e) {
+	} catch(exception& e) 
+	{
         cerr << "Error: " << e.what() << endl;
         log_stream << "Error: " << e.what() << endl;
         return 1;
     }
-    catch(...) {
+    catch(...) 
+	{
         cerr << "Exception of unknown type!\n";
         return 1;
     }

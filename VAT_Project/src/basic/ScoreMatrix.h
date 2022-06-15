@@ -49,28 +49,11 @@ class Blastscoreblk
 	}
 
 
-	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
-		data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
+	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&)
 	{
-		// if(data_ == 0)
-		// 	throw Score_params_exception ();
-		// if((data_->kbp_gap_std[0] = Blast_KarlinBlkNew()) == 0
-		// 		|| (data_->kbp_std[0] = Blast_KarlinBlkNew()) == 0)
-		// 	throw Score_params_exception ();
-		// if(blast_load_karlin_blk<DNA>(data_->kbp_gap_std[0],
-		// 		data_->kbp_std[0],
-		// 		gap_open,
-		// 		gap_extend,
-		// 		reward,
-		// 		penalty,
-		// 		matrix.c_str()) != 0)
-			// throw Score_params_exception ();
 		data_->name = 0;
 		data_->reward = reward;
 		data_->penalty = penalty;
-		// if(Blast_ScoreBlkMatrixFill (data_, 0) != 0)
-		// 	throw Score_params_exception ();
-		// data_->name = 0;
 	}
 
 
@@ -93,13 +76,15 @@ class Blastscoreblk
 			return 1;
 		}
 		return 0;
-		
+		// return data_->matrix->data[(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[x]]][(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[y]]];
 		// return data_->matrix->data[(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[x]]][(long)blast_alphabet<DNA>()[(long)AlphabetAttributes<DNA>::ALPHABET[y]]];
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;
         // const double blast_k = 0.46;
 	//lamda = 0.267
+
+	// template<typename _val>
 	double lambda() const
 	{ 
 		double lamda = 0.267;
