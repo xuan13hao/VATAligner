@@ -53,19 +53,44 @@ class Blastscoreblk
 
 	}
 
-	Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
-	data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
-	{
-		data_->name = 0;
-		data_->reward = reward;
-		data_->penalty = penalty;
-	}
+	// Blastscoreblk(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
+	// data_ (BlastScoreBlkNew(blast_seq_code<DNA>(), 1))
+	// {
+	// 	data_->name = 0;
+	// 	data_->reward = reward;
+	// 	data_->penalty = penalty;
+	// }
 
 
 	~Blastscoreblk()
 	{ BlastScoreBlkFree(data_); }
 
+/** Supported substitution and gap costs with corresponding quality values
+ * for nucleotide sequence comparisons.
+ * NB: the values 0 and 0 for the gap costs are treated as the defaults used for
+ * the greedy gapped extension, i.e. 
+ * gap opening = 0, 
+ * gap extension = 1/2 match - mismatch.
+ * 
+ * The fields are:
+ * 
+ * 1. Gap opening cost,
+ * 2. Gap extension cost,
+ * 3. Lambda,
+ * 4. K,
+ * 5. H,
+ * 6. Alpha,
+ * 7. Beta,
+ * 8. Theta
+ */
 
+// TODO: add gumbel parameters for nucleotide cases
+
+/** Karlin-Altschul parameter values for substitution scores 1 and -5. */
+// static const array_of_8 blastn_values_1_5[] = {
+//     { 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100 },
+//     { 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100 }
+// };
 	template<typename _val>
 	int score(_val x, _val y) const
 	{ 
@@ -77,7 +102,7 @@ class Blastscoreblk
 		{
 			return 1;
 		}
-		return 0;
+		return -5;
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;
@@ -92,7 +117,7 @@ class Blastscoreblk
 			lamda = data_->kbp_gap_std[0]->Lambda;
 		}else if (sequence_type() == nucleotide)
 		{
-			lamda = 0.267;
+			lamda = 1.39;
 		}
 		else
 		{
@@ -110,7 +135,7 @@ class Blastscoreblk
 			k = data_->kbp_gap_std[0]->K;
 		}else if (sequence_type() == nucleotide)
 		{
-			k = 0.041;
+			k = 0.747;
 		}
 		else
 		{
@@ -128,7 +153,7 @@ class Blastscoreblk
 			lnk = data_->kbp_gap_std[0]->logK;
 		}else if (sequence_type() == nucleotide)
 		{
-			lnk = -3.19;
+			lnk = -0.29;
 		}
 		else
 		{
@@ -249,7 +274,11 @@ class ScoreMatrix
 	{ return bias_; }
 	
 	double bitscore(int raw_score) const
-	{ return ( sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; }
+	{ 
+		//cout<<"bitscore"<<endl;
+		return (sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; 
+		//cout<<"bitscore"<<((sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2)<<endl;
+	}
 
 
 	double rawscore(double bitscore, double) const

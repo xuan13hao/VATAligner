@@ -77,7 +77,6 @@ class VATOutput
 			unsigned query_id,
 			const vector<char> &transcript_buf)
 	{
-		// cout<<"write_record 1"<<endl;
 		buf.write(ref_map.get<_val>(current_ref_block, match.subject_id_));
 		buf.write(get_segment_flag(match));
 		buf.write_packed(match.score_);

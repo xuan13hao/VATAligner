@@ -77,8 +77,12 @@ private:
 			seq.unpack(context[0], 5, query_len);
 		} else if(file_.mode() == dna)
 		{
+
+			// cout<<"..........."<<endl;
 			Packed_sequence seq (it, query_len, false, 5);
 			seq.unpack(context[0], 5, query_len);	
+
+						// cout<<"..........."<<endl;
 		}
 		else {
 

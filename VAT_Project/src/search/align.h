@@ -36,7 +36,7 @@ void align(const _locq q_pos,
 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 		return;
 
-	// stats.inc(Statistics::TENTATIVE_MATCHES2);
+	stats.inc(Statistics::TENTATIVE_MATCHES2);
 	hf.push(s, score);
 	    // cout<<"align"<<endl;
 

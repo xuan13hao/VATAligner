@@ -72,13 +72,13 @@ public:
 	{
 		f_.read(&h1_, 1);
 		if(h1_.magic_number != VATHeaderOne().magic_number)
-			throw std::runtime_error("Input file is not a DAA file.");
+			throw std::runtime_error("Input file is not a VAA file.");
 		if(h1_.version > VATConsts::daa_version)
 			throw std::runtime_error("DAA version requires later version of DIAMOND.");
 		f_.read(&h2_, 1);
 
 		if(h2_.block_size[0] == 0)
-			throw std::runtime_error("Invalid DAA file. VAT run probably has not completed successfully.");
+			throw std::runtime_error("Invalid VAA file. VAT run probably has not completed successfully.");
 
 		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo) + h2_.block_size[0]);
 		string s;
@@ -91,7 +91,6 @@ public:
 		f_.read(ref_len_.data(), h2_.db_seqs_used);
 
 		f_.seek(sizeof(VATHeaderOne) + sizeof(VATHeaderTwo));
-		// cout << "DAA_file" << endl;
 
 	}
 

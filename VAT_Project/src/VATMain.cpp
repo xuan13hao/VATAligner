@@ -134,8 +134,6 @@ int main(int ac, const char* av[])
         	if(vm.count("block-size") == 0)
 			{
 				VATParameters::chunk_size = 2;
-				// RunModel::CreateDNADB();
-
 				if (vm.count("dbtype")&&VATParameters::db_type == "nucl")
 				{
 					RunModel::CreateDNADB();
@@ -145,7 +143,7 @@ int main(int ac, const char* av[])
 					RunModel::CreateProteinDB();
 				}else
 				{
-					cerr << "Failed to get databasetype Please refer to the readme for instructions." << endl;
+					cerr << "Failed to get databasetype. Please refer to the readme for instructions." << endl;
 				}
 				
 			}
@@ -163,11 +161,9 @@ int main(int ac, const char* av[])
 				VATParameters::chunk_size = 0;
 				if(VATParameters::command == VATParameters::protein)
 				{
-					cout<<"protein"<<endl;
 					RunModel::ProteinAlign();
 				}else if (VATParameters::command == VATParameters::dna)
 				{
-					cout<<"dna"<<endl;
 					RunModel::DNAAlign();
 				}else
 				{

@@ -65,20 +65,20 @@ void setup(const string &command, int ac, const char **av)
 				po::reward,
 				po::penalty,
 				Protein ()));
-		ScoreMatrix::get().print<Protein>();
+		// ScoreMatrix::get().print<Protein>();
 	} 
 	else {
 		if(po::gap_open == -1)
-			po::gap_open = 5;
+			po::gap_open = 3;
 		if(po::gap_extend == -1)
-			po::gap_extend = 2;
+			po::gap_extend = 3;
 		ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
 				po::penalty,
 				DNA ()));
-		ScoreMatrix::get().print<DNA>();
+		// ScoreMatrix::get().print<DNA>();
 	}
 	
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;

@@ -73,7 +73,7 @@ void align_read(Output_buffer<_val> &buffer,
 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	}else if (sequence_type() == nucleotide)
 	{
-		const int min_raw_score = 10;
+		const int min_raw_score = 0;
 	}
 	
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0

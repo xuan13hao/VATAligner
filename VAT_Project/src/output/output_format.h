@@ -27,7 +27,22 @@ class Blast_tab_format : public Output_format<_val>
 
 	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
-		// cout<<"evalue = "<<ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
+		// cout<<"1.............1"<<endl;
+
+		// cout<<"len = "<<r.len<<endl;
+		// cout<<"query_name = "<<r.query_name()<<endl;
+		// cout<<"subject_name = "	<< r.subject_name <<endl;
+		// cout<<"identities = "	<< r.identities*100/r.len <<endl;
+		// 	cout<<"mismatches = "	<< r.mismatches << endl;
+		// 	cout<<"gap_openings = "	<< r.gap_openings << endl;
+		// 	cout<<"query_begin = "	<< r.query_begin+1 << endl;
+		// 	cout<<"len = "	<< r.query_end()+1 << endl;
+		// 	cout<<"subject_begin = "	<< r.subject_begin+1 << endl;
+		// 	cout<<"subject_begin = "	<< r.subject_begin+r.subject_len << endl;
+		// cout<<"r.score = "	<< r.score<< endl;
+		// cout<<"r.db_letters() = "	<< r.db_letters()<< endl;
+		// cout<<"r.query().size()= "	<< r.query().size()<< endl;
+		// // cout<<"evalue = "<<ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
 		// cout<<"bitscore = "<<ScoreMatrix::get().bitscore(r.score) <<endl;
 		out << r.query_name() << '\t'
 				<< r.subject_name << '\t'
