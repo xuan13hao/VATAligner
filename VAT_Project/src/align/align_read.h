@@ -66,16 +66,18 @@ void align_read(Output_buffer<_val> &buffer,
 	std::sort(matches->begin(), matches->end());
 	unsigned n_hsp = 0, n_target_seq = 0;
 	typename vector<Segment<_val> >::iterator it = matches->begin();
-	// const int min_raw_score = 10;
-	if (sequence_type() == amino_acid)
-	{
-		const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
-			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
-	}else if (sequence_type() == nucleotide)
-	{
-		const int min_raw_score = 0;
-	}
-	
+	// int min_raw_score;
+	// if (sequence_type() == amino_acid)
+	// {
+	// 	min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
+	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+	// }else if (sequence_type() == nucleotide)
+	// {
+	// 	min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
+	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+	// }
+	// int bs = ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len);
+	// cout<<"bit score = "<<bs<<endl;
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	const int top_score = matches->operator[](0).score_;

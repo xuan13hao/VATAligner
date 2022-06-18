@@ -174,9 +174,9 @@ class Sam_format : public Output_format<_val>
 	virtual void print_header(Output_stream &f) const
 	{
 		static const char* line = "@HD\tVN:1.5\tSO:query\n\
-@PG\tPN:DIAMOND\n\
-@mm\tBlastX\n\
-@CO\tBlastX-like alignments\n\
+@PG\tPN:VAT\n\
+@mm\tVAT\n\
+@CO\tVAT alignments\n\
 @CO\tReporting AS: bitScore, ZR: rawScore, ZE: expected, ZI: percent identity, ZL: reference length, ZF: frame, ZS: query start DNA coordinate\n";
 		f.write(line, strlen(line));
 	}

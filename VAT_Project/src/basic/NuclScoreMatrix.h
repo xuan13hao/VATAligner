@@ -19,7 +19,7 @@ class ScoreParamsException : public std::exception
 	public:
 	virtual const char* what() const throw()
 	{ 
-		return "Error scoring parameters"; 
+		return "Error Scoring Parameters"; 
 	}
 };
 
@@ -169,14 +169,17 @@ class Blastscoreblk
 		if (sequence_type() == amino_acid)
 		{
 			lowscore = data_->loscore;
+		
 		}else if (sequence_type() == nucleotide)
 		{
-			lowscore = -4;
+			lowscore = -5;
 		}
 		else
 		{
 			throw ScoreParamsException ();
 		}
+
+		// cout<<"lowscore = "<<data_->loscore<<", hisscore = "<<data_->hiscore<<endl;
 		return lowscore;
 	}
 

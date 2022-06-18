@@ -1,6 +1,7 @@
 ./VAT makevatdb --dbtype nucl --in ../data/MT.fa -d mt
 ./VAT dna -d marine.vatf -q ../data/marine.sim.duplex.fn -a match
 ./VAT view -a match.vatr -o match
+./VAT view -a match.vatr -o match -f sam
 vim match
 
 
