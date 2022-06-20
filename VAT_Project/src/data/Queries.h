@@ -8,9 +8,10 @@
 #include "../basic/statistics.h"
 #include "SequenceSet.h"
 #include <memory>
-using std::unique_ptr;
 
-unique_ptr<SeedHistogram> query_hst;
+using std::auto_ptr;
+
+auto_ptr<SeedHistogram> query_hst;
 unsigned current_query_chunk;
 
 struct query_source_seqs

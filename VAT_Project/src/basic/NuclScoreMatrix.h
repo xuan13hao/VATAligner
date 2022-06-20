@@ -352,7 +352,7 @@ class ScoreMatrix
 	double lambda() const
 	{ return sb_.lambda(); }
 
-	static unique_ptr<ScoreMatrix> instance;
+	static auto_ptr<ScoreMatrix> instance;
 
     const int blast_lambbda = 1.28;
     const double blast_k = 0.46;
@@ -391,7 +391,7 @@ private:
 
 };
 
-unique_ptr<ScoreMatrix> ScoreMatrix::instance;
+auto_ptr<ScoreMatrix> ScoreMatrix::instance;
 
 
 

@@ -94,7 +94,7 @@ template<typename _val>
 void view(VATFile &daa)
 {
 
-	ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(daa.score_matrix(),
+	ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(daa.score_matrix(),
 					daa.gap_open_penalty(),
 					daa.gap_extension_penalty(),
 					daa.match_reward(),

@@ -8,7 +8,7 @@
 
 using std::cout;
 using std::endl;
-
+using std::auto_ptr;
 void setup(const string &command, int ac, const char **av)
 {
 	namespace io = boost::iostreams;
@@ -59,7 +59,7 @@ void setup(const string &command, int ac, const char **av)
 			po::gap_open = 11;
 		if(po::gap_extend == -1)
 			po::gap_extend = 1;
-		ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
+		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
@@ -72,7 +72,7 @@ void setup(const string &command, int ac, const char **av)
 			po::gap_open = 0;
 		if(po::gap_extend == -1)
 			po::gap_extend = 0;
-		ScoreMatrix::instance = unique_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
+		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
 				po::reward,
