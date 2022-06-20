@@ -119,14 +119,18 @@ bool is_primary_hit(const _val *query,
 {
 	assert(len > 0 && len <= VATParameters::window*2);
 	const bool chunked (VATParameters::lowmem > 1);
+	cout<<"is_primary_hit"<<endl;
+	// const sequence<const _val> q(query);
 	uint64_t mask = reduced_match32(query, subject, len);
 	unsigned i = 0;
 	uint64_t current_mask = ShapeConfigures::instance.get_shape(sid).mask_;
 	unsigned shape_len =  len - ShapeConfigures::instance.get_shape(0).length_ + 1;
-	while(i < shape_len) {
+	while(i < shape_len) 
+	{
 		if(len-i > 32)
 			mask |= reduced_match32(query+32,subject+32,len-i-32) << 32;
-		for(unsigned j=0;j<32 && i<shape_len;++j) {
+		for(unsigned j=0;j<32 && i<shape_len;++j) 
+		{
 			assert(&subject[j] >= ReferenceSeqs<_val>::data_->data(0) && &subject[j] <= ReferenceSeqs<_val>::data_->data(ReferenceSeqs<_val>::data_->raw_len()-1));
 			for(unsigned k=0;k<sid;++k)
 				if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(k).mask_, &subject[j], k))

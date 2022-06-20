@@ -36,8 +36,8 @@ void align(const _locq q_pos,
 
 	// if (sequence_type() == amino_acid)
 	// {
-		// if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
-		// return;
+	// 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
+	// 	return;
 	// }
 	// if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 	// 	return;

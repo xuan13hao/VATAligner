@@ -91,6 +91,27 @@ class Blastscoreblk
 //     { 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100 },
 //     { 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100 }
 // };
+
+
+/** Karlin-Altschul parameter values for substitution scores 1 and -4. */
+// static const array_of_8 blastn_values_1_4[] = {
+//     { 0, 0, 1.383, 0.738, 1.36, 1.02,  0, 100 },
+//     { 1, 2,  1.36,  0.67,  1.2,  1.1,  0,  98 }, 
+//     { 0, 2,  1.26,  0.43, 0.90,  1.4, -1,  91 },
+//     { 2, 1,  1.35,  0.61,  1.1,  1.2, -1,  98 },
+//     { 1, 1,  1.22,  0.35, 0.72,  1.7, -3,  88 }
+// };
+
+// static const array_of_8 blastn_values_1_1[] = {
+//     { 3,  2, 1.09,  0.31, 0.55, 2.0,  -2, 99 },
+//     { 2,  2, 1.07,  0.27, 0.49, 2.2,  -3, 97 }, 
+//     { 1,  2, 1.02,  0.21, 0.36, 2.8,  -6, 92 }, 
+//     { 0,  2, 0.80, 0.064, 0.17, 4.8, -16, 72 },
+//     { 4,  1, 1.08,  0.28, 0.54, 2.0,  -2, 98 }, 
+//     { 3,  1, 1.06,  0.25, 0.46, 2.3,  -4, 96 }, 
+//     { 2,  1, 0.99,  0.17, 0.30, 3.3, -10, 90 }
+// };
+
 	template<typename _val>
 	int score(_val x, _val y) const
 	{ 
@@ -102,7 +123,7 @@ class Blastscoreblk
 		{
 			return 1;
 		}
-		return -5;
+		return -4;
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;
@@ -117,7 +138,7 @@ class Blastscoreblk
 			lamda = data_->kbp_gap_std[0]->Lambda;
 		}else if (sequence_type() == nucleotide)
 		{
-			lamda = 1.39;
+			lamda = 1.383;
 		}
 		else
 		{
@@ -135,7 +156,7 @@ class Blastscoreblk
 			k = data_->kbp_gap_std[0]->K;
 		}else if (sequence_type() == nucleotide)
 		{
-			k = 0.747;
+			k = 0.738;
 		}
 		else
 		{
@@ -153,7 +174,7 @@ class Blastscoreblk
 			lnk = data_->kbp_gap_std[0]->logK;
 		}else if (sequence_type() == nucleotide)
 		{
-			lnk = -0.29;
+			lnk = log(0.738);
 		}
 		else
 		{
@@ -172,7 +193,7 @@ class Blastscoreblk
 		
 		}else if (sequence_type() == nucleotide)
 		{
-			lowscore = -5;
+			lowscore = -4;
 		}
 		else
 		{
@@ -280,7 +301,7 @@ class ScoreMatrix
 	{ 
 		double i = (sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; 
 		//cout<<"bitscore"<<endl;
-		cout<<"bit score = "<<i<<", raw score = "<<raw_score<<", lambda = "<<sb_.lambda()<<", lnk = "<<sb_.ln_k()<<endl;
+		// cout<<"bit score = "<<i<<", raw score = "<<raw_score<<", lambda = "<<sb_.lambda()<<", lnk = "<<sb_.ln_k()<<endl;
 		return i; 
 		//cout<<"bitscore"<<((sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2)<<endl;
 	}
@@ -310,7 +331,9 @@ class ScoreMatrix
 
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const
 	{ 
+		double evalue = log10(query_len) + log10(db_letters) - raw_score * log10(2);
 		double i = static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); 
+		// cout<<"i = "<<i<<", evale = "<<floor(evalue)<<endl;
 		cout<<"evalue = "<<i<<", raw score = "<<raw_score<<", db letter = "<<db_letters<<", query len = "<<query_len<<endl;
 		return i;
 	}
