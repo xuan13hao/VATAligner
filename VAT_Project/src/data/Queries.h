@@ -7,6 +7,8 @@
 #include "SortedList.h"
 #include "../basic/statistics.h"
 #include "SequenceSet.h"
+#include <memory>
+using std::unique_ptr;
 
 unique_ptr<SeedHistogram> query_hst;
 unsigned current_query_chunk;

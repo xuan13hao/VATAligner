@@ -5,6 +5,8 @@
 #include "../tools/util.h"
 #include "SeedHistogram.h"
 #include "../basic/PackedLocations.h"
+#include <memory>
+using std::unique_ptr;
 
 template<typename _pos>
 class SortedList

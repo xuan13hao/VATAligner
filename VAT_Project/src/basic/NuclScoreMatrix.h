@@ -8,11 +8,12 @@
 // #include "Matrixs.h"
 #include "AlphabetType.h"
 #include <memory>
+using std::unique_ptr;
 using std::string;
 using std::cout;
 using std::endl;
 // using std::auto_ptr;
-using std::unique_ptr;
+
 
 
 class ScoreParamsException : public std::exception
@@ -335,7 +336,7 @@ class ScoreMatrix
 		double evalue = log10(query_len) + log10(db_letters) - raw_score * log10(2);
 		double i = static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); 
 		// cout<<"i = "<<i<<", evale = "<<floor(evalue)<<endl;
-		cout<<"evalue = "<<i<<", raw score = "<<raw_score<<", db letter = "<<db_letters<<", query len = "<<query_len<<endl;
+		// cout<<"evalue = "<<i<<", raw score = "<<raw_score<<", db letter = "<<db_letters<<", query len = "<<query_len<<endl;
 		return i;
 	}
 
