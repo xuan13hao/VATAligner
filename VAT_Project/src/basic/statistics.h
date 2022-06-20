@@ -31,7 +31,7 @@ class Statistics
 	{
 		// log_stream << "Used ref size = " << data_[REF_SIZE] << endl;
 		// log_stream << "Traceback errors = " << data_[BIAS_ERRORS] << endl;
-		// log_stream << "Seed hits = " << data_[SEED_HITS] << endl;
+		cout << "Seed hits = " << data_[SEED_HITS] << endl;
 		// cout << "Tentative hits (stage 1) = " << data_[TENTATIVE_MATCHES1] << endl;
 		// cout << "Tentative hits (stage 2) = " << data_[TENTATIVE_MATCHES2] << endl;
 		// cout << "Tentative hits (stage 3) = " << data_[TENTATIVE_MATCHES3] << endl;
@@ -39,9 +39,9 @@ class Statistics
 		// log_stream << "Overlap hits = " << data_[DUPLICATES] << endl;
 		// log_stream << "Net hits = " << data_[OUT_HITS] << endl;
 		cout << "Matches = " << data_[OUT_MATCHES] << endl;
-		cout << "Total score = " << data_[SCORE_TOTAL] << endl;
-		cout << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;
-		cout << "Gapped matches = " << data_[GAPPED] << endl;
+		// cout << "Total score = " << data_[SCORE_TOTAL] << endl;
+		// cout << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;
+		// cout << "Gapped matches = " << data_[GAPPED] << endl;
 		cout << "Final matches = " << data_[MATCHES] << endl;
 		cout << "Queries aligned = " << data_[ALIGNED] << endl;
 	}

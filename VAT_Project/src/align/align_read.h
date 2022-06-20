@@ -80,6 +80,7 @@ void align_read(Output_buffer<_val> &buffer,
 	// cout<<"bit score = "<<bs<<endl;
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+			
 	const int top_score = matches->operator[](0).score_;
 
 

@@ -17,7 +17,7 @@ void align_range(_locq q_pos,
 
 	const _val* query = QuerySeqs<_val>::data_->data(q_pos);
 	HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
-
+	// cout<<"query = "<<query<<endl;
 	if(s.n <= VATParameters::hit_cap) 
 	{
 		stats.inc(Statistics::SEED_HITS, s.n);
@@ -62,16 +62,14 @@ void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
 }
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void align_partition(unsigned hp,
+void alignPartition(unsigned hp,
 		Statistics &stats,
 		unsigned sid,
 		typename SortedList<_locr>::Type::const_iterator i,
 		typename SortedList<_locq>::Type::const_iterator j,
 		unsigned thread_id)
 {
-	//cout<<"align_partition 1"<<endl;
 	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
-	//	cout<<"align_partition 2"<<endl;
 	while(!i.at_end() && !j.at_end() && !exception_state()) 
 	{
 		if(i.key() < j.key()) 

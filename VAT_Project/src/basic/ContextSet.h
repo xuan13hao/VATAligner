@@ -157,7 +157,7 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
 	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
-	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
+	cout << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
 
 

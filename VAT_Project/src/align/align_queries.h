@@ -26,7 +26,7 @@ private:
 };
 
 template<typename _val, typename _locr, typename _locl, unsigned _d>
-void align_queries(typename Trace_pt_list<_locr,_locl>::iterator begin,
+void alignQueries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 		typename Trace_pt_list<_locr,_locl>::iterator end,
 		Output_buffer<_val> &buffer,
 		Statistics &st)
@@ -66,7 +66,7 @@ struct Align_context
 				// 	align_queries<_val,_locr,_locl,2>(query_range.begin, query_range.end, *buffer, st);
 				// 	break;
 				case 1:
-					align_queries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
+					alignQueries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
 
 
 				}
@@ -86,7 +86,7 @@ struct Align_context
 };
 
 template<typename _val, typename _locr, typename _locl>
-void align_queries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream* output_file)
+void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream* output_file)
 {
 	Trace_pt_list<_locr,_locl> v;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 

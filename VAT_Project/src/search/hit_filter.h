@@ -63,12 +63,9 @@ public:
 			seed_offset_ = l.second;
 		}
 		
-		//cout << "query=" << q_num_ << " so=" << seed_offset_ << " subject=" << subject << endl;
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
-				// cout<<"push_hit 1"<<endl;
 
 		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
-				// cout<<"push_hit 2"<<endl;
 
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}

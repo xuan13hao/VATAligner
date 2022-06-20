@@ -278,14 +278,17 @@ class ScoreMatrix
 	
 	double bitscore(int raw_score) const
 	{ 
+		double i = (sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; 
 		//cout<<"bitscore"<<endl;
-		return (sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2; 
+		cout<<"bit score = "<<i<<", raw score = "<<raw_score<<", lambda = "<<sb_.lambda()<<", lnk = "<<sb_.ln_k()<<endl;
+		return i; 
 		//cout<<"bitscore"<<((sb_.lambda() * raw_score - sb_.ln_k() )/ LN_2)<<endl;
 	}
 
 
 	double rawscore(double bitscore, double) const
-	{ return (bitscore*LN_2 + sb_.ln_k()) / sb_.lambda(); }
+	{ 
+		return (bitscore*LN_2 + sb_.ln_k()) / sb_.lambda(); }
 
 
 	int rawscore(double bitscore) const
@@ -294,11 +297,28 @@ class ScoreMatrix
 		return i; 
 	}
 
+        // double evalue(double bit_score, int db_letters, unsigned query_len) const
+        // {
+        //     double evalue = log10(query_len) + log10(db_letters) - bit_score * log10(2);
+        //     return floor(evalue);
+        // }
+        // double bitscore(double score) const
+        // {
+        //     double bit_score = (blast_lambbda * score - log(blast_k)) / log(2);
+        //     return bit_score;
+        // }
+
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const
-	{ return static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); }
+	{ 
+		double i = static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); 
+		cout<<"evalue = "<<i<<", raw score = "<<raw_score<<", db letter = "<<db_letters<<", query len = "<<query_len<<endl;
+		return i;
+	}
 
 	double bitscore(double evalue, size_t db_letters, unsigned query_len) const
-	{ return -log(evalue/db_letters/query_len)/log(2); }
+	{ 
+		return -log(evalue/db_letters/query_len)/log(2); 
+	}
 
 	double k() const
 	{ return sb_.k(); }
@@ -309,6 +329,8 @@ class ScoreMatrix
 
 	static unique_ptr<ScoreMatrix> instance;
 
+    const int blast_lambbda = 1.28;
+    const double blast_k = 0.46;
 private:
 
 	template<typename _t>

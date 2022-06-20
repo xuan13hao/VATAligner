@@ -30,7 +30,7 @@ class Search_context
 	void operator()(unsigned thread_id, unsigned seedp) const
 	{
 		Statistics stat;
-		align_partition<_val,_locr,_locq,_locl>(seedp,
+		alignPartition<_val,_locr,_locq,_locl>(seedp,
 				stat,
 				sid,
 				ref_idx.get_partition_cbegin(seedp),
@@ -131,7 +131,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 	} else
 		out = &master_out.stream();
 	timer.go("Computing alignments");
-	align_queries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
+	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
 	delete Trace_pt_buffer<_locr,_locl>::instance;
 
 	if(ref_header.n_blocks > 1) {
