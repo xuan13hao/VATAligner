@@ -8,7 +8,7 @@
 // #include "Matrixs.h"
 #include "AlphabetType.h"
 #include <memory>
-using std::unique_ptr;
+
 using std::string;
 using std::cout;
 using std::endl;
