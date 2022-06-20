@@ -19,7 +19,7 @@ using std::endl;
 using std::cout;
 using boost::timer::cpu_timer;
 using boost::ptr_vector;
-
+using std::auto_ptr;
 
 template<typename _val, typename _locr>
 void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu_timer &total_timer)
@@ -48,7 +48,7 @@ void DNAMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, cpu
 		QuerySeqs<_val>::data_->print_stats();
 
 		timer.go("Building query histograms");
-		query_hst = unique_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
+		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
 		const pair<size_t,size_t> query_len_bounds = QuerySeqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();

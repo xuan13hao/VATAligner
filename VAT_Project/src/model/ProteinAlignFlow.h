@@ -60,7 +60,7 @@ void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping,
 		// }
 
 		timer.go("Building query histograms");
-		query_hst = unique_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
+		query_hst = auto_ptr<SeedHistogram> (new SeedHistogram (*QuerySeqs<_val>::data_, _val()));
 		const pair<size_t,size_t> query_len_bounds = QuerySeqs<_val>::data_->len_bounds(ShapeConfigures::get().get_shape(0).length_);
 		timer_mapping.stop();
 		timer.finish();
