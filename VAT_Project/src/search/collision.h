@@ -119,7 +119,7 @@ bool is_primary_hit(const _val *query,
 {
 	assert(len > 0 && len <= VATParameters::window*2);
 	const bool chunked (VATParameters::lowmem > 1);
-	cout<<"is_primary_hit"<<endl;
+	// cout<<"is_primary_hit"<<endl;
 	// const sequence<const _val> q(query);
 	uint64_t mask = reduced_match32(query, subject, len);
 	unsigned i = 0;
