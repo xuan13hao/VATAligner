@@ -7,6 +7,7 @@
 #include "ProteinProfile.h"
 // #include "Matrixs.h"
 #include "AlphabetType.h"
+#include <memory>
 using std::string;
 using std::cout;
 using std::endl;
