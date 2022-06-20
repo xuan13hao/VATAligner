@@ -7,12 +7,12 @@
 #include "ProteinProfile.h"
 // #include "Matrixs.h"
 #include "AlphabetType.h"
-#include <bits/unique_ptr.h>
+#include <memory>
 using std::unique_ptr;
 using std::string;
 using std::cout;
 using std::endl;
-// using std::auto_ptr;
+using std::auto_ptr;
 
 
 
