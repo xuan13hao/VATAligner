@@ -42,17 +42,17 @@ void setup(const string &command, int ac, const char **av)
 	verbose_stream << "#Threads = " << po::threads() << endl;
 
 	if(command == "makevatdb")
-		po::command = po::makevatdb;
+		po::algn_type = po::makevatdb;
 	else if(command == "blastx")
-		po::command = po::blastx;
+		po::algn_type = po::blastx;
 	else if(command == "protein")
-		po::command = po::protein;
+		po::algn_type = po::protein;
 	else if(command == "dna")
-		po::command = po::dna;
+		po::algn_type = po::dna;
 	else if(command == "view")
-		po::command = po::view;
+		po::algn_type = po::view;
 	else
-		po::command = po::invalid;
+		po::algn_type = po::invalid;
 
 	if(sequence_type() == amino_acid) {
 		if(po::gap_open == -1)
@@ -84,7 +84,7 @@ void setup(const string &command, int ac, const char **av)
 	verbose_stream << "Gap open penalty = " << po::gap_open << endl;
 	verbose_stream << "Gap extension penalty = " << po::gap_extend << endl;
 
-	if(po::seg == "" && po::command == po::blastx)
+	if(po::seg == "" && po::algn_type == po::blastx)
 		po::seg = "yes";
 	verbose_stream << "Seg masking = " << (po::seg == "yes") << endl;
 

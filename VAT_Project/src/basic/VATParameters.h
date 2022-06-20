@@ -72,7 +72,7 @@ namespace VATParameters
 	typedef enum { fast=0, sensitive=1, very_sensitive=2 } Aligner_mode;
 	extern Aligner_mode aligner_mode;
 	typedef enum { invalid=0, makevatdb=1, protein=2, blastx=3, dna=4, view=5 } Command;
-	extern Command command;
+	extern Command algn_type;
 
 	inline uint32_t threads()
 	{

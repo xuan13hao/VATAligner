@@ -123,13 +123,12 @@ void view()
 	VATFile daa (VATParameters::daa_file);
 	if(daa.mode() == dna)
 	{	
-		VATParameters::command = VATParameters::dna; 
+		VATParameters::algn_type = VATParameters::dna; 
 		view<DNA>(daa);
-		// sequence_type(DNA());
 	}
 	else
 	{
-		VATParameters::command = VATParameters::protein; 
+		VATParameters::algn_type = VATParameters::protein; 
 		view<Protein>(daa);
 
 	}

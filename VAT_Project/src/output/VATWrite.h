@@ -37,7 +37,7 @@ class VATOutput
 				ScoreMatrix::get().k(),
 				ScoreMatrix::get().lambda(),
 				VATParameters::matrix,
-				(Align_mode)VATParameters::command)
+				(Align_mode)VATParameters::algn_type)
 	{
 		VATHeaderOne h1;
 		f_.write(&h1, 1);

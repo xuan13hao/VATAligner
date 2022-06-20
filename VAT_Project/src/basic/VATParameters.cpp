@@ -69,7 +69,7 @@ bool		single_domain;
 size_t		db_size;
 
 Aligner_mode aligner_mode;
-Command command;
+Command algn_type;
 
 template<typename _val>
 void set_options(double block_size)

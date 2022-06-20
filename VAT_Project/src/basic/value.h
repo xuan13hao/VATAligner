@@ -17,10 +17,10 @@ Sequence_type sequence_type<DNA>(const DNA&)
 { return nucleotide; }
 
 Sequence_type input_sequence_type()
-{ return VATParameters::command == VATParameters::protein ? amino_acid : nucleotide; }
+{ return VATParameters::algn_type == VATParameters::protein ? amino_acid : nucleotide; }
 
 Sequence_type sequence_type()
-{ return VATParameters::command == VATParameters::dna ? nucleotide : amino_acid; }
+{ return VATParameters::algn_type == VATParameters::dna ? nucleotide : amino_acid; }
 
 size_t query_contexts()
 {
@@ -33,10 +33,10 @@ size_t query_contexts()
 }
 
 bool query_translated()
-{ return VATParameters::command == VATParameters::blastx ? true : false; }
+{ return VATParameters::algn_type == VATParameters::blastx ? true : false; }
 
 int query_len_factor()
-{ return VATParameters::command == VATParameters::blastx ? 3 : 1; }
+{ return VATParameters::algn_type == VATParameters::blastx ? 3 : 1; }
 
 template<typename _val>
 class AlphabetMap

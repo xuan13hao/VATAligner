@@ -129,7 +129,7 @@ int main(int ac, const char* av[])
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
         } 
-		else if (VATParameters::command == VATParameters::makevatdb && vm.count("in") && vm.count("db")) 
+		else if (VATParameters::algn_type == VATParameters::makevatdb && vm.count("in") && vm.count("db")) 
 		{
         	if(vm.count("block-size") == 0)
 			{
@@ -148,9 +148,9 @@ int main(int ac, const char* av[])
 				
 			}
 
-        } else if ((VATParameters::command == VATParameters::protein
+        } else if ((VATParameters::algn_type == VATParameters::protein
         		//|| VATParameters::command == VATParameters::blastx
-				|| VATParameters::command == VATParameters::dna)
+				|| VATParameters::algn_type == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{
         	if(vm.count("block-size") > 0) 
@@ -159,10 +159,10 @@ int main(int ac, const char* av[])
         	} else
 			{
 				VATParameters::chunk_size = 0;
-				if(VATParameters::command == VATParameters::protein)
+				if(VATParameters::algn_type == VATParameters::protein)
 				{
 					RunModel::ProteinAlign();
-				}else if (VATParameters::command == VATParameters::dna)
+				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
 					RunModel::DNAAlign();
 				}else
@@ -170,7 +170,7 @@ int main(int ac, const char* av[])
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
 				}
 			}
-        } else if(VATParameters::command == VATParameters::view && vm.count("vaa") > 0)
+        } else if(VATParameters::algn_type == VATParameters::view && vm.count("vaa") > 0)
         	view();
         else
         	cout << "Insufficient arguments. Use VAT -h for help.\n";
