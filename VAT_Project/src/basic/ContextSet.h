@@ -69,9 +69,9 @@ void setup(const string &command, int ac, const char **av)
 	} 
 	else {
 		if(po::gap_open == -1)
-			po::gap_open = 0;
+			po::gap_open = 3;
 		if(po::gap_extend == -1)
-			po::gap_extend = 0;
+			po::gap_extend = 2;
 		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
@@ -150,8 +150,8 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(b));
 	} else {
-		po::set_option(po::window, 40u);
-		po::set_option(po::hit_band, 5);
+		po::set_option(po::window, 30u);
+		po::set_option(po::hit_band, 6);
 		// cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
 		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));

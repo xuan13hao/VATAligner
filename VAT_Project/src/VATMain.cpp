@@ -63,13 +63,13 @@ int main(int ac, const char* av[])
 
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
-			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-15), "maximum seed frequency")
+			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
 			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
        		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(30), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(20), "xdrop for ungapped alignment")
-        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(10), "xdrop for gapped alignment in bits")
+        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
@@ -133,13 +133,14 @@ int main(int ac, const char* av[])
 		{
         	if(vm.count("block-size") == 0)
 			{
-				VATParameters::chunk_size = 2;
 				if (vm.count("dbtype")&&VATParameters::db_type == "nucl")
 				{
+					VATParameters::chunk_size = 2;
 					RunModel::CreateDNADB();
 				}
 				else if (vm.count("dbtype")&&VATParameters::db_type == "prot")
 				{
+					VATParameters::chunk_size = 2;
 					RunModel::CreateProteinDB();
 				}else
 				{
@@ -158,12 +159,13 @@ int main(int ac, const char* av[])
         		cerr << "Warning: --block-size option should be set for the makevatdb command." << endl;
         	} else
 			{
-				VATParameters::chunk_size = 0;
 				if(VATParameters::algn_type == VATParameters::protein)
 				{
+					VATParameters::chunk_size = 0;
 					RunModel::ProteinAlign();
 				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
+					VATParameters::chunk_size = 0;
 					RunModel::DNAAlign();
 				}else
 				{

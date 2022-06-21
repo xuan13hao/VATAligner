@@ -30,7 +30,7 @@ inline bool is_lower_or_equal_chunk(const _val *subject, unsigned sid)
 {
 	uint64_t seed;
 	ShapeConfigures::get().get_shape(sid).set_seed(seed, subject);
-	return current_range.lower_or_equal(seed_partition(seed));
+	return current_range.contains(seed_partition(seed));
 }
 
 inline bool need_lookup(unsigned sid)
@@ -46,6 +46,10 @@ inline bool is_low_freq(const _val *subject, unsigned sid)
 template <typename _val, typename _pos>
 inline bool shape_collision_right(uint64_t mask, uint64_t shape_mask, const _val *subject, unsigned sid)
 {
+	// bool c = (is_lower_chunk(subject, sid));
+	// // bool g = (need_lookup(sid) && (!ReferenceSeqs<_val>::get().get_masking(subject, sid)));
+	// cout<<"right"<<", c = "<<c<<endl;
+
 	if(!match_shape_mask(mask, shape_mask)) return false;
 	return is_lower_chunk(subject, sid)
 			&& is_low_freq(subject, sid)
@@ -55,7 +59,11 @@ inline bool shape_collision_right(uint64_t mask, uint64_t shape_mask, const _val
 template <typename _val, typename _pos>
 inline bool shape_collision_left(uint64_t mask, uint64_t shape_mask, const _val *subject, unsigned sid, bool chunked)
 {
-	if(!match_shape_mask(mask, shape_mask)) return false;
+	// bool c = (is_lower_or_equal_chunk(subject, sid));
+	// // bool g = (need_lookup(sid) && (!ReferenceSeqs<_val>::get().get_masking(subject, sid)));
+	// cout<<"left "<<", c = "<<c<<endl;
+	if(!match_shape_mask(mask, shape_mask))
+		return false;
 	return (!chunked || is_lower_or_equal_chunk(subject, sid))
 			&& is_low_freq(subject, sid)
 			&& (!get_critical(*subject) || (need_lookup(sid) && !ReferenceSeqs<_val>::get().get_masking(subject, sid)));
@@ -119,26 +127,47 @@ bool is_primary_hit(const _val *query,
 {
 	assert(len > 0 && len <= VATParameters::window*2);
 	const bool chunked (VATParameters::lowmem > 1);
-	// cout<<"is_primary_hit"<<endl;
-	// const sequence<const _val> q(query);
+
 	uint64_t mask = reduced_match32(query, subject, len);
 	unsigned i = 0;
 	uint64_t current_mask = ShapeConfigures::instance.get_shape(sid).mask_;
 	unsigned shape_len =  len - ShapeConfigures::instance.get_shape(0).length_ + 1;
+
+	// cout<<"shape len = "<<shape_len<<", current mask = "<<current_mask<<endl;
+
 	while(i < shape_len) 
 	{
 		if(len-i > 32)
+		{
 			mask |= reduced_match32(query+32,subject+32,len-i-32) << 32;
+		}
+			
 		for(unsigned j=0;j<32 && i<shape_len;++j) 
 		{
 			assert(&subject[j] >= ReferenceSeqs<_val>::data_->data(0) && &subject[j] <= ReferenceSeqs<_val>::data_->data(ReferenceSeqs<_val>::data_->raw_len()-1));
 			for(unsigned k=0;k<sid;++k)
+			{
 				if(previous_shape_collision<_val,_pos>(mask, ShapeConfigures::instance.get_shape(k).mask_, &subject[j], k))
+				{
 					return false;
-			if(i < seed_offset && shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked))
-				return false;
+				}
+			}
+			// bool b = shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked);
+
+			// cout<<"left"<<", shape_collision_left = "<<b<<endl;
+		
+			// if(i < seed_offset && shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked))
+			// {
+			// 		return false;
+			// }
+			// bool a = shape_collision_right<_val,_pos>(mask, current_mask, &subject[j], sid);
+			// cout<<"right"<<", shape_collision_right = "<<a<<endl;
 			if(chunked && i > seed_offset && shape_collision_right<_val,_pos>(mask, current_mask, &subject[j], sid))
-				return false;
+			{
+
+					return false;
+			}
+				
 			++i;
 			mask >>= 1;
 		}

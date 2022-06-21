@@ -57,7 +57,8 @@ public:
 
 	void push_hit(_locr subject)
 	{
-		if(q_num_ == std::numeric_limits<unsigned>::max()) {
+		if(q_num_ == std::numeric_limits<unsigned>::max()) 
+		{
 			std::pair<size_t,size_t> l (QuerySeqs<_val>::data_->local_position(q_pos_));
 			q_num_ = l.first;
 			seed_offset_ = l.second;
@@ -71,7 +72,11 @@ public:
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)
-	{ push_hit(ReferenceSeqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); stats_.inc(Statistics::GAPPED_HITS); }
+	{ 
+		push_hit(ReferenceSeqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); 
+	
+		stats_.inc(Statistics::GAPPED_HITS); 
+	}
 
 private:
 

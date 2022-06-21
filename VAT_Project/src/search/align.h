@@ -39,6 +39,9 @@ void align(const _locq q_pos,
 	// 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 	// 	return;
 	// }
+
+	// cout<<"len = "<<len<<", xdrop = "<<score<<", shape id = "<<sid<<", delta = "<<delta<<",shape len = "<<ShapeConfigures::get().get_shape(sid).length_<<endl;
+
 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 		return;
 

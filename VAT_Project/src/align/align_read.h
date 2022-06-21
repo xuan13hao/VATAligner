@@ -73,11 +73,9 @@ void align_read(Output_buffer<_val> &buffer,
 	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 	// }else if (sequence_type() == nucleotide)
 	// {
-	// 	min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
-	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+	// 	min_raw_score = 0;
 	// }
-	// int bs = ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len);
-	// cout<<"bit score = "<<bs<<endl;
+	
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 			

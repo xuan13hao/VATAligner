@@ -125,7 +125,7 @@ class Blastscoreblk
 		{
 			return 1;
 		}
-		return -4;
+		return -1;
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;
@@ -140,7 +140,7 @@ class Blastscoreblk
 			lamda = data_->kbp_gap_std[0]->Lambda;
 		}else if (sequence_type() == nucleotide)
 		{
-			lamda = 1.383;
+			lamda = 1.09;
 		}
 		else
 		{
@@ -158,7 +158,7 @@ class Blastscoreblk
 			k = data_->kbp_gap_std[0]->K;
 		}else if (sequence_type() == nucleotide)
 		{
-			k = 0.738;
+			k = 0.31;
 		}
 		else
 		{
@@ -176,7 +176,7 @@ class Blastscoreblk
 			lnk = data_->kbp_gap_std[0]->logK;
 		}else if (sequence_type() == nucleotide)
 		{
-			lnk = log(0.738);
+			lnk = log(0.31);
 		}
 		else
 		{
@@ -250,16 +250,16 @@ class ScoreMatrix
 		
 	}
 
-	ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
-		bias_ ((char)(-sb_.low_score())),
-		name_ (matrix),
-		matrix8_ (DNA(), sb_),
-		matrix8u_ (DNA(), sb_, bias_),
-		matrix16_ (DNA(), sb_),
-		sb_ (matrix, gap_open, gap_extend, reward, penalty, DNA ())
-	{ 
+	// ScoreMatrix(const string &matrix, int gap_open, int gap_extend, int reward, int penalty, const DNA&):
+	// 	bias_ ((char)(-sb_.low_score())),
+	// 	name_ (matrix),
+	// 	matrix8_ (DNA(), sb_),
+	// 	matrix8u_ (DNA(), sb_, bias_),
+	// 	matrix16_ (DNA(), sb_),
+	// 	sb_ (matrix, gap_open, gap_extend, reward, penalty, DNA ())
+	// { 
 
-	}
+	// }
 
 
 	template<typename _val>
@@ -333,7 +333,7 @@ class ScoreMatrix
 
 	double evalue(int raw_score, size_t db_letters, unsigned query_len) const
 	{ 
-		double evalue = log10(query_len) + log10(db_letters) - raw_score * log10(2);
+		// double evalue = log10(query_len) + log10(db_letters) - raw_score * log10(2);
 		double i = static_cast<double>(db_letters) * query_len * pow(2,-bitscore(raw_score)); 
 		// cout<<"i = "<<i<<", evale = "<<floor(evalue)<<endl;
 		// cout<<"evalue = "<<i<<", raw score = "<<raw_score<<", db letter = "<<db_letters<<", query len = "<<query_len<<endl;
@@ -354,8 +354,8 @@ class ScoreMatrix
 
 	static auto_ptr<ScoreMatrix> instance;
 
-    const int blast_lambbda = 1.28;
-    const double blast_k = 0.46;
+    // const int blast_lambbda = 1.28;
+    // const double blast_k = 0.46;
 private:
 
 	template<typename _t>

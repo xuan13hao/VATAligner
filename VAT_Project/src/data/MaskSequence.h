@@ -44,10 +44,18 @@ class Masked_sequence_set : public SequenceSet<_val>
 	bool get_masking(const _val *pos, unsigned sid) const
 	{
 		uint64_t seed;
+		cout<<"get_masking 1"<<endl;
 		ShapeConfigures::get().get_shape(sid).set_seed(seed, pos);
+		cout<<"get_masking 2"<<endl;
 		const filter_table::entry *e;
-		if((e = pos_filters[sid][seed_partition(seed)]->operator [](seed_partition_offset(seed))) != 0) {
+		cout<<"get_masking 3"<<endl;
+		size_t s = pos_filters[sid][seed_partition(seed)]->size();
+		cout<<"get_masking 5"<<endl;
+		if((e = pos_filters[sid][seed_partition(seed)]->operator [](seed_partition_offset(seed))) != 0) 
+		{
+					
 			const size_t offset (pos - this->data(0));
+					// cout<<"get_masking 4"<<endl;
 			return !position_filter(offset, e->value, seed_partition_offset(seed));
 		} else
 			return false;
