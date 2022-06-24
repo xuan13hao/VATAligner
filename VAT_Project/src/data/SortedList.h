@@ -14,31 +14,41 @@ class SortedList
 	public:
 	typedef SortedList<typename packed_sequence_location<_pos>::type> Type;
 
-	struct entry
+	class Tuple
 	{
-		entry():
+		public:
+		Tuple():
 			key (),
 			value ()
-		{ }
-		entry(unsigned key, _pos value):
+		{ 
+
+		}
+		Tuple(unsigned key, _pos value):
 			key (key),
 			value (value)
-		{ }
-		bool operator<(const entry &rhs) const
-		{ return key < rhs.key; }
+		{ 
+
+		}
+		bool operator<(const Tuple &rhs) const
+		{ 
+			return key < rhs.key; 
+		}
 		// entry operator++() const
 		// { return key < rhs.key; }
 		unsigned	key;
+		unsigned 	seed2;
 		_pos		value;
 	} __attribute__((packed));
 
 	static char* alloc_buffer(const SeedHistogram &hst)
-	{ return new char[sizeof(entry) * hst.max_chunk_size()]; }
+	{ 
+		return new char[sizeof(Tuple) * hst.max_chunk_size()]; 
+	}
 
 	template<typename _val>
 	SortedList(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const ShapeHistogram &hst, const seedp_range &range):
 		limits_ (hst, range),
-		data_ (reinterpret_cast<entry*>(buffer))
+		data_ (reinterpret_cast<Tuple*>(buffer))
 	{
 		TimerTools timer ("Building seed list", false);
 		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
@@ -78,8 +88,8 @@ class SortedList
 		size_t n;
 	};
 
-	typedef Iterator_base<entry> iterator;
-	typedef Iterator_base<const entry> const_iterator;
+	typedef Iterator_base<Tuple> iterator;
+	typedef Iterator_base<const Tuple> const_iterator;
 
 	const_iterator get_partition_cbegin(unsigned p) const
 	{ return const_iterator (cptr_begin(p), cptr_end(p)); }
@@ -89,30 +99,32 @@ class SortedList
 
 private:
 
-	typedef Static_matrix<entry*,VATConsts::seqp,VATConsts::seedp> Ptr_set;
+	typedef Static_matrix<Tuple*,VATConsts::seqp,VATConsts::seedp> Ptr_set;
 
 	struct buffered_iterator
 	{
 		static const unsigned BUFFER_SIZE = 16;
-		buffered_iterator(entry **ptr)
+		buffered_iterator(Tuple **ptr)
 		{
 			memset(n, 0, sizeof(n));
 			memcpy(this->ptr, ptr, sizeof(this->ptr));
 		}
+		//insert seed with postion into seedp_range
 		void push(seed key, _pos value, const seedp_range &range)
 		{
 			const unsigned p (seed_partition(key));
 			if(range.contains(p)) {
 				assert(n[p] < BUFFER_SIZE);
-				buf[p][n[p]++] = entry (seed_partition_offset(key), value);
+				buf[p][n[p]++] = Tuple (seed_partition_offset(key), value);
 				if(n[p] == BUFFER_SIZE)
 					flush(p);
 			}
 		}
 		void flush(unsigned p)
 		{
-			memcpy(ptr[p], buf[p], n[p] * sizeof(entry));
-			ptr[p] += n[p];
+			//when buf size > 16, copy buf to ptr
+			memcpy(ptr[p], buf[p], n[p] * sizeof(Tuple));
+			ptr[p] += n[p];//mv point with n[p] bits
 			n[p] = 0;
 		}
 		void flush()
@@ -121,12 +133,12 @@ private:
 				if(n[p] > 0)
 					flush(p);
 		}
-		entry* ptr[VATConsts::seedp];
-		entry  	 buf[VATConsts::seedp][BUFFER_SIZE];
+		Tuple* ptr[VATConsts::seedp];
+		Tuple  	 buf[VATConsts::seedp][BUFFER_SIZE];
 		uint8_t  n[VATConsts::seedp];
 	};
 
-	entry* ptr_begin(unsigned i) const
+	Tuple* ptr_begin(unsigned i) const
 	{ 
 		// cout<<"data_[limits_[i]] = "<<&data_[limits_[i]]<<endl;
 		// for (size_t j = 0; j < limits_[i].size(); j++)
@@ -137,13 +149,13 @@ private:
 		return &data_[limits_[i]]; 
 	}
 
-	entry* ptr_end(unsigned i) const
+	Tuple* ptr_end(unsigned i) const
 	{ return &data_[limits_[i+1]]; }
 
-	const entry* cptr_begin(unsigned i) const
+	const Tuple* cptr_begin(unsigned i) const
 	{ return &data_[limits_[i]]; }
 
-	const entry* cptr_end(unsigned i) const
+	const Tuple* cptr_end(unsigned i) const
 	{ return &data_[limits_[i+1]]; }
 
 	template<typename _val>
@@ -173,20 +185,22 @@ private:
 	};
 
 	template<typename _val>
-	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, entry **ptr, const shape &sh, const seedp_range &range)
+	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const shape &sh, const seedp_range &range)
 	{
 		uint64_t key;
 		//init buffered iterator via entry size
 		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
-		for(size_t i=begin;i<end;++i) {
+		for(size_t i=begin;i<end;++i) 
+		{
 			const sequence<const _val> seq = seqs[i];
 			if(seq.length()<sh.length_) continue;
-			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) {
+			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) 
+			{
 				if(sh.set_seed(key, &seq[j]))//get key via seq
 					it->push(key, seqs.position(i, j), range);
 			}
 		}
-		//clear all data from the buffer 
+		//copy all buffer data into ptr set
 		it->flush();
 	}
 
@@ -280,7 +294,7 @@ private:
 	};
 
 	const Limits limits_;
-	entry *data_;
+	Tuple *data_;
 
 };
 

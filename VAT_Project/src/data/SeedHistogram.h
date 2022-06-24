@@ -153,7 +153,7 @@ private:
 			const size_t end,
 			const vector<ShapeConfigures> &cfgs)
 	{
-		int count = 0;
+		// int count = 0;
 		assert(seqp < VATConsts::seqp);
 		uint64_t key;
 		for(size_t i=begin;i<end;++i) {

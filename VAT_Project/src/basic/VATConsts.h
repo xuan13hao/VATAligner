@@ -14,7 +14,7 @@ class VATConsts
 		max_seed_weight = 32,
 		seqp_bits = 8,
 		seqp = 1<<seqp_bits,
-		max_shapes = 16,
+		max_shapes = 2,
 		index_modes = 1,
 		min_shape_len = 10,
 		max_shape_len = 32,

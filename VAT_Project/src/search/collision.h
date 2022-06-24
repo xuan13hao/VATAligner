@@ -64,9 +64,12 @@ inline bool shape_collision_left(uint64_t mask, uint64_t shape_mask, const _val 
 	// cout<<"left "<<", c = "<<c<<endl;
 	if(!match_shape_mask(mask, shape_mask))
 		return false;
-	return (!chunked || is_lower_or_equal_chunk(subject, sid))
-			&& is_low_freq(subject, sid)
-			&& (!get_critical(*subject) || (need_lookup(sid) && !ReferenceSeqs<_val>::get().get_masking(subject, sid)));
+	return (!chunked && (!get_critical(*subject) || (need_lookup(sid)&& !ReferenceSeqs<_val>::get().get_masking(subject, sid)))
+	&& is_low_freq(subject, sid)
+	);
+	// return (!chunked || is_lower_or_equal_chunk(subject, sid))
+	// 		&& is_low_freq(subject, sid)
+	// 		&& (!get_critical(*subject) || (need_lookup(sid) && !ReferenceSeqs<_val>::get().get_masking(subject, sid)));
 }
 
 template <typename _val, typename _pos>
@@ -155,10 +158,12 @@ bool is_primary_hit(const _val *query,
 			// bool b = shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked);
 
 			// cout<<"left"<<", shape_collision_left = "<<b<<endl;
-		
-			// if(i < seed_offset && shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked))
+			// if (sequence_type() == amino_acid)
 			// {
-			// 		return false;
+				if(i < seed_offset && shape_collision_left<_val,_pos>(mask, current_mask, &subject[j], sid, chunked))
+				{
+						return false;
+				}
 			// }
 			// bool a = shape_collision_right<_val,_pos>(mask, current_mask, &subject[j], sid);
 			// cout<<"right"<<", shape_collision_right = "<<a<<endl;

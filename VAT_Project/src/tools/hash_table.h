@@ -13,34 +13,34 @@ template<typename _K, typename _V, typename _E, typename _H> class hash_table
 
 public:
 
-	struct entry
+	struct Tuple
 	{
 		_K	key;
 		_V	value;
 	} __attribute__((packed));
 
 	hash_table(size_t size):
-		table (new entry[size]),
+		table (new Tuple[size]),
 		size_ (size)
-	{ memset(table, 0, size_ * sizeof(entry)); }
+	{ memset(table, 0, size_ * sizeof(Tuple)); }
 
 	~hash_table()
 	{ delete[] table; }
 
-	entry* operator[](_K key) const
+	Tuple* operator[](_K key) const
 	{
-		entry *entry = get_entry(key);
-		if(_E()(entry->value))
+		Tuple *Tuple = get_entry(key);
+		if(_E()(Tuple->value))
 			return NULL;
-		return entry;
+		return Tuple;
 	}
 
 	void insert(_K key, _V value)
 	{
-		entry *entry = get_entry(key);
-		if(_E()(entry->value))
-			entry->key = key;
-		entry->value = value;
+		Tuple *Tuple = get_entry(key);
+		if(_E()(Tuple->value))
+			Tuple->key = key;
+		Tuple->value = value;
 	}
 
 	size_t size() const
@@ -59,9 +59,9 @@ public:
 
 private:
 
-	entry* get_entry(_K key) const
+	Tuple* get_entry(_K key) const
 	{
-		entry *p = &table[_H()(key) % size_];
+		Tuple *p = &table[_H()(key) % size_];
 		bool wrapped = false;
 		while(p->key != key && !_E()(p->value)) {
 			++p;
@@ -75,7 +75,7 @@ private:
 		return p;
 	}
 
-	entry	*table;
+	Tuple	*table;
 	size_t	 size_;
 
 };

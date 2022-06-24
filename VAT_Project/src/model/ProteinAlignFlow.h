@@ -10,7 +10,7 @@
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
 #include "../align/align_queries.h"
-#include "../search/align_range.h"
+#include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
 #include "SearchContext.h"
 
