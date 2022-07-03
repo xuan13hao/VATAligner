@@ -6,7 +6,7 @@
 #include "../basic/VATParameters.h"
 #include "../data/Reference.h"
 #include "../basic/exceptions.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "../data/LoadSequence.h"
 #include "../tools/seq_file_format.h"
 
@@ -23,10 +23,11 @@ void CreateDB(_val)
 	timer.finish();
 	ref_header.block_size = VATParameters::chunk_size;
 	int chunk = 0;
-	Output_stream main(VATParameters::database);
+	OutputStreamer main(VATParameters::database);
 	main.write(&ref_header, 1);
 
-	for(;;++chunk) {
+	for(;;++chunk) 
+	{
 		timer.go("Loading sequences");
 		SequenceSet<DNA>* ss;
 		int n_seq = ReadingSeqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ReferenceSeqs<_val>::data_, ReferenceIds::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
@@ -39,7 +40,7 @@ void CreateDB(_val)
 		timer.finish();
 		ReferenceSeqs<_val>::data_->print_stats();
 
-		timer.go("Building histograms");
+		timer.go("Building SeedHistograms");
 		SeedHistogram *hst = new SeedHistogram (*ReferenceSeqs<_val>::data_, _val());
 
 		timer.go("Saving to disk");

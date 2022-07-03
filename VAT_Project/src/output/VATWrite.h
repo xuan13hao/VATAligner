@@ -112,12 +112,12 @@ class VATOutput
 		f_.close();
 	}
 
-	Output_stream& stream()
+	OutputStreamer& stream()
 	{ return f_; }
 
 private:
 
-	Output_stream f_;
+	OutputStreamer f_;
 	VATHeaderTwo h2_;
 
 };

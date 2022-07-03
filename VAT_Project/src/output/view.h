@@ -10,14 +10,14 @@ class View_writer
 	View_writer():
 		f_ (VATParameters::output_file + (VATParameters::compression==1?".gz":""),
 				VATParameters::compression==1,
-				VATParameters::output_file.length()==0 ? Output_stream::stdout_sink : Output_stream::file_sink)
+				VATParameters::output_file.length()==0 ? OutputStreamer::stdout_sink : OutputStreamer::file_sink)
 	{ }
 	void operator()(Text_buffer &buf)
 	{
 		f_.write(buf.get_begin(), buf.size());
 		buf.clear();
 	}
-	Output_stream f_;
+	OutputStreamer f_;
 };
 
 struct View_fetcher

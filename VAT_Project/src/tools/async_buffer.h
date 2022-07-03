@@ -22,12 +22,12 @@ struct Buffer_file_read_exception : public VATException
 const unsigned async_buffer_max_bins = 4;
 
 template<typename _t>
-struct Async_buffer
+class AsynchronousBuffer
 {
-
+	public:
 	typedef vector<_t> Vector;
 
-	Async_buffer(size_t input_count, const string &tmpdir, unsigned bins):
+	AsynchronousBuffer(size_t input_count, const string &tmpdir, unsigned bins):
 		bins_ (bins),
 		bin_size_ ((input_count + bins_ - 1) / bins_)
 	{
@@ -35,14 +35,14 @@ struct Async_buffer
 		for(unsigned j=0;j<VATParameters::threads();++j)
 			for(unsigned i=0;i<bins;++i) {
 				tmp_file_.push_back(TempFile ());
-				out_.push_back(new Output_stream (tmp_file_.back()));
+				out_.push_back(new OutputStreamer (tmp_file_.back()));
 				size_.push_back(0);
 			}
 	}
 
 	struct Iterator
 	{
-		Iterator(Async_buffer &parent, unsigned thread_num):
+		Iterator(AsynchronousBuffer &parent, unsigned thread_num):
 			parent_ (parent),
 			thread_num_ (thread_num)
 		{
@@ -74,14 +74,14 @@ struct Async_buffer
 		enum { buffer_size = 65536 };
 		_t buffer_[async_buffer_max_bins*buffer_size];
 		size_t size_[async_buffer_max_bins];
-		Output_stream* out_[async_buffer_max_bins];
-		Async_buffer &parent_;
+		OutputStreamer* out_[async_buffer_max_bins];
+		AsynchronousBuffer &parent_;
 		const unsigned thread_num_;
 	};
 
 	void close()
 	{
-		for(ptr_vector<Output_stream>::iterator i=out_.begin();i!=out_.end();++i)
+		for(ptr_vector<OutputStreamer>::iterator i=out_.begin();i!=out_.end();++i)
 			i->close();
 		out_.clear();
 		log_stream << "Async_buffer.close() " << endl;
@@ -107,18 +107,24 @@ struct Async_buffer
 	}
 
 	unsigned bins() const
-	{ return bins_; }
+	{ 
+		return bins_; 
+	}
 
 private:
 
-	Output_stream* get_out(unsigned threadid, unsigned bin)
-	{ return &out_[threadid*bins_+bin]; }
+	OutputStreamer* get_out(unsigned threadid, unsigned bin)
+	{ 
+		return &out_[threadid*bins_+bin]; 
+	}
 
 	void add_size(unsigned thread_id, unsigned bin, size_t n)
-	{ size_[thread_id*bins_+bin] += n; }
+	{ 
+		size_[thread_id*bins_+bin] += n; 
+	}
 
 	const unsigned bins_, bin_size_;
-	ptr_vector<Output_stream> out_;
+	ptr_vector<OutputStreamer> out_;
 	vector<size_t> size_;
 	vector<TempFile> tmp_file_;
 

@@ -12,7 +12,7 @@ class AlphabetSet
 {
 
 	public:
-	static const unsigned PERIMETER_PADDING = 256;
+	static const unsigned PERIMETER_PADDING = 1;
 	static const _t PADDING_CHAR;
 
 	AlphabetSet():
@@ -54,7 +54,7 @@ class AlphabetSet
 	size_t get_length() const
 	{ return limits_.size() - 1; }
 
-	void save(Output_stream &file) const
+	void save(OutputStreamer &file) const
 	{
 		file.write(limits_);
 		file.write(data_);
@@ -92,6 +92,7 @@ class AlphabetSet
 
 	std::pair<size_t,size_t> local_position(size_t p) const
 	{
+		//i is the query number 
 		size_t i = std::upper_bound(limits_.begin(), limits_.end(), p) - limits_.begin() - 1;
 		return std::pair<size_t,size_t> (i, p - limits_[i]);
 	}

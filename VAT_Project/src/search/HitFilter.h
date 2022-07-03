@@ -29,6 +29,7 @@ public:
 
 	void push(_locr subject, int score)
 	{
+		//minimum score to keep a tentative alignment default (0)
 		if(score >= VATParameters::min_hit_score)
 			push_hit(subject);
 		else
@@ -65,9 +66,9 @@ public:
 		}
 		
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
-
+		//seed offset =  suject_end_position - subject_start_point 
 		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
-
+		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 

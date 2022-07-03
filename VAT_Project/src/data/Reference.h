@@ -8,7 +8,7 @@
 #include <numeric>
 #include "../tools/binary_file.h"
 #include "SortedList.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "../data/SeedHistogram.h"
 #include "../tools/hash_table.h"
 #include "../tools/hash_function.h"

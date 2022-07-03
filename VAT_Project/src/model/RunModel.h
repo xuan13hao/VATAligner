@@ -27,7 +27,6 @@ class RunModel
     {
         ProteinMasterThread<Protein>();
     }
-
 };
 
 

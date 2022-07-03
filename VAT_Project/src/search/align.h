@@ -4,13 +4,13 @@
 #define ALIGN_H_
 
 #include "../data/Reference.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "../basic/NuclScoreMatrix.h"
 // #include "../basic/ScoreMatrix.h"
 #include "../basic/ShapeParameter.h"
 #include "../search/sse_dist.h"
-#include "../search/collision.h"
-#include "../search/hit_filter.h"
+#include "../search/MainHit.h"
+#include "../search/HitFilter.h"
 #include "../search/XdropUngapped.h"
 
 template<typename _val, typename _locr, typename _locq, typename _locl>

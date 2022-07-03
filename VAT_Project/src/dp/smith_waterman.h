@@ -57,7 +57,8 @@ void smith_waterman(const sequence<const _val> &query,
 	score_profile<_score> profile;
 
 	typename vector<sequence<const _val> >::const_iterator subject_it (subjects.begin());
-	while(subject_it < subjects.end()) {
+	while(subject_it < subjects.end()) 
+	{
 
 		const unsigned n_subject (std::min((unsigned)score_traits<_score>::channels, (unsigned)(subjects.end() - subject_it)));
 		typename vector<sequence<const _val> >::const_iterator subject_end (subject_it + n_subject);
@@ -65,12 +66,14 @@ void smith_waterman(const sequence<const _val> &query,
 		dseq.reset();
 		dp.clear();
 
-		for(unsigned j=0;j<slen;++j) {
+		for(unsigned j=0;j<slen;++j) 
+		{
 			typename DP_matrix<_score>::Column_iterator it (dp.begin(j));
 			sv vgap, hgap, column_best;
 			profile.template set<_val> (dseq.get<_val>(subject_it, subject_end, j, _score()));
 
-			while(!it.at_end()) {
+			while(!it.at_end()) 
+			{
 				hgap = it.hgap();
 				sv next = cell_update<_score>(it.diag(), profile.get(query[it.row_pos_]), extend_penalty, open_penalty, hgap, vgap, column_best, vbias);
 				it.set_hgap(hgap);

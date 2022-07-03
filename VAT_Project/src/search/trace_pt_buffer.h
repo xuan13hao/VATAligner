@@ -9,11 +9,13 @@
 using std::auto_ptr;
 
 template<typename _locr, typename _locl>
-struct Trace_pt_buffer : public Async_buffer<Hits<_locr,_locl> >
+struct Trace_pt_buffer : public AsynchronousBuffer<Hits<_locr,_locl> >
 {
 	Trace_pt_buffer(size_t input_size, const string &tmpdir, bool mem_buffered):
-		Async_buffer<Hits<_locr,_locl> > (input_size, tmpdir, mem_buffered ? mem_bins : file_bins)
-	{ }
+		AsynchronousBuffer<Hits<_locr,_locl> > (input_size, tmpdir, mem_buffered ? mem_bins : file_bins)
+	{ 
+		
+	}
 	enum { mem_bins = 1, file_bins = 4 };
 	static Trace_pt_buffer *instance;
 };

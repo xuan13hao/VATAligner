@@ -8,7 +8,7 @@
 #endif
 
 #include "../basic/ReducedAlpha.h"
-
+//The number of 1 bits in the value of x
 unsigned popcount_3(uint64_t x)
 {
 	const uint64_t m1  = 0x5555555555555555; //binary: 0101...

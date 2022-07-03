@@ -38,7 +38,7 @@ class SortedList
 		unsigned	key;
 		unsigned 	seed2;
 		_pos		value;
-	} __attribute__((packed));
+	} __attribute__((packed));////Tells the compiler to allocate the variable x at a 16-byte aligned memory address instead of the default 4-byte alignment.
 
 	static char* alloc_buffer(const SeedHistogram &hst)
 	{ 
@@ -46,7 +46,7 @@ class SortedList
 	}
 
 	template<typename _val>
-	SortedList(char *buffer, const SequenceSet<_val> &seqs, const shape &sh, const ShapeHistogram &hst, const seedp_range &range):
+	SortedList(char *buffer, const SequenceSet<_val> &seqs, const Shape &sh, const ShapeHistogram &hst, const seedp_range &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<Tuple*>(buffer))
 	{
@@ -161,7 +161,7 @@ private:
 	template<typename _val>
 	struct Build_context
 	{
-		Build_context(const SequenceSet<_val> &seqs, const shape &sh, const seedp_range &range, Ptr_set *iterators):
+		Build_context(const SequenceSet<_val> &seqs, const Shape &sh, const seedp_range &range, Ptr_set *iterators):
 			seqs (seqs),
 			sh (sh),
 			range (range),
@@ -178,14 +178,14 @@ private:
 					range);
 		}
 		const SequenceSet<_val> &seqs;
-		const shape &sh;
+		const Shape &sh;
 		const seedp_range &range;
 		const auto_ptr<Ptr_set> iterators;
 		const vector<size_t> seq_partition;
 	};
 
 	template<typename _val>
-	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const shape &sh, const seedp_range &range)
+	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const Shape &sh, const seedp_range &range)
 	{
 		uint64_t key;
 		//init buffered iterator via entry size

@@ -43,7 +43,7 @@ class Statistics
 		// cout << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;
 		// cout << "Gapped matches = " << data_[GAPPED] << endl;
 		cout << "Final matches = " << data_[MATCHES] << endl;
-		cout << "Queries aligned = " << data_[ALIGNED] << endl;
+		// cout << "Queries aligned = " << data_[ALIGNED] << endl;
 	}
 
 	stat_type data_[COUNT];

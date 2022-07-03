@@ -12,11 +12,11 @@ class ShapeCodes
 };
 template<> const char* ShapeCodes<Protein>::str[][VATConsts::max_shapes] = 
 {
-		 {"111110101110110110011101111","111010100001111"	}
+		 {"1101010000010001001011","1101000100100000100000111"	}
 };
 template<> const char* ShapeCodes<DNA>::str[][VATConsts::max_shapes] = 
 {
-		 {"111110101110110110011101111", "1111101011101101100111011111100"}	
+		 {"111110101110110110011101111", "111110101110110110011101111110010"}	
 };
 
 // template<> const char* ShapeCodes<Protein>::str[][VATConsts::max_shapes] = {
@@ -80,7 +80,9 @@ public:
 	ShapeConfigures():
 		n_ (0),
 		mode_ (0)
-	{ }
+	{ 
+
+	}
 
 	template<class _val>
 	ShapeConfigures(unsigned mode, const _val&):
@@ -90,13 +92,13 @@ public:
 		unsigned maxShapes = VATParameters::shapes == 0 ? VATConsts::max_shapes : VATParameters::shapes;
 		for(unsigned i=0;i<maxShapes;++i)
 			if(ShapeCodes<_val>::str[mode_][i])
-				shapes_[n_++] = shape (ShapeCodes<_val>::str[mode_][i], i);
+				shapes_[n_++] = Shape (ShapeCodes<_val>::str[mode_][i], i);
 	}
 
 	unsigned count() const
 	{ return n_; }
 
-	const shape& get_shape(unsigned i) const
+	const Shape& get_shape(unsigned i) const
 	{ return shapes_[i]; }
 
 	unsigned mode() const
@@ -107,7 +109,7 @@ public:
 
 private:
 
-	shape shapes_[VATConsts::max_shapes];
+	Shape shapes_[VATConsts::max_shapes];
 	unsigned n_, mode_;
 
 };

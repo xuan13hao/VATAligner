@@ -30,14 +30,12 @@ int main(int ac, const char* av[])
             ("help,h", "produce help message")
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(0), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
-            ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vaa) file")
-            ("verbose,v", "enable verbose out")
-            ("log", "enable debug log")
+            ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
 
         po::options_description makedb("Makedb options");
         makedb.add_options()
-        	("in", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
+        	("in,i", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
         	("block-size,b", po::value<double>(&VATParameters::chunk_size), "sequence block size in billions of letters (default=2)")
         	;
 
@@ -123,7 +121,7 @@ int main(int ac, const char* av[])
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
         	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
-        	cout << "  protein\tAlign amino acid query sequences against a protein reference database" << endl;
+        	cout << "  Protein\tAlign protein query sequences against a protein reference database" << endl;
         	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;

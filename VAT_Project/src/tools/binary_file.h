@@ -163,15 +163,15 @@ private:
 	FILE *f_;
 };
 
-struct Output_stream : public io::filtering_ostream
+struct OutputStreamer : public io::filtering_ostream
 {
 
 	enum Flags { file_sink, stdout_sink };
 
-	Output_stream()
+	OutputStreamer()
 	{ }
 
-	Output_stream(const string &file_name, bool gzipped = false, Flags flags = file_sink):
+	OutputStreamer(const string &file_name, bool gzipped = false, Flags flags = file_sink):
 		file_name_ (file_name)
 	{
 		if(gzipped)
@@ -185,7 +185,7 @@ struct Output_stream : public io::filtering_ostream
 			this->push(std::cout);
 	}
 
-	Output_stream(const TempFile &tmp_file)
+	OutputStreamer(const TempFile &tmp_file)
 	{
 		this->push(io::file_descriptor_sink(tmp_file.file_descriptor(), io::never_close_handle));
 	}
@@ -337,7 +337,7 @@ private:
 struct Buffered_ostream
 {
 
-	Buffered_ostream(Output_stream &s):
+	Buffered_ostream(OutputStreamer &s):
 		stream_ (s),
 		ptr_ (&data_[0]),
 		end_ (&data_[buffer_size])
@@ -368,7 +368,7 @@ private:
 
 	enum { buffer_size = 4096 };
 
-	Output_stream &stream_;
+	OutputStreamer &stream_;
 	char data_[buffer_size];
 	char *ptr_, * const end_;
 

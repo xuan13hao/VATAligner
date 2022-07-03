@@ -10,7 +10,7 @@
 
 using std::vector;
 
-void encode_zero_rle(const int32_t *data, size_t len, Output_stream &out)
+void encode_zero_rle(const int32_t *data, size_t len, OutputStreamer &out)
 {
 	const int32_t *p = data, *end = data + len;
 	int32_t n = 0;
@@ -117,7 +117,7 @@ class SeedHistogram
 		return max;
 	}
 
-	void save(Output_stream &out) const
+	void save(OutputStreamer &out) const
 	{
 		encode_zero_rle(reinterpret_cast<const int32_t*>(data_), sizeof(data_)/sizeof(int32_t), out);
 	}

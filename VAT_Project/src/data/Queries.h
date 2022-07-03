@@ -5,7 +5,7 @@
 #include "../basic/Translator.h"
 #include "../tools/complexity_filter.h"
 #include "SortedList.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "SequenceSet.h"
 #include <memory>
 

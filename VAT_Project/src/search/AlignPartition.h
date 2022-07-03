@@ -4,7 +4,7 @@
 #define ALIGN_RANGE_H_
 
 #include "align.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void align_range(_locq q_pos,
@@ -17,7 +17,6 @@ void align_range(_locq q_pos,
 
 	const _val* query = QuerySeqs<_val>::data_->data(q_pos);
 	HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
-	// cout<<"query = "<<query<<endl;
 	if(s.n <= VATParameters::hit_cap) 
 	{
 		stats.inc(Statistics::SEED_HITS, s.n);
@@ -57,6 +56,7 @@ void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
 	//if(q.n > 4096)
 		//printf("%lu %lu\n",q.n,s.n);
 #endif
+//maximum number of hits to consider for one seed
 	for(unsigned i=0;i<q.n; ++i)
 		align_range<_val,_locr,_locq,_locl>(_locq(q[i]), s, stats, out, sid);
 }

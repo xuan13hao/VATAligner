@@ -5,7 +5,7 @@
 #include <boost/timer/timer.hpp>
 #include "../data/Reference.h"
 #include "../data/Queries.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
 #include "../align/align_queries.h"
@@ -55,7 +55,6 @@ void process_shape(unsigned sid,
 	::partition p (VATConsts::seedp, VATParameters::lowmem);
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) {
 
-		// cout << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		current_range = range;
 		TimerTools timer ("Building reference index", true);
@@ -123,11 +122,11 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 	delete[] ref_buffer;
 
 	timer_mapping.resume();
-	Output_stream* out;
+	OutputStreamer* out;
 	if(ref_header.n_blocks > 1) {
 		timer.go ("Opening temporary output file");
 		tmp_file.push_back(TempFile ());
-		out = new Output_stream (tmp_file.back());
+		out = new OutputStreamer (tmp_file.back());
 	} else
 		out = &master_out.stream();
 	timer.go("Computing alignments");
@@ -167,7 +166,8 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 	timer_mapping.resume();
 	delete[] query_buffer;
 
-	if(ref_header.n_blocks > 1) {
+	if(ref_header.n_blocks > 1) 
+	{
 		timer.go("Joining output blocks");
 		join_blocks<_val>(ref_header.n_blocks, master_out, tmp_file);
 	}

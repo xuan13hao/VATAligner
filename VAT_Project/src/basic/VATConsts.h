@@ -6,8 +6,8 @@ class VATConsts
 {
 	public:
 	enum {
-		build_version = 59,
-		build_compatibility = 52,
+		build_version = 1,
+		build_compatibility = 1,
 		daa_version = 0,
 		seedp_bits = 10,
 		seedp = 1<<seedp_bits,

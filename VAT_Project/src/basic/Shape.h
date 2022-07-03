@@ -23,7 +23,7 @@
 // 		-1.557546 };
 
 
-//const double background_freq[] = {-1.38,-1.38,-1.38,-1.38};
+// const double background_freq[] = {-1.38,-1.38,-1.38,-1.38};
 
 const double background_freq[] = {-3,-3,-3,-3};
 template<typename _val>
@@ -39,10 +39,10 @@ bool use_seed_freq<DNA>()
 { return true; }
 
 
-class shape
+class Shape
 {
 	public:
-	shape():
+	Shape():
 		length_ (0),
 		weight_ (0),
 		d_ (0),
@@ -51,7 +51,7 @@ class shape
 		id_ (0)
 	{ memset(positions_, 0, sizeof(uint32_t)*VATConsts::max_seed_weight); }
 
-	shape(const char *code, unsigned id):
+	Shape(const char *code, unsigned id):
 		weight_ (0),
 		mask_ (0),
 		rev_mask_ (0),
@@ -61,9 +61,11 @@ class shape
 		assert(strlen(code) <= 32);
 		memset(positions_, 0, sizeof(uint32_t)*VATConsts::max_seed_weight);
 		unsigned i (0);
-		for(;i<strlen(code);++i) {
+		for(;i<strlen(code);++i) 
+		{
 			rev_mask_ <<= 1;
-			if(code[i] == '1') {
+			if(code[i] == '1') 
+			{
 				assert(weight_ < VATConsts::max_seed_weight);
 				positions_[weight_] = i;
 				++weight_;
@@ -80,7 +82,8 @@ class shape
 	{
 		s = 0;
 		double f = 0;
-		for(unsigned i=0;i<weight_;++i) {
+		for(unsigned i=0;i<weight_;++i) 
+		{
 			_val l = seq[positions_[i]];
 			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
 				return false;
@@ -90,10 +93,9 @@ class shape
 			s *= ReducedAlpha<_val>::reduction.size();
 			s += uint64_t(r);
 		}
-		if(use_seed_freq<_val>() && f > VATParameters::max_seed_freq) return false;
-#ifdef EXTRA
 		s = murmur_hash()(s);
-#endif
+		if(use_seed_freq<_val>() && f > VATParameters::max_seed_freq) return false;
+
 		return true;
 	}
 

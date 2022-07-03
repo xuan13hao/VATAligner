@@ -12,7 +12,7 @@ class Output_format
 {
 	public:
 	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const = 0;
-	virtual void print_header(Output_stream &f) const
+	virtual void print_header(OutputStreamer &f) const
 	{ }
 	virtual ~Output_format()
 	{ }
@@ -171,7 +171,7 @@ class Sam_format : public Output_format<_val>
 			buf << n << letter[op];
 	}
 
-	virtual void print_header(Output_stream &f) const
+	virtual void print_header(OutputStreamer &f) const
 	{
 		static const char* line = "@HD\tVN:1.5\tSO:query\n\
 @PG\tPN:VAT\n\

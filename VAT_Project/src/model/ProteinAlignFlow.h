@@ -6,7 +6,7 @@
 #include <boost/timer/timer.hpp>
 #include "../data/Reference.h"
 #include "../data/Queries.h"
-#include "../basic/statistics.h"
+#include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
 #include "../align/align_queries.h"

@@ -13,7 +13,7 @@ using std::vector;
 
 struct Output_writer
 {
-	Output_writer(Output_stream* f):
+	Output_writer(OutputStreamer* f):
 		f_ (f)
 	{ }
 	void operator()(Text_buffer &buf)
@@ -22,7 +22,7 @@ struct Output_writer
 		buf.clear();
 	}
 private:
-	Output_stream* const f_;
+	OutputStreamer* const f_;
 };
 
 template<typename _val, typename _locr, typename _locl, unsigned _d>
@@ -34,7 +34,8 @@ void alignQueries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<_d> > Map_t;
 	Map_t hits (begin, end);
 	typename Map_t::Iterator i = hits.begin();
-	while(i.valid() && !exception_state()) {
+	while(i.valid() && !exception_state()) 
+	{
 		align_read<_val,_locr,_locl>(buffer, st, i.begin(), i.end());
 		++i;
 	}
@@ -43,7 +44,7 @@ void alignQueries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 template<typename _val, typename _locr, typename _locl, typename _buffer>
 struct Align_context
 {
-	Align_context(Trace_pt_list<_locr,_locl> &trace_pts, Output_stream* output_file):
+	Align_context(Trace_pt_list<_locr,_locl> &trace_pts, OutputStreamer* output_file):
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
@@ -53,6 +54,7 @@ struct Align_context
 	{
 		Statistics st;
 		size_t i=0;
+		//vector to store
 		typename Trace_pt_list<_locr,_locl>::Query_range query_range (trace_pts.get_range());
 		_buffer *buffer = 0;
 		while(queue.get(i, buffer, query_range) && !exception_state()) {
@@ -80,13 +82,13 @@ struct Align_context
 		// cout<<"Align_context"<<endl;
 	}
 	Trace_pt_list<_locr,_locl> &trace_pts;
-	Output_stream* output_file;
+	OutputStreamer* output_file;
 	Output_writer writer;
 	Task_queue<_buffer,Output_writer> queue;
 };
 
 template<typename _val, typename _locr, typename _locl>
-void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, Output_stream* output_file)
+void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer* output_file)
 {
 	Trace_pt_list<_locr,_locl> v;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
