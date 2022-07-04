@@ -10,13 +10,22 @@ class ShapeCodes
 	public:
 	static const char* str[VATConsts::index_modes][VATConsts::max_shapes];
 };
+// template<> const char* ShapeCodes<Protein>::str[][VATConsts::max_shapes] = 
+// {
+// 		  { "111110101110110110011101111110010"},{"11110111011111"},{"111101110111111"},{"1111011101111111"}, {"11110111011111111"}
+// };
+// template<> const char* ShapeCodes<DNA>::str[][VATConsts::max_shapes] = 
+// {
+// 		 { "111110101110110110011101111110010"},{"11110111011111"},{"111101110111111"},{"1111011101111111"}, {"11110111011111111"}
+
+// };
 template<> const char* ShapeCodes<Protein>::str[][VATConsts::max_shapes] = 
 {
-		  { "111110101110110110011101111110010"},{"11110111011111"},{"111101110111111"},{"1111011101111111"}, {"11110111011111111"}
+		 {"11110111011111"}
 };
 template<> const char* ShapeCodes<DNA>::str[][VATConsts::max_shapes] = 
 {
-		 { "111110101110110110011101111110010"},{"11110111011111"},{"111101110111111"},{"1111011101111111"}, {"11110111011111111"}
+		 {"11110111011111"}
 
 };
 
