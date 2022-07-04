@@ -57,7 +57,9 @@ class Trace_pt_list : public vector<Hits<_locr,_locl> >
 	{
 		Query_range(Trace_pt_list &parent):
 			parent_ (parent)
-		{ }
+		{ 
+			
+		}
 #ifndef PRE_PARTITION
 		bool operator()()
 		{

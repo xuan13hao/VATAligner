@@ -23,8 +23,8 @@ class Hits
 	typedef typename packed_sequence_location<_locr>::type packed_loc;
 
 	unsigned	query_;
-	packed_loc	subject_;
-	_locl		seed_offset_;
+	packed_loc	subject_;//reference 
+	_locl		seed_offset_;//seed offset
 	Hits():
 		query_ (),
 		subject_ (),

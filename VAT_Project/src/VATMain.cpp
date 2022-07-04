@@ -73,7 +73,7 @@ int main(int ac, const char* av[])
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
-        	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
+        	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(1), "index mode")//future interface
         	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")

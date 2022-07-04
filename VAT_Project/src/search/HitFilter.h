@@ -68,7 +68,7 @@ public:
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
 		//seed offset =  suject_end_position - subject_start_point 
 		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
-		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
+		cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 

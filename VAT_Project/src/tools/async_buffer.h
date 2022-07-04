@@ -16,7 +16,9 @@ struct Buffer_file_read_exception : public VATException
 {
 	Buffer_file_read_exception(const char* file_name, size_t count, size_t n):
 		VATException (string("Error reading buffer file ") + file_name + " (" + boost::lexical_cast<string>(count) + '/' + boost::lexical_cast<string>(n) + ')')
-	{ }
+	{ 
+		
+	}
 };
 
 const unsigned async_buffer_max_bins = 4;
