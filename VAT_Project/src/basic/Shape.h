@@ -76,25 +76,63 @@ class Shape
 		length_ = i;
 		d_ = positions_[weight_/2-1];
 	}
+/**
+* shape with minimizer
+*/
 
-	template<typename _val>
-	inline bool set_seed(uint64_t &s, const _val *seq) const
+
+
+	
+	//template<>
+	inline bool set_seed(uint64_t &s, const Protein *seq) const
 	{
 		s = 0;
 		double f = 0;
 		for(unsigned i=0;i<weight_;++i) 
 		{
-			_val l = seq[positions_[i]];
-			if(l == AlphabetAttributes<_val>::MASK_CHAR || l == AlphabetSet<_val>::PADDING_CHAR)
+			Protein l = seq[positions_[i]];
+			if(l == AlphabetAttributes<Protein>::MASK_CHAR || l == AlphabetSet<Protein>::PADDING_CHAR)
 				return false;
 			l = mask_critical(l);
-			unsigned r = ReducedAlpha<_val>::reduction(l);
+			unsigned r = ReducedAlpha<Protein>::reduction(l);
 			f += background_freq[r];
-			s *= ReducedAlpha<_val>::reduction.size();
+			s *= ReducedAlpha<Protein>::reduction.size();
 			s += uint64_t(r);
 		}
 		s = murmur_hash()(s);
-		if(use_seed_freq<_val>() && f > VATParameters::max_seed_freq) return false;
+		if(use_seed_freq<Protein>() && f > VATParameters::max_seed_freq) return false;
+
+		return true;
+	}
+
+	//template<>
+	inline bool set_seed(uint64_t &s, const DNA *seq) const
+	{
+
+		s = 0;
+		double f = 0;
+		uint64_t minimizer = 0;
+		uint64_t mask = (1ULL<<2*weight_) - 1;
+		for(unsigned i=0;i<weight_;++i) 
+		{
+			DNA l = seq[positions_[i]];
+			if(l == AlphabetAttributes<DNA>::MASK_CHAR || l == AlphabetSet<DNA>::PADDING_CHAR)
+				return false;
+			l = mask_critical(l);
+			unsigned r = ReducedAlpha<DNA>::reduction(l);
+			// cout<<"r = "<<r<<endl;
+			minimizer = minimizer + r*pow(4,weight_-i-1);
+			cout<<"k-1 = "<<weight_-i-1<<",r = "<<r<<", 4^k-1 = "<<pow(4,weight_-i-1)<<", minimizer = "<<minimizer<<endl;
+			f += background_freq[r];
+			// s *= ReducedAlpha<_val>::reduction.size();
+			// cout<<AlphabetAttributes<_val>::ALPHABET[r];
+			// s += uint64_t(r);
+		}
+		// cout<<endl;
+		s = hash64()(minimizer,mask);
+		// s = murmur_hash()(s);
+		// cout<<"minimizer = "<<minimizer<<endl;
+		if(use_seed_freq<DNA>() && f > VATParameters::max_seed_freq) return false;
 
 		return true;
 	}

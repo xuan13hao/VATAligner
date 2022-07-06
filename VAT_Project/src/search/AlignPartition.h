@@ -56,6 +56,7 @@ void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
 	//if(q.n > 4096)
 		//printf("%lu %lu\n",q.n,s.n);
 #endif
+
 //maximum number of hits to consider for one seed
 	for(unsigned i=0;i<q.n; ++i)
 		align_range<_val,_locr,_locq,_locl>(_locq(q[i]), s, stats, out, sid);

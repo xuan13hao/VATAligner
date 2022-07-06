@@ -193,9 +193,13 @@ private:
 		for(size_t i=begin;i<end;++i) 
 		{
 			const sequence<const _val> seq = seqs[i];
+			// cout<<"seq = "<<seq<<endl;
+			// cout<<"------------ "<<endl;
 			if(seq.length()<sh.length_) continue;
+	
 			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) 
 			{
+				// cout<<"seq = "<<seq[j]<<endl;
 				if(sh.set_seed(key, &seq[j]))//get key via seq
 					it->push(key, seqs.position(i, j), range);
 			}

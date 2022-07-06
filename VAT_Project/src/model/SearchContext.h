@@ -44,7 +44,7 @@ class Search_context
 };
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void process_shape(unsigned sid,
+void processShapes(unsigned sid,
 		cpu_timer &timer_mapping,
 		unsigned query_chunk,
 		char *query_buffer,
@@ -52,10 +52,13 @@ void process_shape(unsigned sid,
 {
 	using std::vector;
 
-	::partition p (VATConsts::seedp, VATParameters::lowmem);
-	for(unsigned chunk=0;chunk < p.parts; ++chunk) {
+	partition p (VATConsts::seedp, VATParameters::lowmem);
+// ::partition p (VATConsts::seedp, VATParameters::lowmem);
+	for(unsigned chunk=0;chunk < p.parts; ++chunk) 
+	{
 
 		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
+		// cout<<"p.getMin(chunk) = "<<p.getMin(chunk)<<", p.getMax(chunk) = "<<p.getMax(chunk)<<endl;
 		current_range = range;
 		TimerTools timer ("Building reference index", true);
 		typename SortedList<_locr>::Type ref_idx (ref_buffer,
@@ -113,7 +116,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 	timer_mapping.stop();
 
 	for(unsigned i=0;i<ShapeConfigures::instance.count();++i)
-		process_shape<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
+		processShapes<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
 
 	timer.go("Closing temporary storage");
 	Trace_pt_buffer<_locr,_locl>::instance->close();
