@@ -122,7 +122,7 @@ class Shape
 			unsigned r = ReducedAlpha<DNA>::reduction(l);
 			// cout<<"r = "<<r<<endl;
 			minimizer = minimizer + r*pow(4,weight_-i-1);
-			cout<<"k-1 = "<<weight_-i-1<<",r = "<<r<<", 4^k-1 = "<<pow(4,weight_-i-1)<<", minimizer = "<<minimizer<<endl;
+			// cout<<"k-1 = "<<weight_-i-1<<",r = "<<r<<", 4^k-1 = "<<pow(4,weight_-i-1)<<", minimizer = "<<minimizer<<endl;
 			f += background_freq[r];
 			// s *= ReducedAlpha<_val>::reduction.size();
 			// cout<<AlphabetAttributes<_val>::ALPHABET[r];
