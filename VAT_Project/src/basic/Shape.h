@@ -105,8 +105,29 @@ class Shape
 		return true;
 	}
 
-	//template<>
 	inline bool set_seed(uint64_t &s, const DNA *seq) const
+	{
+		s = 0;
+		double f = 0;
+		for(unsigned i=0;i<weight_;++i) 
+		{
+			DNA l = seq[positions_[i]];
+			if(l == AlphabetAttributes<DNA>::MASK_CHAR || l == AlphabetSet<DNA>::PADDING_CHAR)
+				return false;
+			l = mask_critical(l);
+			unsigned r = ReducedAlpha<DNA>::reduction(l);
+			f += background_freq[r];
+			s *= ReducedAlpha<DNA>::reduction.size();
+			s += uint64_t(r);
+		}
+		s = murmur_hash()(s);
+		if(use_seed_freq<DNA>() && f > VATParameters::max_seed_freq) return false;
+
+		return true;
+	}
+
+	//template<>
+	inline bool set_seed_minimizer(uint64_t &s, const DNA *seq) const
 	{
 
 		s = 0;
