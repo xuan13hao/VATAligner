@@ -241,7 +241,7 @@ __m128i _mm_set(int a)
 }
 
 template<typename _t, unsigned d1, unsigned d2>
-struct Static_matrix
+struct TupleMatrix
 {
 	_t* operator[](size_t i)
 	{ return data_[i]; }

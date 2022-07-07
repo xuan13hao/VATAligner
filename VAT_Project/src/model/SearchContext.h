@@ -57,7 +57,7 @@ void processShapes(unsigned sid,
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) 
 	{
 
-		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
+		const SeedPartitionRange range (p.getMin(chunk), p.getMax(chunk));
 		// cout<<"p.getMin(chunk) = "<<p.getMin(chunk)<<", p.getMax(chunk) = "<<p.getMax(chunk)<<endl;
 		current_range = range;
 		TimerTools timer ("Building reference index", true);

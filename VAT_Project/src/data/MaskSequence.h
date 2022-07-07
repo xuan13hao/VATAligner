@@ -17,7 +17,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 	{ }
 
 	template<typename _loc>
-	void build_masking(unsigned sid, const seedp_range &range, typename SortedList<_loc>::Type &idx)
+	void build_masking(unsigned sid, const SeedPartitionRange &range, typename SortedList<_loc>::Type &idx)
 	{
 		TimerTools timer ("Counting low complexity seeds", false);
 		vector<unsigned> counts (VATConsts::seedp);

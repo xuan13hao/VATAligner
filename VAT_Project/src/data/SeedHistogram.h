@@ -50,13 +50,14 @@ void decode_zero_rle(int32_t *data, size_t len, Input_stream &in)
 
 typedef int32_t ShapeHistogram[VATConsts::seqp][VATConsts::seedp];
 
-struct seedp_range
+class SeedPartitionRange
 {
-	seedp_range():
+	public:
+	SeedPartitionRange():
 		begin_ (0),
 		end_ (0)
 	{ }
-	seedp_range(unsigned begin, unsigned end):
+	SeedPartitionRange(unsigned begin, unsigned end):
 		begin_ (begin),
 		end_ (end)
 	{ }
@@ -82,7 +83,7 @@ size_t partition_size(const ShapeHistogram &hst, unsigned p)
 	return s;
 }
 
-size_t hst_size(const ShapeHistogram &hst, const seedp_range &range)
+size_t hst_size(const ShapeHistogram &hst, const SeedPartitionRange &range)
 {
 	size_t s (0);
 	for(unsigned i=range.begin();i<range.end();++i)
@@ -100,7 +101,7 @@ class SeedHistogram
 	SeedHistogram(const SequenceSet<_val> &seqs, const _val&)
 	{
 		memset(data_, 0, sizeof(data_));
-		Build_context<_val> context (seqs, *this);
+		PartitionSequences<_val> context (seqs, *this);
 		launch_scheduled_thread_pool(context, VATConsts::seqp, VATParameters::threads());
 	}
 
@@ -113,7 +114,7 @@ class SeedHistogram
 		::partition p (VATConsts::seedp, VATParameters::lowmem);
 		for(unsigned shape=0;shape < ShapeConfigures::get().count();++shape)
 			for(unsigned chunk=0;chunk < p.parts; ++chunk)
-				max = std::max(max, hst_size(data_[VATParameters::index_mode-1][shape], seedp_range(p.getMin(chunk), p.getMax(chunk))));
+				max = std::max(max, hst_size(data_[VATParameters::index_mode-1][shape], SeedPartitionRange(p.getMin(chunk), p.getMax(chunk))));
 		return max;
 	}
 
@@ -130,16 +131,19 @@ class SeedHistogram
 private:
 
 	template<typename _val>
-	struct Build_context
+	class PartitionSequences
 	{
-		Build_context(const SequenceSet<_val> &seqs, SeedHistogram &hst):
+		public:
+		PartitionSequences(const SequenceSet<_val> &seqs, SeedHistogram &hst):
 			seqs (seqs),
 			cfgs (shape_configs<_val>()),
 			seq_partition (seqs.partition()),
 			hst (hst)
 		{ }
 		void operator()(unsigned thread_id, unsigned seqp) const
-		{ hst.build_seq_partition(seqs, seqp, seq_partition[seqp], seq_partition[seqp+1], cfgs); }
+		{ 
+			hst.sequencesPartition(seqs, seqp, seq_partition[seqp], seq_partition[seqp+1], cfgs); 
+		}
 		const SequenceSet<_val> &seqs;
 		const vector<ShapeConfigures> cfgs;
 		const vector<size_t> seq_partition;
@@ -147,7 +151,7 @@ private:
 	};
 
 	template<typename _val>
-	void build_seq_partition(const SequenceSet<_val> &seqs,
+	void sequencesPartition(const SequenceSet<_val> &seqs,
 			const unsigned seqp,
 			const size_t begin,
 			const size_t end,
@@ -162,7 +166,8 @@ private:
 			const sequence<const _val> seq = seqs[i];
 			if(seq.length() < VATConsts::min_shape_len) continue;
 			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
-				for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
+				for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) 
+				{
 					assert(cfg->mode() < VATConsts::index_modes);
 					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)

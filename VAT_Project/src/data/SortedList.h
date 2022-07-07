@@ -1,12 +1,16 @@
 
 #ifndef SORTED_LIST_H_
 #define SORTED_LIST_H_
-
+#include <memory>
+#include <set>
 #include "../tools/util.h"
 #include "SeedHistogram.h"
 #include "../basic/PackedLocations.h"
-#include <memory>
+
 using std::auto_ptr;
+using std::set;
+
+static set<u_int64_t> seed_index;
 
 template<typename _pos>
 class SortedList
@@ -46,16 +50,16 @@ class SortedList
 	}
 
 	template<typename _val>
-	SortedList(char *buffer, const SequenceSet<_val> &seqs, const Shape &sh, const ShapeHistogram &hst, const seedp_range &range):
+	SortedList(char *buffer, const SequenceSet<_val> &seqs, const Shape &sh, const ShapeHistogram &hst, const SeedPartitionRange &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<Tuple*>(buffer))
 	{
 		TimerTools timer ("Building seed list", false);
-		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
-		launch_scheduled_thread_pool(build_context, VATConsts::seqp, VATParameters::threads());
+		SeedPartition<_val> sp (seqs, sh, range, build_iterators(hst));
+		launch_scheduled_thread_pool(sp, VATConsts::seqp, VATParameters::threads());
 		timer.go("Sorting seed list");
-		Sort_context sort_context (*this);
-		launch_scheduled_thread_pool(sort_context, VATConsts::seedp, VATParameters::threads());
+		SortTuple st (*this);
+		launch_scheduled_thread_pool(st, VATConsts::seedp, VATParameters::threads());
 	}
 
 	template<typename _t>
@@ -96,21 +100,21 @@ class SortedList
 
 	iterator get_partition_begin(unsigned p) const
 	{ return iterator (ptr_begin(p), ptr_end(p)); }
-
+	
 private:
 
-	typedef Static_matrix<Tuple*,VATConsts::seqp,VATConsts::seedp> Ptr_set;
+	typedef TupleMatrix<Tuple*,VATConsts::seqp,VATConsts::seedp> TuplePtrSet;
 
-	struct buffered_iterator
+	struct BufferedIterator
 	{
 		static const unsigned BUFFER_SIZE = 16;
-		buffered_iterator(Tuple **ptr)
+		BufferedIterator(Tuple **ptr)
 		{
 			memset(n, 0, sizeof(n));
 			memcpy(this->ptr, ptr, sizeof(this->ptr));
 		}
 		//insert seed with postion into seedp_range
-		void push(seed key, _pos value, const seedp_range &range)
+		void push(seed key, _pos value, const SeedPartitionRange &range)
 		{
 			const unsigned p (seed_partition(key));
 			if(range.contains(p)) {
@@ -140,11 +144,7 @@ private:
 
 	Tuple* ptr_begin(unsigned i) const
 	{ 
-		// cout<<"data_[limits_[i]] = "<<&data_[limits_[i]]<<endl;
-		// for (size_t j = 0; j < limits_[i].size(); j++)
-		// {
-		// 	cout<<"limit = "<<limits_[i][j]<<endl;
-		// }
+
 		
 		return &data_[limits_[i]]; 
 	}
@@ -159,9 +159,10 @@ private:
 	{ return &data_[limits_[i+1]]; }
 
 	template<typename _val>
-	struct Build_context
+	class SeedPartition
 	{
-		Build_context(const SequenceSet<_val> &seqs, const Shape &sh, const seedp_range &range, Ptr_set *iterators):
+		public:
+		SeedPartition(const SequenceSet<_val> &seqs, const Shape &sh, const SeedPartitionRange &range, TuplePtrSet *iterators):
 			seqs (seqs),
 			sh (sh),
 			range (range),
@@ -170,7 +171,7 @@ private:
 		{ }
 		void operator()(unsigned thread_id, unsigned seqp) const
 		{
-			build_seqp<_val>(seqs,
+			partitionSeeds<_val>(seqs,
 					seq_partition[seqp],
 					seq_partition[seqp+1],
 					(*iterators)[seqp],
@@ -179,38 +180,45 @@ private:
 		}
 		const SequenceSet<_val> &seqs;
 		const Shape &sh;
-		const seedp_range &range;
-		const auto_ptr<Ptr_set> iterators;
+		const SeedPartitionRange &range;
+		const auto_ptr<TuplePtrSet> iterators;
 		const vector<size_t> seq_partition;
 	};
 
 	template<typename _val>
-	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const Shape &sh, const seedp_range &range)
+	static void partitionSeeds(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const Shape &sh, const SeedPartitionRange &range)
 	{
 		uint64_t key;
 		//init buffered iterator via entry size
-		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
+		auto_ptr<BufferedIterator> it (new BufferedIterator(ptr));
 		for(size_t i=begin;i<end;++i) 
 		{
 			const sequence<const _val> seq = seqs[i];
-			// cout<<"seq = "<<seq<<endl;
-			// cout<<"------------ "<<endl;
 			if(seq.length()<sh.length_) continue;
 	
 			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) 
 			{
 				// cout<<"seq = "<<seq[j]<<endl;
-				if(sh.set_seed(key, &seq[j]))//get key via seq
-					it->push(key, seqs.position(i, j), range);
+				if(sh.set_seed(key, &seq[j]))//get key via seq && seed_index.count(key)==0
+				{
+					// if (seed_index.count(key)==0)
+					// {
+					// 	seed_index.insert(key);
+						it->push(key, seqs.position(i, j), range);
+					// }
+					
+					
+					// seed_index.insert(key);
+				}	
 			}
 		}
 		//copy all buffer data into ptr set
 		it->flush();
 	}
 
-	Ptr_set* build_iterators(const ShapeHistogram &hst) const
+	TuplePtrSet* build_iterators(const ShapeHistogram &hst) const
 	{
-		Ptr_set *iterators = new Ptr_set;
+		TuplePtrSet *iterators = new TuplePtrSet;
 		for(unsigned i=0;i<VATConsts::seedp;++i)
 			(*iterators)[0][i] = ptr_begin(i);
 
@@ -226,11 +234,14 @@ private:
 		return iterators;
 	}
 
-	struct Sort_context
+	class SortTuple
 	{
-		Sort_context(SortedList &sl):
+		public:
+		SortTuple(SortedList &sl):
 			sl (sl)
-		{ }
+		{ 
+
+		}
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{
 			// SortedList::const_iterator j = sl.get_partition_cbegin(seedp);
@@ -283,7 +294,7 @@ private:
 
 	struct Limits : vector<size_t>
 	{
-		Limits(const ShapeHistogram &hst, const seedp_range &range)
+		Limits(const ShapeHistogram &hst, const SeedPartitionRange &range)
 		{
 			TimerTools timer ("Computing limits", false);
 			this->push_back(0);
@@ -299,7 +310,7 @@ private:
 
 	const Limits limits_;
 	Tuple *data_;
-
+	
 };
 
 #endif /* SORTED_LIST_H_ */
