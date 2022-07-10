@@ -36,7 +36,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 			continue;
 		}
 		local.push_back(local_match<_val> (i->seed_offset_, ref->data(i->subject_)));
-		floating_sw(&query[i->seed_offset_],
+		floatingSmithWaterman(&query[i->seed_offset_],
 				local.back(),
 				padding[frame],
 				ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),

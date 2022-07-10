@@ -67,6 +67,7 @@ bool		forwardonly;
 unsigned	fetch_size;
 bool		single_domain;
 size_t		db_size;
+bool		is_spilced;
 
 Aligner_mode aligner_mode;
 Command algn_type;

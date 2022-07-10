@@ -31,7 +31,7 @@ void align(const _locq q_pos,
 
 	unsigned delta, len;
 	int score;
-	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
+	if((score = xdropUngapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
 		return;
 
 	// if (sequence_type() == amino_acid)

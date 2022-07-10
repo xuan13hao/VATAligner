@@ -2,9 +2,27 @@
 
 #ifndef ALIGN_UNGAPPED_H_
 #define ALIGN_UNGAPPED_H_
+/**
+ * 
+ * GT.....AG intron
+ */
+
+/**
+ * @brief xdropUngapped
+ * 
+ * @tparam _val 
+ * @tparam _locr 
+ * @tparam _locq 
+ * @param query query
+ * @param subject subject
+ * @param seed_len seed len =  shape len
+ * @param delta distance
+ * @param len 
+ * @return int score
+ */
 
 template<typename _val, typename _locr, typename _locq>
-int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
+int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
 {
 	int score (0), st (0);
 	unsigned n (0);
@@ -17,11 +35,35 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
+
+		if (VATParameters::is_spilced)
+		{
+			int spliced_reward = 0;
+			cout<<"query = "<<AlphabetAttributes<_val>::ALPHABET[*--q] <<",subject = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
+			if ((AlphabetAttributes<_val>::ALPHABET[*q] == AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
+			&& (AlphabetAttributes<_val>::ALPHABET[*--q] == AlphabetAttributes<_val>::ALPHABET[*--s] == 'G')
+			&& (*--q != AlphabetSet<_val>::PADDING_CHAR)&&(*--s != AlphabetSet<_val>::PADDING_CHAR)
+			)
+			{
+				spliced_reward = -4;
+			}
+			
+			int letter_score = ScoreMatrix::get().letter_score(*q, mask_critical(*s)) + spliced_reward;
+			st += letter_score;
+			score = std::max(score, st);
+			--q;
+			--s;
+			++delta;
+		}
+		
+		
 		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		--q;
 		--s;
 		++delta;
+
+		
 	}
 
 	q = query + seed_len;
@@ -34,6 +76,28 @@ int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, un
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
+		if (VATParameters::is_spilced)
+		{
+			int spliced_reward = 0;
+			// cout<<"query = "<<AlphabetAttributes<_val>::ALPHABET[*--q] <<",subject = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
+			if ((AlphabetAttributes<_val>::ALPHABET[*q] == AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
+			&& (AlphabetAttributes<_val>::ALPHABET[*++q] == AlphabetAttributes<_val>::ALPHABET[*++s] == 'G')
+			&& (*++q != AlphabetSet<_val>::PADDING_CHAR)&& (*++s != AlphabetSet<_val>::PADDING_CHAR)
+			)
+			{
+				spliced_reward = -4;
+			}
+			
+			int letter_score = ScoreMatrix::get().letter_score(*q, mask_critical(*s)) + spliced_reward;
+			st += letter_score;
+			score = std::max(score, st);
+			--q;
+			--s;
+			++delta;
+		}
+		
+
+
 		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		++q;

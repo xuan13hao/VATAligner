@@ -41,7 +41,7 @@ void align(const _locq q_pos,
 }
 
 template<typename _val, typename _locr, typename _locq>
-int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
+int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
 {
 	int score (0), st (0);
 	unsigned n (0);

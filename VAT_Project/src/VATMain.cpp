@@ -42,6 +42,7 @@ int main(int ac, const char* av[])
         po::options_description aligner("Aligner options");
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
+			("splice,sp", po::value<bool>(&VATParameters::is_spilced)->default_value(0), "is splice alignment")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
 			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
