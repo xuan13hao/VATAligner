@@ -42,7 +42,7 @@ int main(int ac, const char* av[])
         po::options_description aligner("Aligner options");
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
-			("splice,sp", po::value<bool>(&VATParameters::is_spilced)->default_value(0), "is splice alignment")
+			("splice", po::value<bool>(&VATParameters::is_spilced)->default_value(0), "splice alignment (0)")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
 			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
@@ -62,10 +62,10 @@ int main(int ac, const char* av[])
 
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
-			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
+			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-15), "maximum seed frequency")
 			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
-       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(30), "minimum number of identities for stage 1 hit")
+       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(20), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(20), "xdrop for ungapped alignment")
         	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
@@ -122,7 +122,7 @@ int main(int ac, const char* av[])
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
         	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
-        	cout << "  Protein\tAlign protein query sequences against a protein reference database" << endl;
+        	cout << "  protein\tAlign protein query sequences against a protein reference database" << endl;
         	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;

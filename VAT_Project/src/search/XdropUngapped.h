@@ -27,7 +27,7 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 	int score (0), st (0);
 	unsigned n (0);
 	delta = 0;
-
+	int count  = 0;
 	const _val *q (query-1), *s (subject-1);
 	const unsigned window_left = std::max(VATParameters::window, (unsigned)VATConsts::seed_anchor) - VATConsts::seed_anchor;
 	while(score - st < VATParameters::xdrop
@@ -35,17 +35,18 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
-
+		
 		if (VATParameters::is_spilced)
 		{
 			int spliced_reward = 0;
-			cout<<"query = "<<AlphabetAttributes<_val>::ALPHABET[*--q] <<",subject = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
-			if ((AlphabetAttributes<_val>::ALPHABET[*q] == AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
-			&& (AlphabetAttributes<_val>::ALPHABET[*--q] == AlphabetAttributes<_val>::ALPHABET[*--s] == 'G')
+			// cout<<"query = "<<AlphabetAttributes<_val>::ALPHABET[*--q] <<",subject = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
+			if ((AlphabetAttributes<_val>::ALPHABET[*q] == 'T' && AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
+			&& (AlphabetAttributes<_val>::ALPHABET[*--q] == 'G' && AlphabetAttributes<_val>::ALPHABET[*--s] == 'G')
 			&& (*--q != AlphabetSet<_val>::PADDING_CHAR)&&(*--s != AlphabetSet<_val>::PADDING_CHAR)
 			)
 			{
-				spliced_reward = -4;
+				// cout<<"count = "<<(count++)<<endl;
+				spliced_reward = 12;
 			}
 			
 			int letter_score = ScoreMatrix::get().letter_score(*q, mask_critical(*s)) + spliced_reward;
@@ -80,12 +81,13 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 		{
 			int spliced_reward = 0;
 			// cout<<"query = "<<AlphabetAttributes<_val>::ALPHABET[*--q] <<",subject = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
-			if ((AlphabetAttributes<_val>::ALPHABET[*q] == AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
-			&& (AlphabetAttributes<_val>::ALPHABET[*++q] == AlphabetAttributes<_val>::ALPHABET[*++s] == 'G')
+			if ((AlphabetAttributes<_val>::ALPHABET[*q] == 'T'&& AlphabetAttributes<_val>::ALPHABET[*s] == 'T')
+			&& (AlphabetAttributes<_val>::ALPHABET[*++q] == 'G' && AlphabetAttributes<_val>::ALPHABET[*++s] == 'G')
 			&& (*++q != AlphabetSet<_val>::PADDING_CHAR)&& (*++s != AlphabetSet<_val>::PADDING_CHAR)
 			)
 			{
-				spliced_reward = -4;
+				// cout<<"count = "<<(count++)<<endl;
+				spliced_reward = 12;
 			}
 			
 			int letter_score = ScoreMatrix::get().letter_score(*q, mask_critical(*s)) + spliced_reward;
