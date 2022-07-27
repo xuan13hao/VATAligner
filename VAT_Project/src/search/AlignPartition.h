@@ -5,9 +5,9 @@
 
 #include "align.h"
 #include "../basic/Statistics.h"
-
+/*
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void align_range(_locq q_pos,
+void alignRefRange(_locq q_pos,
 				 const typename SortedList<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
@@ -16,6 +16,7 @@ void align_range(_locq q_pos,
 	unsigned i = 0, n=0;
 
 	const _val* query = QuerySeqs<_val>::data_->data(q_pos);
+	// cout<<"query pos = "<<q_pos<<endl;
 	HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
 	if(s.n <= VATParameters::hit_cap) 
 	{
@@ -44,9 +45,52 @@ void align_range(_locq q_pos,
 
 	hf.finish();
 }
-
+*/
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
+void alignQueryRange(const typename SortedList<_locq>::Type::const_iterator &q,
+				 const typename SortedList<_locr>::Type::const_iterator &s,
+				 Statistics &stats,
+				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
+				 const unsigned sid)
+{
+
+// printf("%lu %lu\n",q.n,s.n);
+//maximum number of hits to consider for one seed
+	for(unsigned i=0;i<q.n; ++i)
+	{
+		_locq q_pos = _locq(q[i]);
+		unsigned num = 0, n=0;
+		const _val* query = QuerySeqs<_val>::data_->data(q_pos);
+		HitFilter<_val,_locr,_locq,_locl> hf (stats, q_pos, out);
+		if(s.n <= VATParameters::hit_cap) 
+		{
+			stats.inc(Statistics::SEED_HITS, s.n);
+			while(num < s.n) 
+			{
+				align<_val,_locr,_locq,_locl>(q_pos, query, s[num], stats, sid, hf);
+				++num;
+			}
+		} 
+		else 
+		{
+			while(num < s.n && s[num] != 0) 
+			{
+					assert(position_filter(s[num], filter_treshold(s.n), s.key()));
+					align<_val,_locr,_locq,_locl>(q_pos, query, s[num], stats, sid, hf);
+					stats.inc(Statistics::SEED_HITS);
+					++num;
+					++n;
+			}
+		}
+
+		hf.finish();
+
+	}
+}
+
+/*
+template<typename _val, typename _locr, typename _locq, typename _locl>
+void alignQueryRange(const typename SortedList<_locq>::Type::const_iterator &q,
 				 const typename SortedList<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
@@ -56,12 +100,12 @@ void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
 	//if(q.n > 4096)
 		//printf("%lu %lu\n",q.n,s.n);
 #endif
-
+// printf("%lu %lu\n",q.n,s.n);
 //maximum number of hits to consider for one seed
 	for(unsigned i=0;i<q.n; ++i)
-		align_range<_val,_locr,_locq,_locl>(_locq(q[i]), s, stats, out, sid);
+		alignRefRange<_val,_locr,_locq,_locl>(_locq(q[i]), s, stats, out, sid);
 }
-
+*/
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void alignPartition(unsigned hp,
 		Statistics &stats,
@@ -73,6 +117,7 @@ void alignPartition(unsigned hp,
 	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
 	while(!i.at_end() && !j.at_end() && !exception_state()) 
 	{
+		// cout<<"i key = "<<i.key()<<", j key = "<<j.key()<<endl;
 		if(i.key() < j.key()) 
 		{
 			++i;
@@ -82,7 +127,7 @@ void alignPartition(unsigned hp,
 		} 
 		else 
 		{
-			align_range<_val,_locr,_locq,_locl>(j, i, stats, *out, sid);
+			alignQueryRange<_val,_locr,_locq,_locl>(j, i, stats, *out, sid);
 			++i;
 			++j;
 		}

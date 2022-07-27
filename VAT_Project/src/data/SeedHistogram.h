@@ -157,32 +157,90 @@ private:
 			const size_t end,
 			const vector<ShapeConfigures> &cfgs)
 	{
+		int w = 2, k = 10;
 		// int count = 0;
 		assert(seqp < VATConsts::seqp);
 		uint64_t key;
-		for(size_t i=begin;i<end;++i) {
+		for(size_t i=begin;i<end;++i) 
+		{
 
 			assert(i < seqs.get_length());
 			const sequence<const _val> seq = seqs[i];
+			// const char* seq_c = seq.c_str();
+			// std::string str(seq_c);
+			// cout<<"seq = "<<str<<endl;
 			if(seq.length() < VATConsts::min_shape_len) continue;
+			// subStr(seq,1,3);
+			vector<string> w_vec;
+			for (size_t l = 0; l < seq.length()-(w+k-2); l++)
+			{
+				string str;
+				const _val* tmp = &seq[l];
+				for (size_t i = 0; i < w+k-1; i++)				// l = w+k-1
+				{
+					_val l = tmp[i];
+					if(l != AlphabetAttributes<_val>::MASK_CHAR || l != AlphabetSet<_val>::PADDING_CHAR)
+					{
+						char c = AlphabetAttributes<_val>::ALPHABET[l];
+						str = str+c;
+					}
+				}
+				w_vec.push_back(str);
+				cout<<"str = "<<str<<endl;	
+				cout<<endl;
+			}
+			
+			cout<<endl;
+			// GCACTGAAAATGTCTCGACGGGCCGACAC
 			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
+			{
+				// cout<<AlphabetAttributes<DNA>::ALPHABET[seq[j]];
 				for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) 
 				{
 					assert(cfg->mode() < VATConsts::index_modes);
 					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)
+					{
 						if(j+cfg->get_shape(k).length_ < seq.length()+1 && cfg->get_shape(k).set_seed(key, &seq[j]))
 						{
 							// count++;
+							// cout<<"length = "<<seq[j].length()<<endl;
 							++data_[cfg->mode()][k][seqp][seed_partition(key)];
 							// cout<<"index = "<<count<<", data = "<<****data_<<", model = "<<cfg->mode()<<",k = "<<k<<",seqp = "<<seqp<<", key = "<<seed_partition(key)<<endl;
 						}
+					}
 
 				}
-
+				// count++;
+			}
+			// cout<<endl;
+			// cout<<"count  ="<<count<<endl;
 		}
 	}
-
+	template<typename _val>
+	static _val* subStr(_val *src, int m, int n)
+	{
+		// get the length of the destination string
+		int len = n - m;
+	
+		// allocate (len + 1) chars for destination (+1 for extra null character)
+		_val *dest = (_val*)malloc(sizeof(_val) * (len + 1));
+	
+		// extracts characters between m'th and n'th index from source string
+		// and copy them into the destination string
+		for (int i = m; i < n && (*(src + i) != '\0'); i++)
+		{
+			*dest = *(src + i);
+			dest++;
+		}
+	
+		// null-terminate the destination string
+		*dest = '\0';
+	
+		// return the destination string
+		return dest - len;
+	}
+	
 	template<typename _val>
 	static vector<ShapeConfigures> shape_configs()
 	{

@@ -44,6 +44,7 @@ public:
 			return;
 		unsigned left;
 		sequence<const _val> query (QuerySeqs<_val>::data_->window_infix(q_pos_ + VATConsts::seed_anchor, left));
+		// cout<<"query = "<<endl;
 		smith_waterman(query,
 				*subjects_,
 				VATParameters::hit_band,
@@ -60,15 +61,16 @@ public:
 	{
 		if(q_num_ == std::numeric_limits<unsigned>::max()) 
 		{
+			// cout<<"11111111111111"<<endl;
 			std::pair<size_t,size_t> l (QuerySeqs<_val>::data_->local_position(q_pos_));
 			q_num_ = l.first;
 			seed_offset_ = l.second;
 		}
 		
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
-		//seed offset =  suject_end_position - subject_start_point 
+		//seed offset =  suject_end_position - subject_start_point = query_start - query_end
 		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
-		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
+		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 
