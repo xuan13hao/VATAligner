@@ -5,8 +5,10 @@
 
 #include <vector>
 #include "../dp/floating_sw.h"
-
+#include "../tools/flat_array.h"
 using std::vector;
+
+
 
 template<typename _val, typename _locr, typename _locl>
 void align_sequence(vector<Segment<_val> > &matches,
@@ -19,13 +21,13 @@ void align_sequence(vector<Segment<_val> > &matches,
 		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end,
 		vector<char> &transcript_buf)
 {
+
 	std::sort(begin, end, Hits<_locr,_locl>::cmp_normalized_subject);
 	const unsigned q_num (begin->query_);
 	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
 	const unsigned frame = q_num % query_contexts();
 	const unsigned query_len = query.length();
 	padding[frame] = VATParameters::read_padding<_val>(query_len);
-
 
 	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
 	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 

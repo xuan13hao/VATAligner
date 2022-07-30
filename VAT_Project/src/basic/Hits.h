@@ -9,11 +9,11 @@
 
 enum Strand { FORWARD, REVERSE };
 
-interval normalized_range(unsigned pos, int len, Strand strand)
+Interval normalized_range(unsigned pos, int len, Strand strand)
 {
 	return strand == FORWARD
-			? interval (pos, pos + len)
-			: interval (pos + 1 + len, pos + 1);
+			? Interval (pos, pos + len)
+			: Interval (pos + 1 + len, pos + 1);
 }
 
 template<typename _locr, typename _locl>
@@ -162,9 +162,9 @@ struct local_match
 		score_ += rhs.score_;
 		query_len_ += rhs.query_len_;
 	}
-	interval query_range(Strand strand) const
+	Interval query_range(Strand strand) const
 	{ return normalized_range(query_begin_, query_len_, strand); }
-	interval subject_range() const
+	Interval subject_range() const
 	{ return normalized_range(subject_begin_, subject_len_, FORWARD); }
 	void print(const sequence<const _val> &query, const sequence<const _val> &subject, const vector<char> &buf) const
 	{
@@ -198,9 +198,9 @@ struct Segment
 	{ }
 	Strand strand() const
 	{ return frame_ < 3 ? FORWARD : REVERSE; }
-	interval query_range() const
+	Interval query_range() const
 	{ return traceback_->query_range(strand()); }
-	interval subject_range() const
+	Interval subject_range() const
 	{ return traceback_->subject_range(); }
 	bool operator<(const Segment &rhs) const
 	{ return top_score_ > rhs.top_score_

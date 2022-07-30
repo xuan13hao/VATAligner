@@ -79,25 +79,25 @@ bool position_filter(_loc l, unsigned treshold, seed s)
 	return ((l ^ s) & 0xff) < treshold;
 }
 
-struct interval
+struct Interval
 {
-	interval():
+	Interval():
 		begin_ (0),
 		end_ (0)
 	{ }
-	interval(size_t begin, size_t end):
+	Interval(size_t begin, size_t end):
 		begin_ (begin),
 		end_ (end)
 	{ }
 	size_t length() const
 	{ return end_ > begin_ ? end_ - begin_ : 0; }
-	size_t overlap(const interval &rhs) const
+	size_t overlap(const Interval &rhs) const
 	{ return intersect(*this, rhs).length(); }
 	bool includes(size_t p) const
 	{ return p >= begin_ && p < end_; }
-	friend interval intersect(const interval &lhs, const interval &rhs)
-	{ return interval (std::max(lhs.begin_, rhs.begin_), std::min(lhs.end_, rhs.end_)); }
-	friend std::ostream& operator<<(std::ostream &os, const interval &x)
+	friend Interval intersect(const Interval &lhs, const Interval &rhs)
+	{ return Interval (std::max(lhs.begin_, rhs.begin_), std::min(lhs.end_, rhs.end_)); }
+	friend std::ostream& operator<<(std::ostream &os, const Interval &x)
 	{ os << "[" << x.begin_ << ";" << x.end_ << "]"; return os; }
 	size_t begin_, end_;
 };

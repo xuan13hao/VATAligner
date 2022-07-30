@@ -43,7 +43,11 @@ void link_segments(const typename vector<Segment<_val> >::iterator &begin, const
 			for(typename vector<match<_val> >::iterator j=i+1; j<end; ++j)
 				min_ev = std::min(min_ev, link_segments(*i, *j));*/
 	for(typename vector<Segment<_val> >::iterator i=begin; i<end; ++i)
+	{
 		i->top_score_ = max_score;
+		// cout<<"query = "<<i->traceback_->query_begin_<<", subject = "<<i->traceback_->subject_begin_<<endl;
+	}
+		
 }
 
 template<typename _val>
@@ -53,7 +57,9 @@ void link_segments(vector<Segment<_val> > &hsp_list)
 	std::sort(hsp_list.begin(), hsp_list.end(), Segment<_val>::comp_subject);
 	Hsp_map hsp_map (hsp_list.begin(), hsp_list.end());
 	typename Hsp_map::Iterator it = hsp_map.begin();
-	while(it.valid()) {
+	while(it.valid()) 
+	{
+		// cout<<"s = "<<it<<endl;
 		link_segments<_val>(it.begin(), it.end());
 		++it;
 	}

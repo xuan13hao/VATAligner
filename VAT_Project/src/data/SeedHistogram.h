@@ -186,8 +186,8 @@ private:
 					}
 				}
 				w_vec.push_back(str);
-				cout<<"str = "<<str<<endl;	
-				cout<<endl;
+				// cout<<"str = "<<str<<endl;	
+				// cout<<endl;
 			}
 			
 			cout<<endl;

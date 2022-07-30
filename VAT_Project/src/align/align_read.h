@@ -9,12 +9,93 @@
 #include "../basic/Hits.h"
 #include "../basic/Statistics.h"
 #include "../search/XdropUngapped.h"
-#include "align_sequence.h"
 #include "../tools/text_buffer.h"
 #include "../output/output_buffer.h"
 #include "link_segments.h"
+#include "../dp/floating_sw.h"
 
 using std::vector;
+
+/**
+ * @brief Align Sequence
+ * 
+ * @tparam _val char DNA or Protein
+ * @tparam _locr uint_64
+ * @tparam _locl uint_64
+ * @param matches vector for segement
+ * @param stat statistic 
+ * @param local local match
+ * @param padding 
+ * @param db_letters 
+ * @param dna_len 
+ * @param begin begin of Hits
+ * @param end end of Hits
+ * @param transcript_buf Edit_transcript
+ */
+
+
+template<typename _val, typename _locr, typename _locl>
+void align_sequence(vector<Segment<_val> > &matches,
+		Statistics &stat,
+		vector<local_match<_val> > &local,
+		unsigned *padding,
+		size_t db_letters,
+		unsigned dna_len,
+		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &begin,
+		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end,
+		vector<char> &transcript_buf)
+{
+
+	std::sort(begin, end, Hits<_locr,_locl>::cmp_normalized_subject);
+	const unsigned q_num (begin->query_);
+	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
+	const unsigned frame = q_num % query_contexts();
+	const unsigned query_len = query.length();
+	padding[frame] = VATParameters::read_padding<_val>(query_len);
+	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
+	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
+	{
+
+		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
+		{
+			stat.inc(Statistics::DUPLICATES);
+			continue;
+		}
+		local.push_back(local_match<_val> (i->seed_offset_, ref->data(i->subject_)));
+		floatingSmithWaterman(&query[i->seed_offset_],
+				local.back(),
+				padding[frame],
+				ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+				VATParameters::gap_open + VATParameters::gap_extend,
+				VATParameters::gap_extend,
+				transcript_buf,
+				Traceback ());
+		const int score = local.back().score_;
+		std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(i->subject_);
+		matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+		anchored_transform(local.back(), l.second, i->seed_offset_);
+		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+		// local.back().print(query, ref_seqs<_val>::get()[l.first], transcript_buf);
+		to_source_space(local.back(), frame, dna_len);
+		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+		stat.inc(Statistics::OUT_HITS);
+	
+	}
+
+}
+
+/**
+ * @brief Locate read for align sequence 
+ * 
+ * @tparam _val char DNA Protein
+ * @tparam _locr uint64
+ * @tparam _locl uint64
+ * @param buffer 
+ * @param stat statistic 
+ * @param begin begin of hit
+ * @param end end of hit
+ */
+
 
 template<typename _val, typename _locr, typename _locl>
 void align_read(Output_buffer<_val> &buffer,
@@ -44,13 +125,13 @@ void align_read(Output_buffer<_val> &buffer,
 	// const size_t source_query_len = query_translated() ? query_seqs<_val>::data_->reverse_translated_len(query*contexts) : query_len;
 	const size_t db_letters = ref_header.letters;
 	unsigned padding[6];
-
-
 	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<1> > Map_t;
-	Map_t hits (begin, end);
+	Map_t hits_ (begin, end);
 
-	typename Map_t::Iterator i = hits.begin();
-	while(i.valid()) {
+	typename Map_t::Iterator i = hits_.begin();
+
+	while(i.valid()) 
+	{
 
 		align_sequence<_val,_locr,_locl>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf);
 		++i;
@@ -66,15 +147,7 @@ void align_read(Output_buffer<_val> &buffer,
 	std::sort(matches->begin(), matches->end());
 	unsigned n_hsp = 0, n_target_seq = 0;
 	typename vector<Segment<_val> >::iterator it = matches->begin();
-	// int min_raw_score;
-	// if (sequence_type() == amino_acid)
-	// {
-	// 	min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
-	// 		? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
-	// }else if (sequence_type() == nucleotide)
-	// {
-	// 	min_raw_score = 0;
-	// }
+
 	
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
@@ -82,13 +155,15 @@ void align_read(Output_buffer<_val> &buffer,
 	const int top_score = matches->operator[](0).score_;
 
 
-	while(it < matches->end()) {
+	while(it < matches->end()) 
+	{
 		const bool same_subject = it != matches->begin() && (it-1)->subject_id_ == it->subject_id_;
 		if(!same_subject && it->score_ < min_raw_score)
 			break;
 		if(!same_subject && !VATParameters::output_range(n_target_seq, it->score_, top_score))
 			break;
-		if(same_subject && (it-1)->score_ == it->score_) {
+		if(same_subject && (it-1)->score_ == it->score_) 
+		{
 			++it;
 			continue;
 		}

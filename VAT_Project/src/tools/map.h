@@ -34,7 +34,9 @@ class Map
 	Map(const _it &begin, const _it &end):
 		begin_ (begin),
 		end_ (end)
-	{ }
+	{ 
+		
+	}
 
 	Iterator begin()
 	{ return Iterator(begin_, end_); }
