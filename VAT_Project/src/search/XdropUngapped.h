@@ -68,7 +68,7 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 	return score;
 }
 template<typename _val, typename _locr, typename _locq>
-DiagonalSegment xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa)
+DiagonalSeeds xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa)
 {
 	unsigned delta,len;
 	const int xdrop = 23;
@@ -114,7 +114,7 @@ DiagonalSegment xdrop_ungapped(const _val *query, const _val *subject, int qa, i
 	len += delta;
 	//int query_pos, int subject_pos, int len, int score
 	// cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
-	return DiagonalSegment(qa - delta, sa - delta, len, score);
+	return DiagonalSeeds(qa - delta, sa - delta, len, score);
 }
 /*
 template<typename _val, typename _locr, typename _locq>

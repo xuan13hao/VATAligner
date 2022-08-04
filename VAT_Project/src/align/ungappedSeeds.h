@@ -18,7 +18,7 @@
  */
 
 template<typename _val, typename _locr, typename _locq>
-DiagonalSegment xdrop_ungapped(const _val &query, const _val &subject, int qa, int sa)
+DiagonalSeeds xdrop_ungapped(const _val &query, const _val &subject, int qa, int sa)
 {
 	const int xdrop = VATParameters::xdrop;
 	int score = 0, st = 0;
@@ -58,7 +58,7 @@ DiagonalSegment xdrop_ungapped(const _val &query, const _val &subject, int qa, i
 		++s;
 		++n;
 	}
-	return DiagonalSegment(qa - delta, sa - delta, len + delta, score);
+	return DiagonalSeeds(qa - delta, sa - delta, len + delta, score);
 }
 /*
 

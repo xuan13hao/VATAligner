@@ -5,8 +5,9 @@
 #include <iostream>
 #include <algorithm>
 
-struct interval
+class interval
 {
+	public:
 	interval() :
 		begin_(0),
 		end_(0)

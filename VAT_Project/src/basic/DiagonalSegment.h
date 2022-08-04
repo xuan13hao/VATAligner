@@ -7,13 +7,13 @@
 #include <algorithm>
 #include "interval.h"
 
-class DiagonalSegment
+class DiagonalSeeds
 {
     public:
-	DiagonalSegment() :
+	DiagonalSeeds() :
 		len(0)
 	{}
-	DiagonalSegment(int query_pos, int subject_pos, int len, int score) :
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score) :
 		i(query_pos),
 		j(subject_pos),
 		len(len),
@@ -51,63 +51,63 @@ class DiagonalSegment
 	{
 		return i - j;
 	}
-	DiagonalSegment intersect(const DiagonalSegment &x) const
+	DiagonalSeeds intersect(const DiagonalSeeds &x) const
 	{
 		if (diag() != x.diag())
-			return DiagonalSegment();
+			return DiagonalSeeds();
 		else {
 			const interval q = ::intersect(query_range(), x.query_range());
-			return DiagonalSegment(q.begin_, ::intersect(subject_range(), x.subject_range()).begin_, q.length(), 0);
+			return DiagonalSeeds(q.begin_, ::intersect(subject_range(), x.subject_range()).begin_, q.length(), 0);
 		}
 	}
-	bool is_enveloped(const DiagonalSegment &x) const
+	bool is_enveloped(const DiagonalSeeds &x) const
 	{
 		return score <= x.score
 			&& query_range().overlap_factor(x.query_range()) == 1
 			&& subject_range().overlap_factor(x.subject_range()) == 1;
 	}
-	DiagonalSegment transpose() const
+	DiagonalSeeds transpose() const
 	{
-		return DiagonalSegment(j, i, len, score);
+		return DiagonalSeeds(j, i, len, score);
 	}
 	int partial_score(int diff) const
 	{
 		return score*std::max(len - diff, 0) / len;
 	}
-	bool operator<=(const DiagonalSegment &rhs) const
+	bool operator<=(const DiagonalSeeds &rhs) const
 	{
 		return i + len <= rhs.i && j + len <= rhs.j;
 	}
-	bool operator==(const DiagonalSegment &rhs) const
+	bool operator==(const DiagonalSeeds &rhs) const
 	{
 		return i == rhs.i && j == rhs.j && len == rhs.len;
 	}
-	static bool cmp_subject(const DiagonalSegment &x, const DiagonalSegment &y)
+	static bool cmp_subject(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
 		return x.j < y.j || (x.j == y.j && x.i < y.i);
 	}
-	static bool cmp_score(const DiagonalSegment& x, const DiagonalSegment& y)
+	static bool cmp_score(const DiagonalSeeds& x, const DiagonalSeeds& y)
 	{
 		return x.score > y.score;
 	}
-	static bool cmp_subject_end(const DiagonalSegment &x, const DiagonalSegment &y)
+	static bool cmp_subject_end(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
 		return x.subject_end() < y.subject_end();
 	}
-	static bool cmp_heuristic(const DiagonalSegment &x, const DiagonalSegment &y)
+	static bool cmp_heuristic(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
 		return (x.subject_end() < y.subject_end() && x.j < y.j)
 			|| (x.j - y.j < y.subject_end() - x.subject_end());
 	}
-	static bool cmp_diag(const DiagonalSegment &x, const DiagonalSegment &y)
+	static bool cmp_diag(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
 		return x.diag() < y.diag() || (x.diag() == y.diag() && x.j < y.j);
 	}
-	friend int abs_shift(const DiagonalSegment &x, const DiagonalSegment &y)
+	friend int abs_shift(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
 		return abs(x.diag() - y.diag());
 	}
-	friend std::ostream& operator<<(std::ostream &s, const DiagonalSegment &d)
+	friend std::ostream& operator<<(std::ostream &s, const DiagonalSeeds &d)
 	{
 		s << "i=" << d.i << " j=" << d.j << " l=" << d.len << " score=" << d.score;
 		return s;

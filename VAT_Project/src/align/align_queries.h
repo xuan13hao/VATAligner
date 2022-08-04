@@ -85,7 +85,7 @@ private:
 template<typename _val>
 void ungapped_stage(const SeedHit *begin, const SeedHit *end, const sequence<const _val> query_seq, size_t block_id) 
 {
-	array<vector<DiagonalSegment>, MAX_CONTEXT> diagonal_segments;
+	array<vector<DiagonalSeeds>, MAX_CONTEXT> diagonal_segments;
 	WorkTarget<_val> target(block_id, ReferenceSeqs<_val>::get()[block_id]);
 	for (const SeedHit *hit = begin; hit < end; ++hit) 
 	{
@@ -105,7 +105,7 @@ void alignQueries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 		Output_buffer<_val> &buffer,
 		Statistics &st)
 {
-	vector<DiagonalSegment> diagonal_segments;
+	vector<DiagonalSeeds> diagonal_segments;
 	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<_d> > Map_t;
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
