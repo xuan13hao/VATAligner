@@ -15,7 +15,10 @@
 #include "../dp/floating_sw.h"
 
 using std::vector;
-
+struct SeedHit {
+	int i, j;
+	unsigned frame;
+};
 /**
  * @brief Align Sequence
  * 
@@ -53,14 +56,54 @@ void align_sequence(vector<Segment<_val> > &matches,
 	const unsigned query_len = query.length();
 	padding[frame] = VATParameters::read_padding<_val>(query_len);
 	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
+	/*
+	vector<SeedHit>* seed_hits;
+	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator c = begin; c != end; ++c) 
+	{
+		std::pair<size_t, size_t> l = ref->local_position(c->subject_);
+		// if (l.first != target) 
+		// {
+		// 	hits.next();
+		// 	target = l.first;
+		// 	target_block_ids.push_back(target);
+		// }
+		cout<<" seed_offset_= "<<(int)c->seed_offset_<<", s = "<<(int)l.second<<", q = "<<(int)c->query_<<endl;
+		seed_hits.push_back({ (int)c->seed_offset_, (int)l.second, (int)c->query_ });
+		// seed_hits.push_back({ (int64_t)c->query_, (int64_t)c->subject_, (int64_t)c->seed_offset_ });
+
+	}
+	cout<<"hit size = "<<seed_hits.size()<<endl;
+	for (size_t i = 0; i < seed_hits.size(); i++)
+	{
+		xdrop_ungapped();
+	}
+	*/
+	vector<DiagonalSegment> diagonalsegment_;
+
 	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
 	{
+		// if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
+		// {
+		// 	stat.inc(Statistics::DUPLICATES);
+		// 	continue;
+		// }
+		std::pair<size_t, size_t> l = ref->local_position(i->subject_);
+		const _val* sbj = ref->data(i->subject_);
+		const _val* qry = &query[i->seed_offset_];
+		// cout<<"i->query_ = "<<(int)i->query_<<", l.second = "<<(int)l.second<<", i->subject = "<<i->subject_<<endl;
+		DiagonalSegment ds = xdrop_ungapped<_val, _locr,_locl>(qry, sbj,(int)i->seed_offset_,(int)l.second);
+		diagonalsegment_.push_back(ds);
+	}
+	cout<<"diagonalsegment size = "<<diagonalsegment_.size()<<endl;
 
+	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
+	{
 		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
 		{
 			stat.inc(Statistics::DUPLICATES);
 			continue;
 		}
+
 		local.push_back(local_match<_val> (i->seed_offset_, ref->data(i->subject_)));
 		floatingSmithWaterman(&query[i->seed_offset_],
 				local.back(),
@@ -81,7 +124,6 @@ void align_sequence(vector<Segment<_val> > &matches,
 		stat.inc(Statistics::OUT_HITS);
 	
 	}
-
 }
 
 /**
@@ -101,7 +143,8 @@ template<typename _val, typename _locr, typename _locl>
 void align_read(Output_buffer<_val> &buffer,
 		Statistics &stat,
 		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &begin,
-		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end)
+		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end
+		)
 {
 	static thread_specific_ptr<vector<local_match<_val> > > local_ptr;
 	static thread_specific_ptr<vector<Segment<_val> > > matches_ptr;
@@ -113,12 +156,10 @@ void align_read(Output_buffer<_val> &buffer,
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
-
 	assert(end > begin);
 	const size_t hit_count = end - begin;
 	local->reserve(hit_count);
 	const unsigned contexts = query_contexts();
-
 	const unsigned query = begin->query_/contexts;
 	const size_t query_len (QuerySeqs<_val>::data_->length(query*contexts));
 	const size_t source_query_len = query_len;
@@ -127,7 +168,6 @@ void align_read(Output_buffer<_val> &buffer,
 	unsigned padding[6];
 	typedef Map<typename vector<Hits<_locr,_locl> >::iterator,typename Hits<_locr,_locl>::template Query_id<1> > Map_t;
 	Map_t hits_ (begin, end);
-
 	typename Map_t::Iterator i = hits_.begin();
 
 	while(i.valid()) 
@@ -178,7 +218,7 @@ void align_read(Output_buffer<_val> &buffer,
 
 		if(n_hsp == 0)
 			buffer.write_query_record(query);
-
+		// cout<<"frame = "<<it->frame_<<endl;
 		buffer.print_match(*it, source_query_len, QuerySeqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
 
 		++n_hsp;

@@ -39,13 +39,15 @@
 template<typename _val, typename _dir, typename _score, typename _traceback>
 local_match<_val> smithWatermanDirection(const _val *query, const _val *subject, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf)
 {
+	// cout<<"floating_sw 2"<<endl;
 	using std::max;
 	// int signal_p = 0; 
 	_score max_score = 0, column_max = 0;
 	int j = 0, i_max = -1, j_best = -1, i_best = -1;
 	Scalar_dp_matrix<_score,_traceback> mtx (band);
 	const _val *x = query, *y = subject;
-
+	// cout<<"y = "<<AlphabetAttributes<_val>::ALPHABET[*y];
+	// cout<<"x = "<<AlphabetAttributes<_val>::ALPHABET[*x];
 	while(*y != AlphabetSet<_val>::PADDING_CHAR && max_score - column_max < xdrop) 
 	{
 		typename Scalar_dp_matrix<_score,_traceback>::Column_iterator it = mtx.column(j, i_max);
