@@ -81,7 +81,6 @@ void alignSequence(vector<Segment<_val> > &matches,
 	
 
 
-	// cout<<"diagonalsegment size = "<<diagonalsegment_.size()<<endl;
 	for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	{
 		hit h = diagonalsegment_[i].hit_;
