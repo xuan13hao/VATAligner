@@ -171,26 +171,26 @@ private:
 			// cout<<"seq = "<<str<<endl;
 			if(seq.length() < VATConsts::min_shape_len) continue;
 			// subStr(seq,1,3);
-			vector<string> w_vec;
-			for (size_t l = 0; l < seq.length()-(w+k-2); l++)
-			{
-				string str;
-				const _val* tmp = &seq[l];
-				for (size_t i = 0; i < w+k-1; i++)				// l = w+k-1
-				{
-					_val l = tmp[i];
-					if(l != AlphabetAttributes<_val>::MASK_CHAR || l != AlphabetSet<_val>::PADDING_CHAR)
-					{
-						char c = AlphabetAttributes<_val>::ALPHABET[l];
-						str = str+c;
-					}
-				}
-				w_vec.push_back(str);
-				// cout<<"str = "<<str<<endl;	
-				// cout<<endl;
-			}
+			// vector<string> w_vec;
+			// for (size_t l = 0; l < seq.length()-(w+k-2); l++)
+			// {
+			// 	string str;
+			// 	const _val* tmp = &seq[l];
+			// 	for (size_t i = 0; i < w+k-1; i++)				// l = w+k-1
+			// 	{
+			// 		_val l = tmp[i];
+			// 		if(l != AlphabetAttributes<_val>::MASK_CHAR || l != AlphabetSet<_val>::PADDING_CHAR)
+			// 		{
+			// 			char c = AlphabetAttributes<_val>::ALPHABET[l];
+			// 			str = str+c;
+			// 		}
+			// 	}
+			// 	w_vec.push_back(str);
+			// 	// cout<<"str = "<<str<<endl;	
+			// 	// cout<<endl;
+			// }
 			
-			cout<<endl;
+			// cout<<endl;
 			// GCACTGAAAATGTCTCGACGGGCCGACAC
 			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
 			{

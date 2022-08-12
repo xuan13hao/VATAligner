@@ -23,14 +23,14 @@ class hit
 	// typedef typename packed_sequence_location<_locr>::type packed_loc;
 
 	unsigned	query_;
-	int64_t	subject_;//reference 
-	int64_t		seed_offset_;//seed offset
+	int32_t	subject_;//reference 
+	int32_t		seed_offset_;//seed offset
 	hit():
 		query_ (),
 		subject_ (),
 		seed_offset_ ()
 	{ }
-	hit(unsigned query, int64_t subject, int64_t seed_offset):
+	hit(unsigned query, int32_t subject, int32_t seed_offset):
 		query_ (query),
 		subject_ (subject),
 		seed_offset_ (seed_offset)

@@ -61,7 +61,6 @@ public:
 	{
 		if(q_num_ == std::numeric_limits<unsigned>::max()) 
 		{
-			// cout<<"11111111111111"<<endl;
 			std::pair<size_t,size_t> l (QuerySeqs<_val>::data_->local_position(q_pos_));
 			q_num_ = l.first;
 			seed_offset_ = l.second;
@@ -70,14 +69,13 @@ public:
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
 		//seed offset =  suject_end_position - subject_start_point = query_start - query_end
 		out_.push(hit (q_num_, subject, seed_offset_));
-		cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
+		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)
 	{ 
 		push_hit(ReferenceSeqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); 
-	
 		stats_.inc(Statistics::GAPPED_HITS); 
 	}
 

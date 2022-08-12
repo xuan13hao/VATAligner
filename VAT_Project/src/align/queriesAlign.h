@@ -77,13 +77,34 @@ void alignSequence(vector<Segment<_val> > &matches,
 		DiagonalSeeds ds = xdrop_ungapped<_val>(qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
 		diagonalsegment_.push_back(ds);
 	}
-	cout<<"diagonalsegment size = "<<diagonalsegment_.size()<<endl;
+
+	
+
+
+	// cout<<"diagonalsegment size = "<<diagonalsegment_.size()<<endl;
 	for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	{
-		cout<<"i = "<<diagonalsegment_[i].i<<", j = "<<diagonalsegment_[i].j<<", len = "<<diagonalsegment_[i].len<<", score = "<<diagonalsegment_[i].score<<endl;
+		hit h = diagonalsegment_[i].hit_;
+		local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
+		floatingSmithWaterman(&query[h.seed_offset_],
+				local.back(),
+				padding[frame],
+				ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+				VATParameters::gap_open + VATParameters::gap_extend,
+				VATParameters::gap_extend,
+				transcript_buf,
+				Traceback ());
+		const int score = local.back().score_;
+		std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
+		matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+		anchored_transform(local.back(), l.second, h.seed_offset_);
+		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+		to_source_space(local.back(), frame, dna_len);
+		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+		stat.inc(Statistics::OUT_HITS);
 	}
-
-
+	
+/*
 	for(typename Trace_pt_buffer::Vector::iterator i = begin; i != end; ++i) 
 	{
 		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
@@ -112,6 +133,7 @@ void alignSequence(vector<Segment<_val> > &matches,
 		stat.inc(Statistics::OUT_HITS);
 	
 	}
+*/
 }
 
 /**
@@ -241,7 +263,7 @@ void alignQueries(typename Trace_pt_list::iterator begin,
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
 	
-	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
+	// const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
 
 	while(i.valid() && !exception_state()) 
 	{
@@ -272,7 +294,8 @@ struct Align_context
 
 				alignQueries<_val,1>(query_range.begin, query_range.end, *buffer, st);
 				queue.push(i);
-			} catch(std::exception &e) {
+			} catch(std::exception &e) 
+			{
 				exception_state.set(e);
 				queue.wake_all();
 			}

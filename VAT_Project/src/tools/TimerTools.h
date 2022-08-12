@@ -1,7 +1,7 @@
 
 #ifndef LOG_STREAM_H_
 #define LOG_STREAM_H_
-
+#include <iostream>
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/iostreams/device/file.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -9,7 +9,7 @@
 
 using std::string;
 using std::endl;
-
+using std::cout;
 boost::iostreams::filtering_ostream verbose_stream;
 boost::iostreams::filtering_ostream log_stream;
 
@@ -34,9 +34,9 @@ class TimerTools : public boost::timer::cpu_timer
 		if(!msg_)
 			return;
 		if(print_ && !VATParameters::debug_log)
-			verbose_stream << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
+			cout << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
 		else {
-			log_stream << '/' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
+			cout << ' ' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
 		}
 		msg_ = 0;
 	}
@@ -47,7 +47,7 @@ private:
 			verbose_stream << msg << "... " << std::flush;
 			fflush(stdout);
 		} else
-			log_stream << msg << "..." << endl;
+			cout << msg << "..." << endl;
 	}
 	bool print_;
 	const char *msg_;

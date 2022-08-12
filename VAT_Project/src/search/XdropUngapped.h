@@ -67,6 +67,18 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 	// return DiagonalSegment(qa - delta, sa - delta, len + delta, score)
 	return score;
 }
+/**
+ * @brief xdrop ungapped
+ * 
+ * @tparam _val 
+ * @param query 
+ * @param subject 
+ * @param qa 
+ * @param sa 
+ * @param h 
+ * @return DiagonalSeeds 
+ */
+
 template<typename _val>
 DiagonalSeeds xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa, hit& h)
 {
