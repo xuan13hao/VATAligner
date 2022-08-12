@@ -17,7 +17,7 @@ class HitFilter
 public:
 	HitFilter(Statistics &stats,
 			   _locq q_pos,
-			   typename Trace_pt_buffer<_locr,_locl>::Iterator &out):
+			   typename Trace_pt_buffer::Iterator &out):
 		q_num_ (std::numeric_limits<unsigned>::max()),
 		seed_offset_ (std::numeric_limits<unsigned>::max()),
 		stats_ (stats),
@@ -69,7 +69,7 @@ public:
 		
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
 		//seed offset =  suject_end_position - subject_start_point = query_start - query_end
-		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
+		out_.push(hit (q_num_, subject, seed_offset_));
 		cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
@@ -86,7 +86,7 @@ private:
 	unsigned q_num_, seed_offset_;
 	Statistics  &stats_;
 	_locq q_pos_;
-	typename Trace_pt_buffer<_locr,_locl>::Iterator &out_;
+	typename Trace_pt_buffer::Iterator &out_;
 	//Tls<vector<sequence<const _val> > > subjects_;
 	vector<sequence<const _val> > s2;
 	vector<sequence<const _val> >* subjects_;

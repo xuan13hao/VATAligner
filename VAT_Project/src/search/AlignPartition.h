@@ -50,7 +50,7 @@ template<typename _val, typename _locr, typename _locq, typename _locl>
 void alignQueryRange(const typename SortedList<_locq>::Type::const_iterator &q,
 				 const typename SortedList<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
-				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
+				 typename Trace_pt_buffer::Iterator &out,
 				 const unsigned sid)
 {
 
@@ -114,7 +114,7 @@ void alignPartition(unsigned hp,
 		typename SortedList<_locq>::Type::const_iterator j,
 		unsigned thread_id)
 {
-	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
+	typename Trace_pt_buffer::Iterator* out = new typename Trace_pt_buffer::Iterator (*Trace_pt_buffer::instance, thread_id);
 	while(!i.at_end() && !j.at_end() && !exception_state()) 
 	{
 		// cout<<"i key = "<<i.key()<<", j key = "<<j.key()<<endl;

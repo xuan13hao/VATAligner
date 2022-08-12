@@ -8,7 +8,7 @@
 #include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
-#include "../align/align_queries.h"
+#include "../align/queriesAlign.h"
 #include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
 
@@ -109,7 +109,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
-	Trace_pt_buffer<_locr,_locl>::instance = new Trace_pt_buffer<_locr,_locl> (QuerySeqs<_val>::data_->get_length()/query_contexts(),
+	Trace_pt_buffer::instance = new Trace_pt_buffer (QuerySeqs<_val>::data_->get_length()/query_contexts(),
 			VATParameters::tmpdir,
 			VATParameters::mem_buffered());
 	timer.finish();
@@ -119,7 +119,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		processShapes<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
 
 	timer.go("Closing temporary storage");
-	Trace_pt_buffer<_locr,_locl>::instance->close();
+	Trace_pt_buffer::instance->close();
 	exception_state.sync();
 	timer.go("Deallocating buffers");
 	delete[] ref_buffer;
@@ -133,8 +133,8 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 	} else
 		out = &master_out.stream();
 	timer.go("Computing alignments");
-	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
-	delete Trace_pt_buffer<_locr,_locl>::instance;
+	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
+	delete Trace_pt_buffer::instance;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");

@@ -39,15 +39,12 @@
 template<typename _val, typename _dir, typename _score, typename _traceback>
 local_match<_val> smithWatermanDirection(const _val *query, const _val *subject, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf)
 {
-	// cout<<"floating_sw 2"<<endl;
 	using std::max;
 	// int signal_p = 0; 
 	_score max_score = 0, column_max = 0;
 	int j = 0, i_max = -1, j_best = -1, i_best = -1;
 	Scalar_dp_matrix<_score,_traceback> mtx (band);
 	const _val *x = query, *y = subject;
-	// cout<<"y = "<<AlphabetAttributes<_val>::ALPHABET[*y];
-	// cout<<"x = "<<AlphabetAttributes<_val>::ALPHABET[*x];
 	while(*y != AlphabetSet<_val>::PADDING_CHAR && max_score - column_max < xdrop) 
 	{
 		typename Scalar_dp_matrix<_score,_traceback>::Column_iterator it = mtx.column(j, i_max);
@@ -60,28 +57,8 @@ local_match<_val> smithWatermanDirection(const _val *query, const _val *subject,
 			++i_max;
 			column_max += ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, i_max, _dir()));
 		}
-		// _val x_row, y_row;
-
-		// cout<<(int)get_dir(x, it.row(), _dir())<<endl;
 		for(; it.valid() && (get_dir(x, it.row(), _dir())) != AlphabetSet<_val>::PADDING_CHAR; ++it) 
 		{
-			// const _score match_score = ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, it.row(), _dir()));
-			// cout<<"y= "<<(int)mask_critical(*y)<<", x = "<<(int)get_dir(x, it.row(), _dir())<<endl;
-			// _val x_signal_site = get_dir(x, it.row(), Left());
-			// _val x_signal_site_1 = get_dir(x, it.row()-1, Left());
-
-			// _val y_signal_site = y;
-			// _val y_signal_site_1 = inc_dir(y_signal_site,Left());
-			// if (AlphabetAttributes<_val>::ALPHABET[x_signal_site] == AlphabetAttributes<_val>::ALPHABET[y_signal_site] == 'T'
-			// && AlphabetAttributes<_val>::ALPHABET[x_signal_site_1] == AlphabetAttributes<_val>::ALPHABET[y_signal_site_1] == 'G'
-			// )
-			// {
-			// 	signal_p = -4;
-			// }else
-			// {
-			// 	signal_p = 0;
-			// }
-			
 
 			const _score match_score = ScoreMatrix::get().letter_score((mask_critical(*y)), get_dir(x, it.row(), _dir()));
 			const _score s = max(max(it.diag() + match_score, vgap), it.hgap_in());
@@ -96,7 +73,8 @@ local_match<_val> smithWatermanDirection(const _val *query, const _val *subject,
 			it.score() = s;
 		}
 
-		if(column_max > max_score) {
+		if(column_max > max_score) 
+		{
 			max_score = column_max;
 			j_best = j;
 			i_best = i_max;

@@ -18,7 +18,19 @@ class DiagonalSeeds
 		j(subject_pos),
 		len(len),
 		score(score)
-	{}
+	{
+		
+	}
+
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h) :
+		i(query_pos),
+		j(subject_pos),
+		len(len),
+		score(score),
+		hit_(h)
+	{
+		
+	}
 	bool empty() const
 	{
 		return len == 0;
@@ -113,6 +125,7 @@ class DiagonalSeeds
 		return s;
 	}
 	int i, j, len, score;
+	hit hit_;
 };
 /*
 struct DiagonalSegment

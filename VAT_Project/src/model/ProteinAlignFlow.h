@@ -9,7 +9,7 @@
 #include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
 #include "../output/join_blocks.h"
-#include "../align/align_queries.h"
+#include "../align/queriesAlign.h"
 #include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
 #include "SearchContext.h"
