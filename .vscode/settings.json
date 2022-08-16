@@ -67,6 +67,12 @@
         "forward_list": "cpp",
         "regex": "cpp",
         "future": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "valarray": "cpp",
+        "csetjmp": "cpp",
+        "codecvt": "cpp",
+        "cuchar": "cpp",
+        "scoped_allocator": "cpp",
+        "shared_mutex": "cpp"
     }
 }

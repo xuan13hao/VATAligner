@@ -1,12 +1,12 @@
 #ifndef __DIAGONALSEGMENT_H__
 #define __DIAGONALSEGMENT_H__
 
-
-
+#include <string> // for string class
 #include <iostream>
 #include <algorithm>
 #include "interval.h"
-
+#include "Hits.h"
+using namespace std;
 class DiagonalSeeds
 {
     public:
@@ -22,12 +22,14 @@ class DiagonalSeeds
 		
 	}
 
-	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h) :
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h, string& q_, string& s_) :
 		i(query_pos),
 		j(subject_pos),
 		len(len),
 		score(score),
-		hit_(h)
+		hit_(h),
+		sbj_(s_),
+		qry_(q_)
 	{
 		
 	}
@@ -124,8 +126,10 @@ class DiagonalSeeds
 		s << "i=" << d.i << " j=" << d.j << " l=" << d.len << " score=" << d.score;
 		return s;
 	}
-	int i, j, len, score;
+	int i, j, len, score;//query_pos, subject_pos
 	hit hit_;
+	string qry_;
+	string sbj_;
 };
 /*
 struct DiagonalSegment

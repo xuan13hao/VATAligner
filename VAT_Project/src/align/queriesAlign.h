@@ -53,7 +53,7 @@ void alignSequence(vector<Segment<_val> > &matches,
 		typename Trace_pt_buffer::Vector::iterator &end,
 		vector<char> &transcript_buf)
 {
-
+	string qry,sbj;
 	std::sort(begin, end, hit::cmp_normalized_subject);
 	const unsigned q_num (begin->query_);
 	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
@@ -73,16 +73,26 @@ void alignSequence(vector<Segment<_val> > &matches,
 		std::pair<size_t, size_t> l = ref->local_position(i->subject_);
 		const _val* sbj = ref->data(i->subject_);
 		const _val* qry = &query[i->seed_offset_];
+		
 		// cout<<"i->query_ = "<<(int)i->query_<<", l.second = "<<(int)l.second<<", i->subject = "<<i->subject_<<endl;
 		DiagonalSeeds ds = xdrop_ungapped<_val>(qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
+		// const _val* sbj1 = ref->data(ds.i+29);
+		// const _val* qry1 = &query[ds.j+28];
+		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
+		// // cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
 		diagonalsegment_.push_back(ds);
 	}
 
-	
-
-
 	for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	{
+		for (size_t x = 0; x < diagonalsegment_[i].len; x++)
+		{
+			const _val* sbj1 = ref->data(diagonalsegment_[i].i+x+1);
+			const _val* qry1 = &query[diagonalsegment_[i].j+x];
+			qry.push_back(AlphabetAttributes<_val>::ALPHABET[*qry1]);
+			sbj.push_back(AlphabetAttributes<_val>::ALPHABET[*sbj1]);
+		}
+		cout<<"s = "<<sbj<<", q = "<<qry<<endl;
 		hit h = diagonalsegment_[i].hit_;
 		local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
 		floatingSmithWaterman(&query[h.seed_offset_],
@@ -196,11 +206,8 @@ void alignRead(Output_buffer<_val> &buffer,
 	std::sort(matches->begin(), matches->end());
 	unsigned n_hsp = 0, n_target_seq = 0;
 	typename vector<Segment<_val> >::iterator it = matches->begin();
-
-	
 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
-			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
-			
+			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);	
 	const int top_score = matches->operator[](0).score_;
 
 

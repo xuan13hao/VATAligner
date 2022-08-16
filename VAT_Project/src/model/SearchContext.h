@@ -52,8 +52,8 @@ void processShapes(unsigned sid,
 {
 	using std::vector;
 
-	partition p (VATConsts::seedp, VATParameters::lowmem);
-// ::partition p (VATConsts::seedp, VATParameters::lowmem);
+	// partition p (VATConsts::seedp, VATParameters::lowmem);
+	::partition p (VATConsts::seedp, VATParameters::lowmem);
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) 
 	{
 
