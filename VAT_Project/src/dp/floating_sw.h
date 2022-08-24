@@ -23,16 +23,6 @@
  * @param transcript_buf 
  * @return local_match<_val> 
  * 
- * AlphabetSet<_val>::PADDING_CHAR is a mark of the end of a sequence 
- * AlphabetAttributes<_val>::ALPHABET[s.data_[i]];
- * 
- * GT.....AG intron
- * 
- * AlphabetAttributes<_val>::ALPHABET[x] = T;
- * AlphabetAttributes<_val>::ALPHABET[x-1] = G;
- * 
- * AlphabetAttributes<_val>::ALPHABET[x] = A;
- * AlphabetAttributes<_val>::ALPHABET[x+1] = G;
  */
 
 

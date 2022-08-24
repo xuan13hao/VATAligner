@@ -33,6 +33,7 @@ struct Output_writer
 	Output_writer(OutputStreamer* f):
 		f_ (f)
 	{ }
+
 	void operator()(Text_buffer &buf)
 	{
 		f_->write(buf.get_begin(), buf.size());
@@ -78,8 +79,8 @@ void alignSequence(vector<Segment<_val> > &matches,
 		DiagonalSeeds ds = xdrop_ungapped<_val>(qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
-		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
-		// // cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
+		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
+		cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
 		diagonalsegment_.push_back(ds);
 	}
 
@@ -87,11 +88,13 @@ void alignSequence(vector<Segment<_val> > &matches,
 	{
 		for (size_t x = 0; x < diagonalsegment_[i].len; x++)
 		{
-			const _val* sbj1 = ref->data(diagonalsegment_[i].i+x+1);
-			const _val* qry1 = &query[diagonalsegment_[i].j+x];
+			const _val* sbj1 = ref->data(diagonalsegment_[i].j+x+1);
+			const _val* qry1 = &query[diagonalsegment_[i].i+x];
+			// cout<<"sbj = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", qry = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
 			qry.push_back(AlphabetAttributes<_val>::ALPHABET[*qry1]);
 			sbj.push_back(AlphabetAttributes<_val>::ALPHABET[*sbj1]);
 		}
+		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
 		cout<<"s = "<<sbj<<", q = "<<qry<<endl;
 		hit h = diagonalsegment_[i].hit_;
 		local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));

@@ -98,6 +98,78 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<DiagonalSeeds>
 
 
 }
+
+void findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,vector<DiagonalSeeds>& chained_seed,int q_len,int max_gap)
+{
+
+    uint32_t target = 0;
+    int i, score, qdiff, tdiff, diffdiff, gap_cost, j, best_j;
+    int ref_offset = 0;
+    int h = 50; // number of previous anchors to check
+    // int ref_offset = 0; // offset into the scores vector of the current target - sets the backward limit for finding chained anchors
+    int match_score = 4;
+    score_pos s;
+    vector<score_pos> sp;
+    s.score = match_score;
+    s.anchor_idx = 0;
+    s.score_idx = ref_offset;
+    s.prev = -1;
+    s.used = 0;
+    s.ref = target << 1 >> 1;
+    s.rv = target >> 31;
+    int pre[diagonal_segment.size()];
+    int f[diagonal_segment.size()];
+    int max_score = 0;
+
+    std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
+    for (size_t i = 1; i < diagonal_segment.size(); i++)
+    {
+        max_score = diagonal_segment[i].score;
+        for(j = i < h ? 0 : i-h; j < i; j++) 
+        {
+            int tdiff = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) ;
+            int qdiff = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) ;
+            int ref_gap = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) - static_cast<int>(diagonal_segment[i].len);
+            int qry_gap = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) - static_cast<int>(diagonal_segment[i].len);
+
+            if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) 
+            { // we often have multiple hits to the same target pos, so we can't let them chain with either other
+                continue;
+            }
+            if(ref_gap <= 0 || qry_gap <= 0 || qry_gap > max_gap || ref_gap > max_gap) 
+            { // we often have multiple hits to the same target pos, so we can't let them chain with either other
+                    continue;
+            }
+            gap_cost = (diffdiff == 0 ? 0 : 0.01 * match_score * diffdiff + 0.5 * log2(diffdiff)); // affine gap penalty a la minimap2
+            qdiff = (qdiff > tdiff ? tdiff : qdiff); // now not qdiff but the minimum difference
+            score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost;
+            if (score > max_score)
+            {
+                max_score = score;
+                pre[i] = j;
+            }    
+        }
+    }
+    //
+    int k = diagonal_segment.size() - 1;//index of long sequence
+    bool flag = true;
+    int len = diagonal_segment.size();
+    while (true)
+    {
+        chained_seed.push_back(diagonal_segment[Len]);
+        k = pre[k];
+        if (k == 0)
+        {
+            flag = false;
+        }
+        len --;
+    }
+    
+
+
+    return;
+}
+
 void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>& seed_chains,int q_len)
 {
     // vector<SeedChainType> seed_chains;
@@ -271,5 +343,132 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
 
     return;
 }
+
+
+int AlignGlobalPairwise(
+    const char* seq1, const char* seq2,
+    const int &len1, const int &len2, 
+    const int &band, AlignmentScoring &score
+)   {
+
+    // DEBUG
+    //cout << "Inside alginment check:    ============" << endl;
+    //cout << seq1 << endl;
+    //cout << seq2 << endl;
+    //cout << "length:\t" << len1 << "\t" << len2 << endl;
+    //cout << "band:\t" << band << endl;
+
+
+    //assert(strlen(seq1) >= len1);
+    //assert(strlen(seq2) >= len2);
+    assert(band >= 1);
+
+    int g, e;
+    score.GetGapScoring(g, e);
+
+    if(len1 == 0 && len2 == 0)  return 0;
+    else if(len1 == 0)  return g + len2 * e;
+    else if(len2 == 0)  return g + len1 * e;
+    int i, j, x, a, b, c, s, t, rl = len2;  
+    // mm: the dp matching matrix
+    int *mm = new int [band], *mi = new int [band], *md = new int [band];
+    // initalizing the scores
+    int bh = band / 2;
+    for(i = 0; i < bh; ++ i) mm[i] = mi[i] = md[i] = -MAX;
+    mm[bh] = 0; mi[bh] = md[bh] = g;
+    for(i = bh + 1; i < band; ++ i)  {
+        mm[i] = mi[i] = mi[i - 1] + e;
+        md[i] = mm[i] + g;
+    }
+    bool finished = false, filled = false; int alns = 0;
+  
+    // DEBUG
+    //cout << "Alignment initialization done" << endl;
+
+    // perform alignment
+    int s1_leftover = len1, s2_leftover = len2 - (band - bh) + 1;
+    bool is_end_ins = false, is_end_del = false;
+    for(i = 1; i <= len1; ++ i) {   // for each iteration or query sequence position
+        if(finished) {
+            //cout << "Jumped" << endl; 
+            continue;
+        } 
+    
+        for(x = 0; x < band; ++ x) { // for each band region in the specific target sequence
+            j = i - bh + x; // computing the original index of the position
+            if(j < 0) continue;
+            if(j > rl) {
+                if(x == 0)  {finished = true;} // no need to look at the sequence any more 
+                else  {
+                    filled = true; 
+                    alns = Max3(mm[x - 1], mi[x - 1], md[x - 1]);
+                    is_end_ins = mi[x - 1] >= alns ? true : false;
+                    is_end_del = md[x - 1] >= alns ? true : false;
+                } // record score anyway (global alignment)
+                break;  // no need to continue computing for this band any more
+            }
+            if(j >= 1) s = score.GetMatchScore(seq1[i - 1], seq2[j - 1]);
+            // computing order: Insertion matrix (mi) -> Match matrix (mm) -> Deletion matrix (md)
+            if(j == 0)  {
+                mm[x] = md[x] = md[x + 1] + e; mi[x] = md[x] + g;
+            } else if(x == band - 1) {
+                md[x] = -MAX;
+                a = mi[x - 1] + e;  b = mm[x - 1] + g + e;
+                mi[x] = a > b ? a : b;
+                c = mm[x] + s;
+                mm[x] = mi[x] > c ? mi[x] : c; 
+            } else  {        
+                if(x <= 0) {a = -MAX;} else {a = mi[x - 1] + e;}
+                if(x <= 0) {b = -MAX;} else {b = mm[x - 1] + g + e;}
+                mi[x] = a > b ? a : b;
+                b = mm[x + 1] + g + e; c = md[x + 1] + e;
+                md[x] = b > c ? b : c;
+                t = mm[x] + s;
+                mm[x] = mi[x] > md[x] ? mi[x] : md[x];
+                mm[x] = t > mm[x] ? t : mm[x]; 
+            }
+        }
+    
+        if(!finished) {
+            -- s1_leftover; -- s2_leftover;
+        }
+    
+        // DEBUG
+        /*
+        cout << "========== loop" << endl;
+        for(int ix = 0; ix < band; ++ ix) {
+        cout << mm[ix] << "\t";
+        }
+        cout << endl;
+        for(int ix = 0; ix < band; ++ ix) {
+        cout << mi[ix] << "\t";
+        }
+        cout << endl;
+        for(int ix = 0; ix < band; ++ ix) {
+        cout << md[ix] << "\t";
+        }
+        cout << endl;
+        */
+    
+    }
+    // DEBUG
+    //cout << "Alignment table fill done" << endl;
+    //cout << "left over: " << s1_leftover << "  " << s2_leftover << endl;
+    //cout << "check end gap: " << is_end_ins << "  " << is_end_del << endl;
+    
+    // check for the last time for scores that have not been filled
+    // if not filled, fill it with the score that has been latestly computed
+    if(!filled) alns = Max3(mm[band - 1], mi[band - 1], md[band - 1]);
+    if(s1_leftover > 0) alns += g + s1_leftover * e;
+    if(s2_leftover > 0) alns += g + s2_leftover * e;
+    // collect memory
+    delete [] mi; delete [] mm; delete [] md;
+
+    // DEBUG
+    //cout << "Alignment quit" << endl;
+    
+    return alns;
+}
+
 
 #endif // __FINDSEEDSCHAIN_H__
