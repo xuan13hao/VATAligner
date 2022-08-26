@@ -19,7 +19,7 @@
 #include "../output/output_buffer.h"
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
-
+// #include "./FindSeedsChain.h"
 
 #define MAX_CONTEXT 6
 using std::vector;
@@ -52,7 +52,9 @@ void alignSequence(vector<Segment<_val> > &matches,
 		unsigned dna_len,
 		typename Trace_pt_buffer::Vector::iterator &begin,
 		typename Trace_pt_buffer::Vector::iterator &end,
-		vector<char> &transcript_buf)
+		vector<char> &transcript_buf,
+		vector<DiagonalSeeds>& seeds
+		)
 {
 	string qry,sbj;
 	std::sort(begin, end, hit::cmp_normalized_subject);
@@ -80,10 +82,12 @@ void alignSequence(vector<Segment<_val> > &matches,
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
+		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
+		seeds.push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}
-
+	
+	// vector<DiagonalSeeds> chainedSeeds = findOptimalSeeds(diagonalsegment_,query_len,5);
 	for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	{
 		for (size_t x = 0; x < diagonalsegment_[i].len; x++)
@@ -165,24 +169,30 @@ template<typename _val>
 void alignRead(Output_buffer<_val> &buffer,
 		Statistics &stat,
 		typename Trace_pt_buffer::Vector::iterator &begin,
-		typename Trace_pt_buffer::Vector::iterator &end
+		typename Trace_pt_buffer::Vector::iterator &end,
+		vector<DiagonalSeeds>& seed
 		)
 {
 	static thread_specific_ptr<vector<local_match<_val> > > local_ptr;
 	static thread_specific_ptr<vector<Segment<_val> > > matches_ptr;
 	static thread_specific_ptr<vector<char> > transcript_ptr;
+	// static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
 
 	Tls<vector<Segment<_val> > > matches (matches_ptr);
 	Tls<vector<local_match<_val> > > local (local_ptr);
 	Tls<vector<char> > transcript_buf (transcript_ptr);
+	// Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
+	// seeds_->clear();
+
 	assert(end > begin);
 	const size_t hit_count = end - begin;
 	local->reserve(hit_count);
 	const unsigned contexts = query_contexts();
 	const unsigned query = begin->query_/contexts;
+	// cout<<"query id = "<<query<<endl;
 	const size_t query_len (QuerySeqs<_val>::data_->length(query*contexts));
 	const size_t source_query_len = query_len;
 	// const size_t source_query_len = query_translated() ? query_seqs<_val>::data_->reverse_translated_len(query*contexts) : query_len;
@@ -195,11 +205,11 @@ void alignRead(Output_buffer<_val> &buffer,
 	while(i.valid()) 
 	{
 
-		alignSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf);
+		alignSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf,seed);
 		++i;
 	}
 
-
+	// cout<<"seed size = "<<seeds_->size()<<endl;
 	if(matches->size() == 0)
 		return;
 
@@ -271,14 +281,17 @@ void alignQueries(typename Trace_pt_list::iterator begin,
 	typedef Map<typename vector<hit>::iterator,typename hit::template Query_id<_d> > Map_t;
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
-	
+	static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
+	Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
+	seeds_->clear();
 	// const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
 
 	while(i.valid() && !exception_state()) 
 	{
-		alignRead<_val>(buffer, st, i.begin(), i.end());
+		alignRead<_val>(buffer, st, i.begin(), i.end(),*seeds_);
 		++i;
 	}
+	// cout<<"seed size = "<<seeds_->size()<<endl;
 }
 
 template<typename _val, typename _buffer>
