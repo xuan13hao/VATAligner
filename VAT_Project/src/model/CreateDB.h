@@ -4,11 +4,11 @@
 
 #include <iostream>
 #include "../basic/VATParameters.h"
-#include "../data/Reference.h"
+#include "../database/Reference.h"
 #include "../basic/exceptions.h"
 #include "../basic/Statistics.h"
-#include "../data/LoadSequence.h"
-#include "../tools/seq_file_format.h"
+#include "../database/LoadSequence.h"
+#include "../utils/seq_file_format.h"
 
 template<class _val>
 void CreateDB(_val)

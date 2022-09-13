@@ -4,12 +4,12 @@
 #include <iterator>
 #include <boost/program_options.hpp>
 #include "basic/VATParameters.h"
-#include "tools/TimerTools.h"
-#include "data/Reference.h"
+#include "utils/TimerTools.h"
+#include "database/Reference.h"
 #include "model/RunModel.h"
-#include "tools/complexity_filter.h"
+#include "utils/complexity_filter.h"
 #include "basic/ContextSet.h"
-#include "output/view.h"
+#include "out/view.h"
 
 
 using std::cout;

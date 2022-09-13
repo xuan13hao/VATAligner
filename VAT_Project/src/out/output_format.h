@@ -3,9 +3,9 @@
 #define OUTPUT_FORMAT_H_
 
 #include "../basic/Hits.h"
-#include "../align/match_func.h"
-#include "../output/VATFile.h"
-#include "../output/VATRecord.h"
+#include "../alignment/match_func.h"
+#include "../out/VATFile.h"
+#include "../out/VATRecord.h"
 
 template<typename _val>
 class Output_format

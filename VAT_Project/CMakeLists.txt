@@ -18,7 +18,7 @@ add_subdirectory("src/algo/blast/core")
 
 add_executable(VAT src/VATMain.cpp
   src/basic/VATParameters.cpp
-  src/tools/tinythread.cpp)
+  src/utils/tinythread.cpp)
 
 target_link_libraries(VAT blast_core ${Boost_LIBRARIES})
 

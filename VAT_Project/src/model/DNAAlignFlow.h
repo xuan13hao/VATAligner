@@ -5,12 +5,12 @@
 
 #include <iostream>
 #include <boost/timer/timer.hpp>
-#include "../data/Reference.h"
-#include "../data/Queries.h"
+#include "../database/Reference.h"
+#include "../database/Queries.h"
 #include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
-#include "../output/join_blocks.h"
-#include "../align/queriesAlign.h"
+#include "../out/join_blocks.h"
+#include "../alignment/queriesAlign.h"
 #include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
 #include "SearchContext.h"

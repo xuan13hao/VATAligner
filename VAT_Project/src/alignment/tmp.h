@@ -220,12 +220,11 @@ chain* do_chain(khash_t(matchHash) *hits, int max_chains, int match_score, int m
   uint32_t target;
 
   scoreVec scores;
-  kv_init(scores);
-  score_pos s;
-
-  int i, score, qdiff, tdiff, diffdiff, gap_cost, j, best_j;
-  int h = 50; // number of previous anchors to check
-  int ref_offset = 0; // offset into the scores vector of the current target - sets the backward limit for finding chained anchors
+  kv_init(scores);        if (f[j] == )
+        {
+            /* code */
+        }
+        nto the scores vector of the current target - sets the backward limit for finding chained anchors
 
   // iterate through hits for each target, and append them to the same scores vector
   for (bin = kh_begin(hits); bin != kh_end(hits); ++bin) {

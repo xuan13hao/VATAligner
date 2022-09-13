@@ -3,7 +3,7 @@
 #define QUERIES_H_
 
 #include "../basic/Translator.h"
-#include "../tools/complexity_filter.h"
+#include "../utils/complexity_filter.h"
 #include "SortedList.h"
 #include "../basic/Statistics.h"
 #include "SequenceSet.h"

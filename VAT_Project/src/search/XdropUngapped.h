@@ -85,7 +85,10 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 template<typename _val>
 DiagonalSeeds xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa, hit& h)
 {
-	string sbj_, qry_;
+	int sbj_, qry_;
+	qry_=h.query_;
+	std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
+	sbj_ = l.first;
 	unsigned delta,len;
 	const int xdrop = 23;
 	int score(0), st(0), n=1;

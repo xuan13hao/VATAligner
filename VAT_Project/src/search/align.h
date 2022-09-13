@@ -3,7 +3,7 @@
 #ifndef ALIGN_H_
 #define ALIGN_H_
 
-#include "../data/Reference.h"
+#include "../database/Reference.h"
 #include "../basic/Statistics.h"
 #include "../basic/NuclScoreMatrix.h"
 // #include "../basic/ScoreMatrix.h"

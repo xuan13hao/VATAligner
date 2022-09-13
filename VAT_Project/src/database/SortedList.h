@@ -3,7 +3,7 @@
 #define SORTED_LIST_H_
 #include <memory>
 #include <set>
-#include "../tools/util.h"
+#include "../utils/util.h"
 #include "SeedHistogram.h"
 #include "../basic/PackedLocations.h"
 

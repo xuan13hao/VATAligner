@@ -3,7 +3,7 @@
 #define LINK_SEGMENTS_H_
 
 #include <vector>
-#include "../tools/map.h"
+#include "../utils/map.h"
 
 using std::vector;
 

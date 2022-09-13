@@ -6,7 +6,7 @@
 #include <iostream>
 #include "SequenceSet.h"
 #include "../basic/Translator.h"
-#include "../tools/seq_file_format.h"
+#include "../utils/seq_file_format.h"
 
 struct Single_strand { };
 struct Double_strand { };

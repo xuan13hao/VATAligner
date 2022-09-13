@@ -6,7 +6,7 @@
 #include "VATConsts.h"
 #include "value.h"
 #include "SeedPartition.h"
-#include "../tools/hash_function.h"
+#include "../utils/hash_function.h"
 #include "NuclScoreMatrix.h"
 #include "ReducedAlpha.h"
 

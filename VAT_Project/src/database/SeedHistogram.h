@@ -6,7 +6,7 @@
 #include "../basic/SeedPartition.h"
 #include "SequenceSet.h"
 #include "../basic/ShapeParameter.h"
-#include "../tools/thread.h"
+#include "../utils/thread.h"
 
 using std::vector;
 

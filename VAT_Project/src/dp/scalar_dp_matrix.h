@@ -3,7 +3,7 @@
 #define SCALAR_DP_MATRIX_H_
 
 #include <vector>
-#include "../tools/double_buffer.h"
+#include "../utils/double_buffer.h"
 #include "growing_buffer.h"
 
 using std::vector;

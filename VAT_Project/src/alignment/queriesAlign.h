@@ -5,18 +5,18 @@
 #include <vector>
 #include <assert.h>
 #include <memory>
-#include "../tools/merge_sort.h"
+#include "../utils/merge_sort.h"
 #include "../basic/DiagonalSeeds.h"
 #include "../search/trace_pt_buffer.h"
-#include "../tools/map.h"
-#include "../tools/task_queue.h"
-#include "../tools/Queue.h"
+#include "../utils/map.h"
+#include "../utils/task_queue.h"
+#include "../utils/Queue.h"
 #include "../basic/Hits.h"
-#include "../tools/async_buffer.h"
+#include "../utils/async_buffer.h"
 #include "../basic/Statistics.h"
 #include "../search/XdropUngapped.h"
-#include "../tools/text_buffer.h"
-#include "../output/output_buffer.h"
+#include "../utils/text_buffer.h"
+#include "../out/output_buffer.h"
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
 // #include "./FindSeedsChain.h"
@@ -82,7 +82,8 @@ void alignSequence(vector<Segment<_val> > &matches,
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
+		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
+		cout<<endl;
 		seeds.push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}
@@ -90,6 +91,7 @@ void alignSequence(vector<Segment<_val> > &matches,
 	// vector<DiagonalSeeds> chainedSeeds = findOptimalSeeds(diagonalsegment_,query_len,5);
 	for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	{
+		// cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<endl;
 		for (size_t x = 0; x < diagonalsegment_[i].len; x++)
 		{
 			const _val* sbj1 = ref->data(diagonalsegment_[i].j+x+1);
@@ -99,7 +101,7 @@ void alignSequence(vector<Segment<_val> > &matches,
 			sbj.push_back(AlphabetAttributes<_val>::ALPHABET[*sbj1]);
 		}
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
-		cout<<"s = "<<sbj<<", q = "<<qry<<endl;
+		// cout<<"s = "<<sbj<<", q = "<<qry<<endl;
 		hit h = diagonalsegment_[i].hit_;
 		local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
 		floatingSmithWaterman(&query[h.seed_offset_],
@@ -284,8 +286,14 @@ void alignQueries(typename Trace_pt_list::iterator begin,
 	static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
 	Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
 	seeds_->clear();
+	
 	// const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
-
+	int q_id = i.begin()->query_;
+	int sbj = i.begin()->subject_;
+	std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(sbj);
+	// cout<<"q_id = "<<q_id<<"\t"<<l.first<<endl;
+	// cout<<endl;
+	// cout<<<<l.first<<endl;
 	while(i.valid() && !exception_state()) 
 	{
 		alignRead<_val>(buffer, st, i.begin(), i.end(),*seeds_);

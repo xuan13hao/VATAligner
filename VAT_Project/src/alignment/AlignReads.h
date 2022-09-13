@@ -3,18 +3,18 @@
 #include <vector>
 #include <assert.h>
 #include <memory>
-#include "../tools/merge_sort.h"
+#include "../utils/merge_sort.h"
 #include "../basic/DiagonalSeeds.h"
 #include "../search/trace_pt_buffer.h"
-#include "../tools/map.h"
-#include "../tools/task_queue.h"
-#include "../tools/Queue.h"
+#include "../utils/map.h"
+#include "../utils/task_queue.h"
+#include "../utils/Queue.h"
 #include "../basic/Hits.h"
-#include "../tools/async_buffer.h"
+#include "../utils/async_buffer.h"
 #include "../basic/Statistics.h"
 #include "../search/XdropUngapped.h"
-#include "../tools/text_buffer.h"
-#include "../output/output_buffer.h"
+#include "../utils/text_buffer.h"
+#include "../out/output_buffer.h"
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
 
@@ -48,7 +48,7 @@ vector<DiagonalSeeds> getSegments(
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
+		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<endl;
 		diagonalsegment_.push_back(ds);
 	}
     return diagonalsegment_;

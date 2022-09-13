@@ -3,7 +3,7 @@
 #ifndef TRACE_PT_BUFFER_H_
 #define TRACE_PT_BUFFER_H_
 
-#include "../tools/async_buffer.h"
+#include "../utils/async_buffer.h"
 #include "../basic/Hits.h"
 
 using std::auto_ptr;

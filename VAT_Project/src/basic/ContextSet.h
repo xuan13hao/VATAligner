@@ -4,7 +4,7 @@
 
 #include <boost/iostreams/tee.hpp>
 #include "VATParameters.h"
-#include "../tools/system.h"
+#include "../utils/system.h"
 
 using std::cout;
 using std::endl;

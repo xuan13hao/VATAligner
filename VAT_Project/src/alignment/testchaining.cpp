@@ -9,14 +9,12 @@ using namespace std;
 
 int main()
 {
-    DiagonalSeeds ds1(1,5,10,15);
-    DiagonalSeeds ds2(17,29,9,16);//*
-    DiagonalSeeds ds3(1,32,11,18);//*
-    DiagonalSeeds ds4(17,19,13,15);
-    DiagonalSeeds ds5(11,22,15,14);//*
-    DiagonalSeeds ds6(17,29,8,16);//*
-    DiagonalSeeds ds7(31,42,12,10);//*
-    DiagonalSeeds ds8(37,49,9,12);//*
+    DiagonalSeeds ds1(1,2,10,15);
+    DiagonalSeeds ds2(11,12,9,16);//*
+    DiagonalSeeds ds3(21,22,11,18);//*
+    DiagonalSeeds ds4(31,32,13,15);
+    DiagonalSeeds ds5(41,42,15,14);//*
+    DiagonalSeeds ds6(51,52,8,16);//*
     vector<DiagonalSeeds> vds;
     vector<DiagonalSeeds> result;
     vector<SeedChainType> seed_chains;
@@ -27,17 +25,15 @@ int main()
     vds.push_back(ds4);
     vds.push_back(ds5);
     vds.push_back(ds6);
-    vds.push_back(ds7);
-    vds.push_back(ds8);
     cout<<"size = "<<vds.size()<<endl;
-    result = findOptimalSeeds(vds,30,5);
+    result = findOptimalSeeds(vds,30,15);
     // findSeedChain(vds,seed_chains,30);
     // cout<<
     cout<<"result = "<<result.size()<<endl;
 
     for (size_t i = 0; i < result.size(); i++)
     {
-        cout<<"len = "<<result[i].len<<endl;
+        cout<<result[i].i<<"\t"<<result[i].j<<"\t"<<result[i].len<<"\t"<<result[i].score<<endl;
     }
     
     return 1;

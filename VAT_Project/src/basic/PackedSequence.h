@@ -4,7 +4,7 @@
 #define PACKED_SEQUENCE_H_
 
 #include <vector>
-#include "../tools/binary_buffer.h"
+#include "../utils/binary_buffer.h"
 
 using std::vector;
 

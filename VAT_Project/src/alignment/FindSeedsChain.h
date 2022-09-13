@@ -6,8 +6,8 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
-
 #include "../basic/DiagonalSeeds.h"
+
 // #include "kvec.h"
 using std::vector;
 // defines a chain of colinear seeds
@@ -54,7 +54,7 @@ struct SeedChainType   {
 //     // int ref_offset = 0; // offset into the scores vector of the current target - sets the backward limit for finding chained anchors
 //     int match_score = 4;
 //     score_pos s;
-//     vector<score_pos> sp;get the pos which should be index into
+//     vector<score_pos> sp;//get the pos which should be index into
 //     s.score_idx = ref_offset;
 //     s.prev = -1;
 //     s.used = 0;
@@ -94,8 +94,6 @@ struct SeedChainType   {
 //         sp.push_back(s);
 //     }
 
-    
-
 
 // }
 
@@ -124,7 +122,7 @@ vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,i
     int *p1_score = new int [s_]; 
     int *p1_track = new int [s_];
     p1_score[0] = diagonal_segment[0].score;
-    p1_track[0] = 0;
+    p1_track[0] = -1;
     // std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
     for (size_t i = 1; i < diagonal_segment.size(); i++)
     {
@@ -139,10 +137,10 @@ vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,i
             int ref_gap = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) - static_cast<int>(diagonal_segment[i].len);
             int qry_gap = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) - static_cast<int>(diagonal_segment[i].len);
 
-            // if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) 
-            // { // we often have multiple hits to the same target pos, so we can't let them chain with either other
-            //     continue;
-            // }
+            if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) 
+            { // we often have multiple hits to the same target pos, so we can't let them chain with either other
+                continue;
+            }
             // if(ref_gap <= 0 || qry_gap <= 0 || qry_gap > max_gap || ref_gap > max_gap) 
             // { // we often have multiple hits to the same target pos, so we can't let them chain with either other
             //         continue;
@@ -150,65 +148,57 @@ vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,i
             match_score = diagonal_segment[j].score;
             gap_cost = (diffdiff == 0 ? 0 : 0.01 * match_score * diffdiff + 0.5 * log2(diffdiff)); // affine gap penalty a la minimap2
             qdiff = (qdiff > tdiff ? tdiff : qdiff); // now not qdiff but the minimum difference
-            score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost;
-            // score = diagonal_segment[j].len;
-            cout<<"i = "<<tmp<<"\t"<<",j ="<<score<<endl;
+            score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost; 
+            
+        //    score = diagonal_segment[j].score;
              if (tmp <= score)
              {  
                  tmp = score;
                  max_pre = j;
-                //  if (tmp < f[j])
-                //  {
-                //      tmp = f[j];
-                //  }
-                 
-
-                // f[i] = score;
-                // pre[i] = j;
              } 
         }
         p1_score[i] = tmp;
         p1_track[i] = max_pre;
-        f[i] = tmp;
-        track[i] = max_pre;
     }
     
     for (size_t i = 0; i < s_; i++)
     {
         cout<<p1_track[i]<<"\t"<<p1_score[i]<<endl;
     }
-
     cout<<endl;
-    // bool tracked[s_];
-    // for (size_t i = 0; i < s_; i++)
-    // {
-    //     tracked[i] = false;
-    // }
     bool *tracked = new bool [s_];
     memset(tracked, false, s_ * sizeof(bool));
     cout<<"s = "<<s_<<endl;
     
     bool flag = true;
     for (size_t j = s_ -1; j >= 0; j--)
-    {
-        if (tracked[j])continue;
+    { 
+        
+        if (tracked[j])
+        {
+            continue;
+        }
         int c = j;
+        if (p1_track[c] == -1)
+        {
+            chained_seed.push_back(diagonal_segment[c]);
+            break;
+        }
         while (true)
-        {  
+        {
             tracked[c] = true;
             chained_seed.push_back(diagonal_segment[c]);
-            // c = p1_track[c];
             if (p1_track[c] == c)
             {
                 break;
             }
             else
             {
-                cout<<"track = "<<p1_track[c]<<"\t"<<",c = "<<c<<endl;
                 c = p1_track[c];
-            }
+            } 
         }
     }
+    std::reverse(chained_seed.begin(),chained_seed.end());
     cout<<"chain seed = "<<chained_seed.size()<<endl;
     // cout<<"here"<<endl;
     delete [] tracked;
@@ -230,7 +220,7 @@ vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,i
     //     }
     //     len --;
     // }
-    
+    // cout<<"chain seed = "<<chained_seed.size()<<endl;
 //    delete [] tracked;
     return chained_seed;
 }

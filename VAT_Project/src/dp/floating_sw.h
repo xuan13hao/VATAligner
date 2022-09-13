@@ -5,7 +5,7 @@
 
 #include "../basic/Hits.h"
 #include "scalar_dp_matrix.h"
-#include "../tools/direction.h"
+#include "../utils/direction.h"
 #include "scalar_traceback.h"
 /**
  * @brief smithWaterman with Direction

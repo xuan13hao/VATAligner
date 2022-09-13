@@ -6,12 +6,12 @@
 #include <memory>
 #include <string>
 #include <numeric>
-#include "../tools/binary_file.h"
+#include "../utils/binary_file.h"
 #include "SortedList.h"
 #include "../basic/Statistics.h"
-#include "../data/SeedHistogram.h"
-#include "../tools/hash_table.h"
-#include "../tools/hash_function.h"
+#include "../database/SeedHistogram.h"
+#include "../utils/hash_table.h"
+#include "../utils/hash_function.h"
 #include "../basic/PackedLocations.h"
 #include "SequenceSet.h"
 #include "boost/ptr_container/ptr_vector.hpp"
