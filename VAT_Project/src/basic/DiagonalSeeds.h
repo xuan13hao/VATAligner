@@ -104,6 +104,19 @@ class DiagonalSeeds
 	{
 		return i + len <= rhs.i && j + len <= rhs.j;
 	}
+	DiagonalSeeds operator=(const DiagonalSeeds &rhs) const
+	{
+		DiagonalSeeds ds;
+		ds.i = rhs.i;
+		ds.j = rhs.j;
+		ds.hit_ = rhs.hit_;
+		ds.qry_id = rhs.qry_id;
+		ds.sbj_id = rhs.sbj_id;
+		ds.score = rhs.score;
+		ds.qry_ = rhs.qry_;
+		ds.sbj_ = rhs.qry_;
+		return ds;
+	}
 	bool operator==(const DiagonalSeeds &rhs) const
 	{
 		return i == rhs.i && j == rhs.j && len == rhs.len;

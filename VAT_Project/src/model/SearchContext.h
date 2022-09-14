@@ -132,13 +132,19 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		out = new OutputStreamer (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	timer.go("Computing alignments");
-	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
-	delete Trace_pt_buffer::instance;
-
-	// timer.go("Obtaining Seeds");
-	// accessQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
+	// timer.go("Computing alignments");
+	// alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
 	// delete Trace_pt_buffer::instance;
+
+
+	vector<DiagonalSeeds> ds;
+	timer.go("Obtaining Seeds");
+	accessQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out,ds);
+	for (size_t i = 0; i < ds.size(); i++)
+	{
+		cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
+	}
+	delete Trace_pt_buffer::instance;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");

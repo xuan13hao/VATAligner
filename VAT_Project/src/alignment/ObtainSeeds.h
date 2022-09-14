@@ -51,8 +51,7 @@ void accessSequence(vector<Segment<_val> > &matches,
 		unsigned dna_len,
 		typename Trace_pt_buffer::Vector::iterator &begin,
 		typename Trace_pt_buffer::Vector::iterator &end,
-		vector<char> &transcript_buf,
-		vector<DiagonalSeeds>& seeds
+		vector<DiagonalSeeds>& diagonalsegment_
 		)
 {
 	string qry,sbj;
@@ -63,8 +62,6 @@ void accessSequence(vector<Segment<_val> > &matches,
 	const unsigned query_len = query.length();
 	padding[frame] = VATParameters::read_padding<_val>(query_len);
 	const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
-
-	vector<DiagonalSeeds> diagonalsegment_;
 	for(typename Trace_pt_buffer::Vector::iterator i = begin; i != end; ++i) 
 	{
 		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
@@ -82,14 +79,12 @@ void accessSequence(vector<Segment<_val> > &matches,
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
 		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
-		cout<<endl;
-		seeds.push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}	
-	for (size_t i = 0; i < diagonalsegment_.size(); i++)
-	{
-		cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<"\t"<<diagonalsegment_[i].i<<"\t"<<diagonalsegment_[i].j<<endl;
-	}
+	// for (size_t i = 0; i < diagonalsegment_.size(); i++)
+	// {
+	// 	cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<"\t"<<diagonalsegment_[i].i<<"\t"<<diagonalsegment_[i].j<<endl;
+	// }
 	
 }
 
@@ -99,7 +94,7 @@ void accessRead(Output_buffer<_val> &buffer,
 		Statistics &stat,
 		typename Trace_pt_buffer::Vector::iterator &begin,
 		typename Trace_pt_buffer::Vector::iterator &end,
-		vector<DiagonalSeeds>& seed
+		vector<DiagonalSeeds>& diagonalsegment_
 		)
 {
 	static thread_specific_ptr<vector<local_match<_val> > > local_ptr;
@@ -132,7 +127,7 @@ void accessRead(Output_buffer<_val> &buffer,
 	while(i.valid()) 
 	{
 
-		accessSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf,seed);
+		accessSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(),diagonalsegment_);
 		++i;
 	}
 }
@@ -142,17 +137,16 @@ template<typename _val,unsigned _d>
 void accessQueries(typename Trace_pt_list::iterator begin,
 		typename Trace_pt_list::iterator end,
 		Output_buffer<_val> &buffer,
-		Statistics &st)
+		Statistics &st,
+		vector<DiagonalSeeds>& diagonalsegment_
+		)
 {
 	typedef Map<typename vector<hit>::iterator,typename hit::template Query_id<_d> > Map_t;
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
-	static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
-	Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
-	seeds_->clear();
 	while(i.valid() && !exception_state()) 
 	{
-		accessRead<_val>(buffer, st, i.begin(), i.end(),*seeds_);
+		accessRead<_val>(buffer, st, i.begin(), i.end(),diagonalsegment_);
 		++i;
 	}
 }
@@ -160,10 +154,11 @@ void accessQueries(typename Trace_pt_list::iterator begin,
 template<typename _val, typename _buffer>
 struct AlignContext
 {
-	AlignContext(Trace_pt_list &trace_pts, OutputStreamer* output_file):
+	AlignContext(Trace_pt_list &trace_pts, OutputStreamer* output_file,vector<DiagonalSeeds>& diagonalsegment):
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
+		diagonalsegment_(diagonalsegment),
 		queue (VATParameters::threads()*8, writer)
 	{ }
 	void operator()(unsigned thread_id)
@@ -177,7 +172,7 @@ struct AlignContext
 			try 
 			{
 
-				accessQueries<_val,1>(query_range.begin, query_range.end, *buffer, st);
+				accessQueries<_val,1>(query_range.begin, query_range.end, *buffer, st,diagonalsegment_);
 				queue.push(i);
 			} catch(std::exception &e) 
 			{
@@ -191,10 +186,11 @@ struct AlignContext
 	OutputStreamer* output_file;
 	OutputWriter writer;
 	Task_queue<_buffer,OutputWriter> queue;
+	vector<DiagonalSeeds>& diagonalsegment_;
 };
 
 template<typename _val, typename _locr, typename _locl>
-void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file)
+void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file,vector<DiagonalSeeds>& diagonalsegment_)
 {
 	Trace_pt_list v;
 	pair<size_t, size_t> query_range;
@@ -204,13 +200,13 @@ void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file)
 		trace_pts.load(v, bin);
 		merge_sort(v.begin(), v.end(), VATParameters::threads());
 		v.init();
-		timer.go("Computing alignments");
+		timer.go("Computing Seeds");
 		if(ref_header.n_blocks > 1) 
 		{
-			AlignContext<_val,Temp_output_buffer<_val> > context (v, output_file);
+			AlignContext<_val,Temp_output_buffer<_val> > context (v, output_file,diagonalsegment_);
 			launch_thread_pool(context, VATParameters::threads());
 		} else {
-			AlignContext<_val,Output_buffer<_val> > context (v, output_file);
+			AlignContext<_val,Output_buffer<_val> > context (v, output_file, diagonalsegment_);
 			launch_thread_pool(context, VATParameters::threads());
 		}
 	}
