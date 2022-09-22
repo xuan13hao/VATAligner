@@ -69,6 +69,7 @@ namespace VATParameters
 	extern bool		single_domain;
 	extern size_t	db_size;
 	extern bool		is_spilced;
+	extern bool		chimera;
 
 
 	typedef enum { fast=0, sensitive=1, very_sensitive=2 } Aligner_mode;

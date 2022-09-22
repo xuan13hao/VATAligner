@@ -68,6 +68,7 @@ unsigned	fetch_size;
 bool		single_domain;
 size_t		db_size;
 bool		is_spilced;
+bool		chimera;
 
 Aligner_mode aligner_mode;
 Command algn_type;

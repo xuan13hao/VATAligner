@@ -11,6 +11,7 @@
 using std::vector;
 using boost::thread_specific_ptr;
 
+
 template<typename _val, typename _locr, typename _locq, typename _locl>
 class HitFilter
 {
@@ -71,6 +72,7 @@ public:
 		out_.push(hit (q_num_, subject, seed_offset_));
 		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
+		// cout<<"total hits = "<<total_hits<<endl;
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)

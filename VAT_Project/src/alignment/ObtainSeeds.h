@@ -21,11 +21,11 @@
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
 // #include "./FindSeedsChain.h"
+using std::unique_ptr;
+// unique_ptr<vector<DiagonalSeeds> >dseed;
 
-#define MAX_CONTEXT 6
 using std::vector;
 using std::unique_ptr;
-
 
 struct OutputWriter
 {
@@ -41,6 +41,9 @@ struct OutputWriter
 private:
 	OutputStreamer* const f_;
 };
+static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
+Tls<vector<DiagonalSeeds> > seed_(seeds_ptr);
+
 
 template<typename _val>
 void accessSequence(vector<Segment<_val> > &matches,
@@ -78,38 +81,39 @@ void accessSequence(vector<Segment<_val> > &matches,
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
+		cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
+		// seed_->push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}	
 	// for (size_t i = 0; i < diagonalsegment_.size(); i++)
 	// {
 	// 	cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<"\t"<<diagonalsegment_[i].i<<"\t"<<diagonalsegment_[i].j<<endl;
 	// }
-	
 }
 
 
 template<typename _val>
-void accessRead(Output_buffer<_val> &buffer,
+void accessRead(
 		Statistics &stat,
 		typename Trace_pt_buffer::Vector::iterator &begin,
 		typename Trace_pt_buffer::Vector::iterator &end,
-		vector<DiagonalSeeds>& diagonalsegment_
+		vector<DiagonalSeeds>& ds_
 		)
 {
+
 	static thread_specific_ptr<vector<local_match<_val> > > local_ptr;
 	static thread_specific_ptr<vector<Segment<_val> > > matches_ptr;
 	static thread_specific_ptr<vector<char> > transcript_ptr;
-	// static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
+	static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
 
 	Tls<vector<Segment<_val> > > matches (matches_ptr);
 	Tls<vector<local_match<_val> > > local (local_ptr);
 	Tls<vector<char> > transcript_buf (transcript_ptr);
-	// Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
+	Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
-	// seeds_->clear();
+	seeds_->clear();
 
 	assert(end > begin);
 	const size_t hit_count = end - begin;
@@ -123,77 +127,102 @@ void accessRead(Output_buffer<_val> &buffer,
 	typedef Map<typename vector<hit >::iterator,typename hit::template Query_id<1> > Map_t;
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
-
 	while(i.valid()) 
 	{
 
-		accessSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(),diagonalsegment_);
+		accessSequence<_val>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(),*seeds_);
 		++i;
 	}
+	vector<DiagonalSeeds> ds;
+	vector<DiagonalSeeds>::iterator it = seeds_->begin();
+	// cout<<"size = "<<seeds_->size()<<endl;
+	if (seeds_->size() > 0)
+	{
+			while (it < seeds_->end())
+			{
+				
+				// ds.push_back(*it);
+				// dseed->push_back(*it);
+				seed_->push_back(*it);
+				// cout<<(*it).qry_id<<"\t"<<(*it).sbj_id<<"\t"<<(*it).i<<"\t"<<(*it).j<<endl;
+				++it;
+			}
+	}
+	
+	
 }
 
-
+vector<DiagonalSeeds> seeds;
 template<typename _val,unsigned _d>
 void accessQueries(typename Trace_pt_list::iterator begin,
 		typename Trace_pt_list::iterator end,
-		Output_buffer<_val> &buffer,
 		Statistics &st,
-		vector<DiagonalSeeds>& diagonalsegment_
+		vector<DiagonalSeeds>& ds_
 		)
 {
 	typedef Map<typename vector<hit>::iterator,typename hit::template Query_id<_d> > Map_t;
 	Map_t hits_ (begin, end);
 	typename Map_t::Iterator i = hits_.begin();
-	while(i.valid() && !exception_state()) 
+	while(i.valid()&& !exception_state()) 
 	{
-		accessRead<_val>(buffer, st, i.begin(), i.end(),diagonalsegment_);
+		accessRead<_val>(st, i.begin(), i.end(),ds_);
+
 		++i;
+
 	}
+	// cout<<"size = "<<ds_.size()<<endl;
 }
 
 template<typename _val, typename _buffer>
 struct AlignContext
 {
-	AlignContext(Trace_pt_list &trace_pts, OutputStreamer* output_file,vector<DiagonalSeeds>& diagonalsegment):
+	AlignContext(Trace_pt_list &trace_pts, OutputStreamer* output_file):
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
-		diagonalsegment_(diagonalsegment),
 		queue (VATParameters::threads()*8, writer)
 	{ }
 	void operator()(unsigned thread_id)
 	{
+		
 		Statistics st;
 		size_t i=0;
 		typename Trace_pt_list::Query_range query_range (trace_pts.get_range());
 		_buffer *buffer = 0;
+		// seeds_->clear();
 		while(queue.get(i, buffer, query_range) && !exception_state()) 
 		{
 			try 
 			{
 
-				accessQueries<_val,1>(query_range.begin, query_range.end, *buffer, st,diagonalsegment_);
+				accessQueries<_val,1>(query_range.begin, query_range.end, st, ds1);
+				// cout<<"==========================================================================="<<endl;
 				queue.push(i);
 			} catch(std::exception &e) 
 			{
 				exception_state.set(e);
 				queue.wake_all();
 			}
+			
 		}
 		statistics += st;
+		// for (size_t i = 0; i < ds1.size(); i++)
+		// {
+		// 		cout<<ds1[i].qry_id<<"\t"<<ds1[i].sbj_id<<"\t"<<ds1[i].i<<"\t"<<ds1[i].j<<"\t"<<ds1[i].len<<endl;
+		// }
 	}
+	vector<DiagonalSeeds> ds1;
 	Trace_pt_list &trace_pts;
 	OutputStreamer* output_file;
 	OutputWriter writer;
 	Task_queue<_buffer,OutputWriter> queue;
-	vector<DiagonalSeeds>& diagonalsegment_;
+	
 };
 
 template<typename _val, typename _locr, typename _locl>
-void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file,vector<DiagonalSeeds>& diagonalsegment_)
+void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file)
 {
 	Trace_pt_list v;
-	pair<size_t, size_t> query_range;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
 	{
 		TimerTools timer ("Loading trace points", false);
@@ -203,14 +232,60 @@ void accessQueries(Trace_pt_buffer &trace_pts, OutputStreamer* output_file,vecto
 		timer.go("Computing Seeds");
 		if(ref_header.n_blocks > 1) 
 		{
-			AlignContext<_val,Temp_output_buffer<_val> > context (v, output_file,diagonalsegment_);
+			// accessQueries<_val,1>(query_range.begin, query_range.end, *buffer, st, ds);
+			AlignContext<_val,Temp_output_buffer<_val> > context (v, output_file);
 			launch_thread_pool(context, VATParameters::threads());
-		} else {
-			AlignContext<_val,Output_buffer<_val> > context (v, output_file, diagonalsegment_);
+			vector<DiagonalSeeds> ds = context.ds1;
+			for (size_t i = 0; i < ds.size(); i++)
+			{
+				cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
+			}
+		} else 
+		{
+			// accessQueries<_val,1>(query_range.begin, query_range.end, *buffer, st, ds);
+			AlignContext<_val,Output_buffer<_val> > context (v, output_file);
 			launch_thread_pool(context, VATParameters::threads());
+			// cout<<"==========================================================================="<<endl;
+			// vector<DiagonalSeeds> ds = context.ds1;
+			// for (size_t i = 0; i < ds.size(); i++)
+			// {
+			// 	cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
+			// }
 		}
+		
 	}
-}
+	// vector<DiagonalSeeds>::iterator i = seed_->begin();
+	// cout<<"size = "<<seed_->size()<<endl;
+	// while (i<seed_->end())
+	// {
+	// 	cout<<i->qry_id<<"\t"<<i->sbj_id<<endl;
+	// 	i++;
+	// }
+	
+	
 
+		// for (size_t i = 0; i < ds_total.size(); i++)
+		// {
+		// 		cout<<ds_total[i]->qry_id<<"\t"<<ds_total[i].sbj_id<<"\t"<<ds_total[i].i<<"\t"<<ds_total[i].j<<"\t"<<ds_total[i].len<<endl;
+		// }
+		// cout<<"size = "<<seed_->size()<<endl;
+}
+/*
+0	0	1	25	24
+1	0	1	25	24
+2	0	1	25	24
+
+0	0	1	25
+1	0	1	25
+2	0	1	25
+0	1	0	16
+1	1	0	16
+2	1	0	16
+0	2	0	33
+1	2	0	33
+2	2	0	33
+
+
+*/
 
 #endif // __OBTAINSEEDS_H__

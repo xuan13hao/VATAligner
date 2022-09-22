@@ -104,19 +104,42 @@ class DiagonalSeeds
 	{
 		return i + len <= rhs.i && j + len <= rhs.j;
 	}
-	DiagonalSeeds operator=(const DiagonalSeeds &rhs) const
+    // DiagonalSeeds & operator= (DiagonalSeeds && rhs)
+    // {
+    //         std::swap(i, rhs.i);
+    //         std::swap(j, rhs.j);
+    //         std::swap(hit_, rhs.hit_);
+    //         std::swap(sbj_id, rhs.sbj_id);
+	// 		std::swap(qry_id, rhs.qry_id);
+	// 		std::swap(score, rhs.score);
+	// 		std::swap(len, rhs.len);
+	// 		std::swap(qry_, rhs.qry_);
+	// 		std::swap(sbj_, rhs.sbj_);
+    //         return *this;
+    // }
+	DiagonalSeeds& operator=(const DiagonalSeeds &rhs)
 	{
-		DiagonalSeeds ds;
-		ds.i = rhs.i;
-		ds.j = rhs.j;
-		ds.hit_ = rhs.hit_;
-		ds.qry_id = rhs.qry_id;
-		ds.sbj_id = rhs.sbj_id;
-		ds.score = rhs.score;
-		ds.qry_ = rhs.qry_;
-		ds.sbj_ = rhs.qry_;
-		return ds;
+		
+		i = rhs.i;
+		j = rhs.j;
+		hit_ = rhs.hit_;
+		qry_id = rhs.qry_id;
+		sbj_id = rhs.sbj_id;
+		score = rhs.score;
+		len = rhs.len;
+		qry_ = rhs.qry_;
+		sbj_ = rhs.qry_;
+
+		return *this;
 	}
+	// SeedType& operator =(const SeedType& a)
+    // {
+    //     ref_id = a.ref_id; ref_pos = a.ref_pos;
+    //     qry_id = a.qry_id; qry_pos = a.qry_pos;
+    //     ref_len = a.ref_len; qry_len = a.qry_len; 
+    //     score = a.score, is_qry_fw = a.is_qry_fw;
+    //     return *this;
+    // }
 	bool operator==(const DiagonalSeeds &rhs) const
 	{
 		return i == rhs.i && j == rhs.j && len == rhs.len;
@@ -128,6 +151,10 @@ class DiagonalSeeds
 	static bool cmp_score(const DiagonalSeeds& x, const DiagonalSeeds& y)
 	{
 		return x.score > y.score;
+	}
+	static bool cmp_query_begin(const DiagonalSeeds &x, const DiagonalSeeds &y)
+	{
+		return x.i < y.i;
 	}
 	static bool cmp_subject_end(const DiagonalSeeds &x, const DiagonalSeeds &y)
 	{
@@ -157,6 +184,7 @@ class DiagonalSeeds
 	string sbj_;
 	int qry_id, sbj_id;
 };
+
 /*
 struct DiagonalSegment
 {

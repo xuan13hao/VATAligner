@@ -19,14 +19,11 @@
 #include "../out/output_buffer.h"
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
-// #include "./FindSeedsChain.h"
+#include "FindSeedsChain.h"
+#include "PairChimera.h"
 
-#define MAX_CONTEXT 6
 using std::vector;
 using std::unique_ptr;
-
-
-
 
 struct Output_writer
 {
@@ -82,44 +79,95 @@ void alignSequence(vector<Segment<_val> > &matches,
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
-		cout<<endl;
+		// cout<<l.first<<"\t"<<ds.hit_.query_<<"\t"<<ds.i<<"\t"<<ds.j<<"\t"<<ds.len<<endl;
 		seeds.push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}
-	
-	// vector<DiagonalSeeds> chainedSeeds = findOptimalSeeds(diagonalsegment_,query_len,5);
-	for (size_t i = 0; i < diagonalsegment_.size(); i++)
+	if(VATParameters::chimera)
 	{
-		// cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<endl;
-		for (size_t x = 0; x < diagonalsegment_[i].len; x++)
+		std::vector<ChimeraAlnType> paired_seeds;
+		pairChimeraSeeds(diagonalsegment_, paired_seeds,query_len);
+		// cout<<"size = "<<paired_seeds.size()<<endl;
+		for (size_t i = 0; i < paired_seeds.size(); i++)
 		{
-			const _val* sbj1 = ref->data(diagonalsegment_[i].j+x+1);
-			const _val* qry1 = &query[diagonalsegment_[i].i+x];
-			// cout<<"sbj = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", qry = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
-			qry.push_back(AlphabetAttributes<_val>::ALPHABET[*qry1]);
-			sbj.push_back(AlphabetAttributes<_val>::ALPHABET[*sbj1]);
+			hit h1 = paired_seeds[i].arm1.hit_;
+			local.push_back(local_match<_val> (h1.seed_offset_, ref->data(h1.subject_)));
+			floatingSmithWaterman(&query[h1.seed_offset_],
+					local.back(),
+					padding[frame],
+					ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+					VATParameters::gap_open + VATParameters::gap_extend,
+					VATParameters::gap_extend,
+					transcript_buf,
+					Traceback ());
+			const int score = local.back().score_;
+			std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h1.subject_);
+			matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+			anchored_transform(local.back(), l.second, h1.seed_offset_);
+			stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+			to_source_space(local.back(), frame, dna_len);
+			stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+			stat.inc(Statistics::OUT_HITS);
+			if(paired_seeds[i].is_chimera)
+			{
+				hit h2 = paired_seeds[i].arm2.hit_;
+				local.push_back(local_match<_val> (h2.seed_offset_, ref->data(h2.subject_)));
+				floatingSmithWaterman(&query[h2.seed_offset_],
+						local.back(),
+						padding[frame],
+						ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+						VATParameters::gap_open + VATParameters::gap_extend,
+						VATParameters::gap_extend,
+						transcript_buf,
+						Traceback ());
+				const int score = local.back().score_;
+				std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h2.subject_);
+				matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+				anchored_transform(local.back(), l.second, h2.seed_offset_);
+				stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+				to_source_space(local.back(), frame, dna_len);
+				stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+				stat.inc(Statistics::OUT_HITS);
+			}
+			
 		}
-		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
-		// cout<<"s = "<<sbj<<", q = "<<qry<<endl;
-		hit h = diagonalsegment_[i].hit_;
-		local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
-		floatingSmithWaterman(&query[h.seed_offset_],
-				local.back(),
-				padding[frame],
-				ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
-				VATParameters::gap_open + VATParameters::gap_extend,
-				VATParameters::gap_extend,
-				transcript_buf,
-				Traceback ());
-		const int score = local.back().score_;
-		std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
-		matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
-		anchored_transform(local.back(), l.second, h.seed_offset_);
-		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
-		to_source_space(local.back(), frame, dna_len);
-		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
-		stat.inc(Statistics::OUT_HITS);
+		
+
+	}else{
+		// vector<DiagonalSeeds> chainedSeeds = findOptimalSeeds(diagonalsegment_,query_len,5);
+		for (size_t i = 0; i < diagonalsegment_.size(); i++)
+		{
+			// cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<endl;
+			// for (size_t x = 0; x < diagonalsegment_[i].len; x++)
+			// {
+			// 	const _val* sbj1 = ref->data(diagonalsegment_[i].j+x+1);
+			// 	const _val* qry1 = &query[diagonalsegment_[i].i+x];
+			// 	// cout<<"sbj = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", qry = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
+			// 	qry.push_back(AlphabetAttributes<_val>::ALPHABET[*qry1]);
+			// 	sbj.push_back(AlphabetAttributes<_val>::ALPHABET[*sbj1]);
+			// }
+			// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj1]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry1]<<endl;
+			// cout<<"s = "<<sbj<<", q = "<<qry<<endl;
+			hit h = diagonalsegment_[i].hit_;
+			local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
+			floatingSmithWaterman(&query[h.seed_offset_],
+					local.back(),
+					padding[frame],
+					ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+					VATParameters::gap_open + VATParameters::gap_extend,
+					VATParameters::gap_extend,
+					transcript_buf,
+					Traceback ());
+			const int score = local.back().score_;
+			std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
+			matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+			anchored_transform(local.back(), l.second, h.seed_offset_);
+			stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+			to_source_space(local.back(), frame, dna_len);
+			stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+			stat.inc(Statistics::OUT_HITS);
+		}
+
 	}
 	
 /*
@@ -249,7 +297,6 @@ void alignRead(Output_buffer<_val> &buffer,
 
 		if(n_hsp == 0)
 			buffer.write_query_record(query);
-		// cout<<"frame = "<<it->frame_<<endl;
 		buffer.print_match(*it, source_query_len, QuerySeqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
 
 		++n_hsp;

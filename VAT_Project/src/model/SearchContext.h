@@ -132,19 +132,23 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		out = new OutputStreamer (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	// timer.go("Computing alignments");
-	// alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
-	// delete Trace_pt_buffer::instance;
-
-
-	vector<DiagonalSeeds> ds;
-	timer.go("Obtaining Seeds");
-	accessQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out,ds);
-	for (size_t i = 0; i < ds.size(); i++)
-	{
-		cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
-	}
+	
+	timer.go("Computing alignments");
+	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
 	delete Trace_pt_buffer::instance;
+	// cout<<"hits = "<<statistics.get(Statistics::TENTATIVE_MATCHES3)<<endl;
+	// static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
+	// Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
+	// seeds_->clear();
+	// timer.go("Obtaining Seeds");
+	// vector<DiagonalSeeds> ds;
+	// accessQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
+	// cout<<"seed size = "<<seeds_->size()<<endl;
+	// for (size_t i = 0; i < ds.size(); i++)
+	// {
+	// 	cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
+	// }
+	// delete Trace_pt_buffer::instance;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");
@@ -186,9 +190,11 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 	}
 
 	timer.go("Deallocating queries");
+	seed_->clear();
 	delete QuerySeqs<_val>::data_;
 	delete query_ids::data_;
 	delete query_source_seqs::data_;
+	// free(ds_total);
 	timer_mapping.stop();
 }
 

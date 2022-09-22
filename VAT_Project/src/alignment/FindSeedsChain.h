@@ -27,75 +27,10 @@ struct SeedChainType   {
         return *this;
     }
 };
-// typedef struct score_pos {
-//   int score;
-//   int anchor_idx;
-//   int score_idx;
-//   uint32_t ref;
-//   int prev;
-//   uint8_t used;
-//   uint8_t rv;
-// } score_pos;
-
-// typedef struct chain {
-//   int score;
-//   DiagonalSeeds anchors;
-//   uint32_t ref;
-//   uint8_t rv;
-// } chain;
 
 
-// void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<DiagonalSeeds>& chained_seed,int q_len,int max_gap)
-// {
-//     uint32_t target = 0;
-//     int i, score, qdiff, tdiff, diffdiff, gap_cost, j, best_j;
-//     int ref_offset = 0;
-//     int h = 50; // number of previous anchors to check
-//     // int ref_offset = 0; // offset into the scores vector of the current target - sets the backward limit for finding chained anchors
-//     int match_score = 4;
-//     score_pos s;
-//     vector<score_pos> sp;//get the pos which should be index into
-//     s.score_idx = ref_offset;
-//     s.prev = -1;
-//     s.used = 0;
-//     s.ref = target << 1 >> 1;
-//     s.rv = target >> 31;
-
-//     std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
-//     for (size_t i = 1; i < diagonal_segment.size(); i++)
-//     {
-//         s.score = 1;
-//         s.anchor_idx = i;
-//         s.score_idx = i + ref_offset;
-//         s.prev = -1; // no predecessor
-//         for(j = i < h ? 0 : i-h; j < i; j++) 
-//         {
-//             int tdiff = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) ;
-//             int qdiff = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) ;
-//             int ref_gap = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) - static_cast<int>(diagonal_segment[i].len);
-//             int qry_gap = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) - static_cast<int>(diagonal_segment[i].len);
-
-//             if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) { // we often have multiple hits to the same target pos, so we can't let them chain with either other
-//             continue;
-//             }
-//             if(ref_gap <= 0 || qry_gap <= 0 || qry_gap > max_gap || ref_gap > max_gap) 
-//             { // we often have multiple hits to the same target pos, so we can't let them chain with either other
-//                     continue;
-//             }
-//             gap_cost = (diffdiff == 0 ? 0 : 0.01 * match_score * diffdiff + 0.5 * log2(diffdiff)); // affine gap penalty a la minimap2
-//             qdiff = (qdiff > tdiff ? tdiff : qdiff); // now not qdiff but the minimum difference
-//             score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost;
-//             if (score > s.score)
-//             {
-//                 s.score = score;
-//                 s.prev = j + ref_offset;
-//             }    
-//         }
-//         sp.push_back(s);
-//     }
 
 
-// }
 
 vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,int q_len,int max_gap)
 {

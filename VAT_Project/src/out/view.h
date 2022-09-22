@@ -20,6 +20,9 @@ class View_writer
 	OutputStreamer f_;
 };
 
+
+
+
 struct View_fetcher
 {
 	View_fetcher(VATFile &daa):

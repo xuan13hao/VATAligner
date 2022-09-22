@@ -2,12 +2,13 @@
 #ifndef QUERIES_H_
 #define QUERIES_H_
 
+#include <memory>
 #include "../basic/Translator.h"
 #include "../utils/complexity_filter.h"
 #include "SortedList.h"
 #include "../basic/Statistics.h"
 #include "SequenceSet.h"
-#include <memory>
+
 
 using std::auto_ptr;
 
