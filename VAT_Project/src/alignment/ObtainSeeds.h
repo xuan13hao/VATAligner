@@ -81,14 +81,10 @@ void accessSequence(vector<Segment<_val> > &matches,
 		// const _val* sbj1 = ref->data(ds.i+29);
 		// const _val* qry1 = &query[ds.j+28];
 		// cout<<"subject = "<<AlphabetAttributes<_val>::ALPHABET[*sbj]<<", query = "<<AlphabetAttributes<_val>::ALPHABET[*qry]<<endl;
-		cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
+		// cout<<"i = "<<ds.i<<", j = "<<ds.j<<",len= "<<ds.len<<", sbj id ="<<l.first<<", q id ="<<ds.hit_.query_<<endl;
 		// seed_->push_back(ds);
 		diagonalsegment_.push_back(ds);
 	}	
-	// for (size_t i = 0; i < diagonalsegment_.size(); i++)
-	// {
-	// 	cout<<diagonalsegment_[i].qry_id<<"\t"<<diagonalsegment_[i].sbj_id<<"\t"<<diagonalsegment_[i].i<<"\t"<<diagonalsegment_[i].j<<endl;
-	// }
 }
 
 
@@ -139,12 +135,8 @@ void accessRead(
 	if (seeds_->size() > 0)
 	{
 			while (it < seeds_->end())
-			{
-				
-				// ds.push_back(*it);
-				// dseed->push_back(*it);
+			{	
 				seed_->push_back(*it);
-				// cout<<(*it).qry_id<<"\t"<<(*it).sbj_id<<"\t"<<(*it).i<<"\t"<<(*it).j<<endl;
 				++it;
 			}
 	}
