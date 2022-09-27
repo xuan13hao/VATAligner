@@ -262,7 +262,8 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
     int *p1_score = new int [diagonal_segment.size()]; int *p1_track = new int [diagonal_segment.size()]; bool *p1_splice = new bool [diagonal_segment.size()];
     // initialization
     p1_score[0] = diagonal_segment[0].score; p1_track[0] = -1;
-    for(int i = 1; i < diagonal_segment.size(); ++ i)   {
+    for(int i = 1; i < diagonal_segment.size(); ++ i)   
+    {
         // perform dynamic programming, we need to record whether the seed break is a splicing site
         int max_score = diagonal_segment[i].score; int max_pre = i; bool is_splice = false;
         for(int j = 0; j < pre_count[i]; ++ j)   {
@@ -334,66 +335,7 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
 
     return;
 }
-/**
- * @brief 
 
-    def get_chains(self, minimium_chaining_score=20, minimum_minimizers_on_chain=2):
-        chaining_scores = [self.w]  # Maximal score up to the ith anchor at ith position
-        best_predecessors = {0: -1}  # Best predecessor anchors of anchor at key
-
-
-        # Formula 1 and 2 from Heng Li's Minimap2 paper
-        for i in range(1, len(self.anchors)):
-            #print("Finding score for i=%d" % i)
-            scores = {}  # Scores (value) between chain j (key) and i
-            for j in range(i-1, -1, -1):  # All j's lower than i
-
-                score = max(chaining_scores[j] + self.distance_between_anchors(i, j) - self.anchor_gap_cost(i, j), self.w)
-                #score = max(chaining_scores[j] + self.anchors_score(i, j), self.w)
-                #print("   j=%d. Dist: %.3f. Score: %.2f. Gap cost: %d" % (j, self.distance_between_anchors(i, j), score, self.anchor_gap_cost(i, j)))
-                scores[j] = score
-                if j < i - 1:
-                    # Using heuristic that chaining this far down probably gives a lower score
-                    break
-            #print("    scores: %s" % str(scores))
-            # Find best predecessor as the one with max score
-            best_predecessor, best_predecessor_score = max(scores.items(), key=lambda s: s[1] + 0.000001 * s[0])  # Important to prioritize highest key if equal score
-            best_predecessor_score = scores[best_predecessor]
-            if best_predecessor_score == self.w:
-                best_predecessor = -1
-            #print("    Best predecessor of %d: %d" % (i, best_predecessor))
-            best_predecessors[i] = best_predecessor
-            chaining_scores.append(best_predecessor_score)
-
-        # Backtracking
-        chains = []
-        #print(" == Backtracking ==")
-        used_anchors = set()
-        for i in range(len(self.anchors)-1, -1, -1):
-            #print("Checking anchor %d" % i)
-            if i in used_anchors:
-                continue
-            current_chain = Chain()
-            current_anchor = i
-            while True:
-                used_anchors.add(current_anchor)
-                current_chain.anchors.append(self.anchors[current_anchor])
-                # Find best predecessor
-                best = best_predecessors[current_anchor]
-                #print("  Found best %d" % best)
-                if best == -1 or best in used_anchors:
-                    break
-                current_anchor = best
-            current_chain.chaining_score = chaining_scores[i]
-            if current_chain.chaining_score >= minimium_chaining_score and \
-                    len(current_chain.anchors) >= minimum_minimizers_on_chain:
-                # Hack for now, we need to reverse order to be compatible with old setup
-                current_chain.anchors = current_chain.anchors[::-1]
-                chains.append(current_chain)
-
- 
-  
- */
 
 vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int q_len,int max_gap)
 {
@@ -445,19 +387,22 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             p1_track[i] = -1;
         }
     }
-    
+   
     bool *tracked = new bool [s_];
     memset(tracked, false, s_ * sizeof(bool));
     int best;
-    bool flag = true;
     set<int> visited;
-    for (size_t j = s_ -1; j >= 0; j--)
-    { 
+    for (size_t j = s_ - 1; j >= 0; j--)
+    {   
         if (visited.count(j) > 0)
         {
             continue;
         }
         int c = j;
+        if (c < 0)
+        {
+            break;
+        }
         while (true)
         {
             visited.insert(c);
@@ -466,8 +411,11 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             if (best == -1 || visited.count(best) > 0)
             {
                 break;
+            }else
+            {
+                c = best;
             }
-            c = p1_track[c];
+            
         }
     }
 

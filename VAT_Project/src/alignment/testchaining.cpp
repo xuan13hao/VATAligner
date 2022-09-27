@@ -25,8 +25,9 @@ int main()
     vds.push_back(ds4);
     vds.push_back(ds5);
     vds.push_back(ds6);
-    cout<<"size = "<<vds.size()<<endl;
-    result = findOptimalSeeds(vds,30,15);
+    // cout<<"size = "<<vds.size()<<endl;
+    result = chainingSeeds(vds,100,15);
+    // result = findOptimalSeeds(vds,30,15);
     // findSeedChain(vds,seed_chains,30);
     // cout<<
     cout<<"result = "<<result.size()<<endl;

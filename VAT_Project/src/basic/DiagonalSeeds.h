@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include "interval.h"
-#include "Hits.h"
+// #include "Hits.h"
 using namespace std;
 class DiagonalSeeds
 {
@@ -21,7 +21,7 @@ class DiagonalSeeds
 	{
 		
 	}
-
+/*
 	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h, string& q_, string& s_) :
 		i(query_pos),
 		j(subject_pos),
@@ -44,7 +44,7 @@ class DiagonalSeeds
 	{
 		
 	}
-
+*/
 	bool empty() const
 	{
 		return len == 0;
@@ -122,7 +122,7 @@ class DiagonalSeeds
 		
 		i = rhs.i;
 		j = rhs.j;
-		hit_ = rhs.hit_;
+		// hit_ = rhs.hit_;
 		qry_id = rhs.qry_id;
 		sbj_id = rhs.sbj_id;
 		score = rhs.score;
@@ -179,7 +179,7 @@ class DiagonalSeeds
 		return s;
 	}
 	int i, j, len, score;//query_pos, subject_pos
-	hit hit_;
+	// hit hit_;
 	string qry_;
 	string sbj_;
 	int qry_id, sbj_id;
