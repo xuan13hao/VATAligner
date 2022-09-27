@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <set>
 #include "../basic/DiagonalSeeds.h"
 
 // #include "kvec.h"
@@ -449,19 +450,20 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
     memset(tracked, false, s_ * sizeof(bool));
     int best;
     bool flag = true;
+    set<int> visited;
     for (size_t j = s_ -1; j >= 0; j--)
     { 
-        if (tracked[j])
+        if (visited.count(j) > 0)
         {
             continue;
         }
         int c = j;
         while (true)
         {
-            tracked[c] = true;
+            visited.insert(c);
             chained_seed.push_back(diagonal_segment[c]);
             best = p1_track[c];
-            if (best == -1 || tracked[best])
+            if (best == -1 || visited.count(best) > 0)
             {
                 break;
             }
