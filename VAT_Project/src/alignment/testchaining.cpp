@@ -9,12 +9,12 @@ using namespace std;
 
 int main()
 {
-    DiagonalSeeds ds1(1,2,10,15);
-    DiagonalSeeds ds2(11,12,9,16);//*
-    DiagonalSeeds ds3(21,22,11,18);//*
-    DiagonalSeeds ds4(31,32,13,15);
-    DiagonalSeeds ds5(41,42,15,14);//*
-    DiagonalSeeds ds6(51,52,8,16);//*
+    DiagonalSeeds ds1(1,2,10,10);
+    DiagonalSeeds ds2(1,3,9,9);//*
+    DiagonalSeeds ds3(8,9,11,11);//*
+    DiagonalSeeds ds4(21,22,13,13);
+    DiagonalSeeds ds5(34,22,15,15);//*
+    DiagonalSeeds ds6(49,52,8,8);//*
     vector<DiagonalSeeds> vds;
     vector<DiagonalSeeds> result;
     vector<SeedChainType> seed_chains;
@@ -26,7 +26,7 @@ int main()
     vds.push_back(ds5);
     vds.push_back(ds6);
     // cout<<"size = "<<vds.size()<<endl;
-    result = chainingSeeds(vds,100,15);
+    // result = chainingSeeds(vds,100,15,23);
     // result = findOptimalSeeds(vds,30,15);
     // findSeedChain(vds,seed_chains,30);
     // cout<<

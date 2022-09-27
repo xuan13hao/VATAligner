@@ -115,9 +115,8 @@ vector<DiagonalSeeds> findOptimalSeeds(vector<DiagonalSeeds>& diagonal_segment,i
             continue;
         }
         int c = j;
-        if (p1_track[c] == -1)
+        if (c < 0)
         {
-            chained_seed.push_back(diagonal_segment[c]);
             break;
         }
         while (true)
@@ -337,7 +336,7 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
 }
 
 
-vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int q_len,int max_gap)
+vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int q_len,int max_gap, int min_score)
 {
     vector<DiagonalSeeds> chained_seed;
     int s_ =  diagonal_segment.size();
@@ -347,7 +346,7 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
     int *p1_score = new int [s_]; 
     int *p1_track = new int [s_];
 
-    p1_score[0] = diagonal_segment[0].score;
+    p1_score[0] = diagonal_segment[0].len;
     p1_track[0] = -1;
 
     // std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
@@ -370,11 +369,13 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             // { // we often have multiple hits to the same target pos, so we can't let them chain with either other
             //         continue;
             // }
+            // score = diagonal_segment[j].score;
             match_score = diagonal_segment[j].score;
             gap_cost = (diffdiff == 0 ? 0 : 0.01 * match_score * diffdiff + 0.5 * log2(diffdiff)); // affine gap penalty a la minimap2
             qdiff = (qdiff > tdiff ? tdiff : qdiff); // now not qdiff but the minimum difference
             score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost; 
-             if (tmp <= score)
+             
+             if (tmp < score)
              {  
                  tmp = score;
                  max_pre = j;
@@ -382,17 +383,11 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
         }
         p1_score[i] = tmp;
         p1_track[i] = max_pre;
-        if (tmp == diagonal_segment[i].score)
-        {
-            p1_track[i] = -1;
-        }
+
     }
-   
-    bool *tracked = new bool [s_];
-    memset(tracked, false, s_ * sizeof(bool));
     int best;
     set<int> visited;
-    for (size_t j = s_ - 1; j >= 0; j--)
+    for (size_t j = s_ - 1; j >= 0; --j)
     {   
         if (visited.count(j) > 0)
         {
@@ -411,15 +406,15 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             if (best == -1 || visited.count(best) > 0)
             {
                 break;
-            }else
-            {
-                c = best;
             }
-            
+            c = best;
+        }
+        if (p1_score[j] >= min_score)
+        {
+            chained_seed.push_back(diagonal_segment[c]);
         }
     }
-
-    delete [] tracked;
+    std::reverse(chained_seed.begin(),chained_seed.end());
     delete [] p1_score;
     delete [] p1_track;
 
