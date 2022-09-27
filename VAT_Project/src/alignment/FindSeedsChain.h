@@ -349,7 +349,7 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
     p1_score[0] = diagonal_segment[0].len;
     p1_track[0] = -1;
 
-    // std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
+    std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds::cmp_subject_end);
     for (size_t i = 1; i < diagonal_segment.size(); i++)
     {
         int tmp = diagonal_segment[i].score; 
@@ -361,30 +361,44 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             int ref_gap = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) - static_cast<int>(diagonal_segment[i].len);
             int qry_gap = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) - static_cast<int>(diagonal_segment[i].len);
 
-            if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) 
-            { // we often have multiple hits to the same target pos, so we can't let them chain with either other
-                continue;
-            }
-            // if(ref_gap <= 0 || qry_gap <= 0 || qry_gap > max_gap || ref_gap > max_gap) 
+            // if(tdiff <= 0 || qdiff <= 0 || qdiff > max_gap || tdiff > max_gap) 
             // { // we often have multiple hits to the same target pos, so we can't let them chain with either other
-            //         continue;
+            //     continue;
             // }
+            // cout<<"here 1 "<<endl;
+            // cout<<ref_gap<<"\t"<<qry_gap<<endl;
+            if(ref_gap <= 0 || qry_gap <= 0 || qry_gap > max_gap || ref_gap > max_gap) 
+            { // we often have multiple hits to the same target pos, so we can't let them chain with either other
+                    continue;
+            }
+            // cout<<"here"<<endl;
+            // score = diagonal_segment[j].score;
+            
             // score = diagonal_segment[j].score;
             match_score = diagonal_segment[j].score;
             gap_cost = (diffdiff == 0 ? 0 : 0.01 * match_score * diffdiff + 0.5 * log2(diffdiff)); // affine gap penalty a la minimap2
             qdiff = (qdiff > tdiff ? tdiff : qdiff); // now not qdiff but the minimum difference
             score = diagonal_segment[j].score + (qdiff > match_score ? match_score : qdiff) - gap_cost; 
-             
+            
              if (tmp < score)
              {  
                  tmp = score;
                  max_pre = j;
              } 
         }
+        if (tmp == diagonal_segment[i].score)
+        {
+             p1_track[i] = -1;
+        }
         p1_score[i] = tmp;
         p1_track[i] = max_pre;
 
     }
+    for (size_t i = 0; i < s_; i++)
+    {
+        cout<<p1_track[i]<<endl;
+    }
+    
     int best;
     set<int> visited;
     for (size_t j = s_ - 1; j >= 0; --j)
@@ -409,10 +423,10 @@ vector<DiagonalSeeds> chainingSeeds(vector<DiagonalSeeds>& diagonal_segment,int 
             }
             c = best;
         }
-        if (p1_score[j] >= min_score)
-        {
-            chained_seed.push_back(diagonal_segment[c]);
-        }
+        // if (chained_seed[j].score >= min_score)
+        // {
+        //     chained_seed.push_back(diagonal_segment[c]);
+        // }
     }
     std::reverse(chained_seed.begin(),chained_seed.end());
     delete [] p1_score;
