@@ -1,6 +1,5 @@
 #ifndef __FINDSEEDSCHAIN_H__
 #define __FINDSEEDSCHAIN_H__
-#define MAX 65535
 #include <vector>
 #include <algorithm> 
 #include <string.h>
@@ -223,7 +222,7 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
             if( diagonal_segment[j].i <= bound)    
             {
                 // here we need to consider splicing event and long-range gap
-                int gap_score = -MAX;
+                int gap_score = -65535;
                 // if it fits the requirement of macro-gap
                 int ref_gap = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j) - static_cast<int>(diagonal_segment[i].len);
                 int qry_gap = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) - static_cast<int>(diagonal_segment[i].len);
@@ -245,7 +244,7 @@ void findSeedChain(vector<DiagonalSeeds>& diagonal_segment,vector<SeedChainType>
                 // int splice_score = IsSpliceJunction(ref_seq, qry_seq, seeds[i], seeds[j]) ? 0 : -MAX;
                 int splice_score = 0;
                 // record the score
-                if(gap_score > -MAX || splice_score > -MAX) {
+                if(gap_score > -65535 || splice_score > -65535) {
                     // it means that the seed break might make sence, record
                     pre_seed_id[j][pre_count[j]] = i;
                     pre_gap_score[j][pre_count[j]] = gap_score;

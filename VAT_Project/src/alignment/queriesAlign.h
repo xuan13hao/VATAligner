@@ -10,7 +10,7 @@
 #include "../search/trace_pt_buffer.h"
 #include "../utils/map.h"
 #include "../utils/task_queue.h"
-#include "../utils/Queue.h"
+// #include "../utils/Queue.h"
 #include "../basic/Hits.h"
 #include "../utils/async_buffer.h"
 #include "../basic/Statistics.h"
@@ -23,7 +23,7 @@
 #include "PairChimera.h"
 
 using std::vector;
-using std::unique_ptr;
+// using std::unique_ptr;
 
 struct Output_writer
 {

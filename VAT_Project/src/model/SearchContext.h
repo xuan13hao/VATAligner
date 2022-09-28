@@ -11,7 +11,7 @@
 #include "../alignment/queriesAlign.h"
 #include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
-#include "../alignment/ObtainSeeds.h"
+// #include "../alignment/ObtainSeeds.h"
 using std::endl;
 using std::cout;
 using boost::timer::cpu_timer;
@@ -190,7 +190,6 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 	}
 
 	timer.go("Deallocating queries");
-	seed_->clear();
 	delete QuerySeqs<_val>::data_;
 	delete query_ids::data_;
 	delete query_source_seqs::data_;
