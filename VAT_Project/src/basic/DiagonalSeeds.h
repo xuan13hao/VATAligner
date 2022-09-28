@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include "interval.h"
-// #include "Hits.h"
+#include "Hits.h"
 using namespace std;
 class DiagonalSeeds
 {
@@ -21,18 +21,18 @@ class DiagonalSeeds
 	{
 		
 	}
-/*
-	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h, string& q_, string& s_) :
-		i(query_pos),
-		j(subject_pos),
-		len(len),
-		score(score),
-		hit_(h),
-		sbj_(s_),
-		qry_(q_)
-	{
+
+	// DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h, string& q_, string& s_) :
+	// 	i(query_pos),
+	// 	j(subject_pos),
+	// 	len(len),
+	// 	score(score),
+	// 	hit_(h),
+	// 	sbj_(s_),
+	// 	qry_(q_)
+	// {
 		
-	}
+	// }
 	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, hit& h, int& q_, int& s_) :
 	i(query_pos),
 	j(subject_pos),
@@ -44,7 +44,7 @@ class DiagonalSeeds
 	{
 		
 	}
-*/
+
 	bool empty() const
 	{
 		return len == 0;
@@ -104,25 +104,13 @@ class DiagonalSeeds
 	{
 		return i + len <= rhs.i && j + len <= rhs.j;
 	}
-    // DiagonalSeeds & operator= (DiagonalSeeds && rhs)
-    // {
-    //         std::swap(i, rhs.i);
-    //         std::swap(j, rhs.j);
-    //         std::swap(hit_, rhs.hit_);
-    //         std::swap(sbj_id, rhs.sbj_id);
-	// 		std::swap(qry_id, rhs.qry_id);
-	// 		std::swap(score, rhs.score);
-	// 		std::swap(len, rhs.len);
-	// 		std::swap(qry_, rhs.qry_);
-	// 		std::swap(sbj_, rhs.sbj_);
-    //         return *this;
-    // }
+
 	DiagonalSeeds& operator=(const DiagonalSeeds &rhs)
 	{
 		
 		i = rhs.i;
 		j = rhs.j;
-		// hit_ = rhs.hit_;
+		hit_ = rhs.hit_;
 		qry_id = rhs.qry_id;
 		sbj_id = rhs.sbj_id;
 		score = rhs.score;
@@ -179,7 +167,7 @@ class DiagonalSeeds
 		return s;
 	}
 	int i, j, len, score;//query_pos, subject_pos
-	// hit hit_;
+	hit hit_;
 	string qry_;
 	string sbj_;
 	int qry_id, sbj_id;

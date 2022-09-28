@@ -76,7 +76,7 @@ std::vector<ChimeraAlnType> &paired_seeds,int q_len) {
         int max_score = seeds[i].score;
         ChimeraAlnType chim;
         chim.arm1 = seeds[i]; chim.is_chimera = false; chim.score = seeds[i].score;
-        cout<<chim.arm1.qry_id<<"\t"<<chim.arm1.sbj_id<<"\t"<<chim.arm1.i<<"\t"<<chim.arm1.j<<"\t"<<chim.score <<endl;
+        // cout<<chim.arm1.qry_id<<"\t"<<chim.arm1.sbj_id<<"\t"<<chim.arm1.i<<"\t"<<chim.arm1.j<<"\t"<<chim.score <<endl;
         // cout<<seeds[i].qry_id<<"\t"<<seeds[i].sbj_id<<"\t"<<seeds[i].i<<"\t"<<seeds[i].j<<endl;
         vector<int> p_seeds;
         for(int j = bound; j < q_seq_len; ++ j)   
@@ -89,13 +89,13 @@ std::vector<ChimeraAlnType> &paired_seeds,int q_len) {
                     {
                         
                         max_score = seeds[i].score + seeds[cand[j][k]].score + c_pen;
-                        cout<<"cand = "<<cand[j][k]<<endl;
+                        // cout<<"cand = "<<cand[j][k]<<endl;
                         p_seeds.push_back(cand[j][k]);
                     }
                 }
             }
         }
-        cout<<"p_seeds.size() = "<<p_seeds.size()<<endl;
+        // cout<<"p_seeds.size() = "<<p_seeds.size()<<endl;
         if(p_seeds.size() > 0)   
         {
             for(int l = 0; l < p_seeds.size(); ++ l)   
