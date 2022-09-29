@@ -157,7 +157,7 @@ private:
 			const size_t end,
 			const vector<ShapeConfigures> &cfgs)
 	{
-		int w = 2, k = 10;
+		// int w = 2, k = 10;
 		// int count = 0;
 		assert(seqp < VATConsts::seqp);
 		uint64_t key;

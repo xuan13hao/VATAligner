@@ -19,7 +19,7 @@
 #include "../out/output_buffer.h"
 #include "link_segments.h"
 #include "../dp/floating_sw.h"
-#include "FindSeedsChain.h"
+//#include "FindSeedsChain.h"
 #include "PairChimera.h"
 
 using std::vector;
@@ -226,23 +226,19 @@ void alignRead(Output_buffer<_val> &buffer,
 	static thread_specific_ptr<vector<local_match<_val> > > local_ptr;
 	static thread_specific_ptr<vector<Segment<_val> > > matches_ptr;
 	static thread_specific_ptr<vector<char> > transcript_ptr;
-	// static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
 
 	Tls<vector<Segment<_val> > > matches (matches_ptr);
 	Tls<vector<local_match<_val> > > local (local_ptr);
 	Tls<vector<char> > transcript_buf (transcript_ptr);
-	// Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
 	local->clear();
 	matches->clear();
 	transcript_buf->clear();
-	// seeds_->clear();
 
 	assert(end > begin);
 	const size_t hit_count = end - begin;
 	local->reserve(hit_count);
 	const unsigned contexts = query_contexts();
 	const unsigned query = begin->query_/contexts;
-	// cout<<"query id = "<<query<<endl;
 	const size_t query_len (QuerySeqs<_val>::data_->length(query*contexts));
 	const size_t source_query_len = query_len;
 	// const size_t source_query_len = query_translated() ? query_seqs<_val>::data_->reverse_translated_len(query*contexts) : query_len;
@@ -259,10 +255,8 @@ void alignRead(Output_buffer<_val> &buffer,
 		++i;
 	}
 
-	// cout<<"seed size = "<<seeds_->size()<<endl;
 	if(matches->size() == 0)
 		return;
-
 	link_segments(*matches);
 
 
@@ -335,9 +329,9 @@ void alignQueries(typename Trace_pt_list::iterator begin,
 	seeds_->clear();
 	
 	// const SequenceSet<_val> *ref = ReferenceSeqs<_val>::data_;
-	int q_id = i.begin()->query_;
-	int sbj = i.begin()->subject_;
-	std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(sbj);
+	// int q_id = i.begin()->query_;
+	// int sbj = i.begin()->subject_;
+	// std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(sbj);
 	// cout<<"q_id = "<<q_id<<"\t"<<l.first<<endl;
 	// cout<<endl;
 	// cout<<<<l.first<<endl;
