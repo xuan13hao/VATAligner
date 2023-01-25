@@ -119,5 +119,4 @@ struct AlphabetAttributes<char>
 	{ return c; }
 };
 
-
 #endif /* VALUE_H_ */

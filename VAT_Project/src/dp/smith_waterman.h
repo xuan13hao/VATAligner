@@ -70,7 +70,7 @@ void smith_waterman(const sequence<const _val> &query,
 		{
 			typename DP_matrix<_score>::Column_iterator it (dp.begin(j));
 			sv vgap, hgap, column_best;
-			profile.template set<_val> (dseq.get<_val>(subject_it, subject_end, j, _score()));
+			profile.template set_<_val> (dseq.get<_val>(subject_it, subject_end, j, _score()));
 
 			while(!it.at_end()) 
 			{

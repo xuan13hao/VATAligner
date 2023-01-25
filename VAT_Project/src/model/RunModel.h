@@ -13,6 +13,12 @@ class RunModel
     {
         CreateDB(DNA());
     }
+    /*
+    void static CreateDoubleStrandDNADB()
+    {
+        CreateDNA_DB();
+    }
+    */
     void static CreateProteinDB()
     {
         CreateDB(Protein());

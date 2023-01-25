@@ -13,6 +13,7 @@ unsigned seed_partition(seed s)
 
 unsigned seed_partition_offset(seed s)
 {
+	// return s & 1024;
 	return s >> VATConsts::seedp_bits;
 }
 

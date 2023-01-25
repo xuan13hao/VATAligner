@@ -2,49 +2,28 @@
 
 #ifndef ALIGN_UNGAPPED_H_
 #define ALIGN_UNGAPPED_H_
-
-// #include "../basic/DiagonalSegment.h"
-#include "../basic/sequence.h"
-
-/**
- * @brief xdropUngapped
- * 
- * @tparam _val 
- * @tparam _locr 
- * @tparam _locq 
- * @param query query
- * @param subject subject
- * @param seed_len seed len =  shape len
- * @param delta distance
- * @param len 
- * @return int score
- */
-
+#include "../basic/Seed.h"
 template<typename _val, typename _locr, typename _locq>
-int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
+int xdrop_ungapped(const _val *query, const _val *subject, unsigned seed_len, unsigned &delta, unsigned &len)
 {
 	int score (0), st (0);
 	unsigned n (0);
 	delta = 0;
-	// int count  = 0;
-	const _val *q (query-1), *s (subject-1);
-	// cout<<"q= "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",s= "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
 
+	const _val *q (query-1), *s (subject-1);
 	const unsigned window_left = std::max(VATParameters::window, (unsigned)VATConsts::seed_anchor) - VATConsts::seed_anchor;
 	while(score - st < VATParameters::xdrop
 			&& delta < window_left
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
-		// cout<<"ql = "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",sl = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
-		// cout<<AlphabetAttributes<_val>::ALPHABET[*q];
 		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		--q;
 		--s;
 		++delta;
 	}
-	// cout<<"======================== "<<endl;
+
 	q = query + seed_len;
 	s = subject + seed_len;
 	st = score;
@@ -55,7 +34,6 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 			&& *q != AlphabetSet<_val>::PADDING_CHAR
 			&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
-		// cout<<"qr = "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",sr = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
 		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		score = std::max(score, st);
 		++q;
@@ -67,127 +45,10 @@ int xdropUngapped(const _val *query, const _val *subject, unsigned seed_len, uns
 		score += ScoreMatrix::get().letter_score(query[i], mask_critical(subject[i]));
 
 	len = delta + n + seed_len;
-	// return DiagonalSegment(qa - delta, sa - delta, len + delta, score)
 	return score;
 }
-/**
- * @brief xdrop ungapped
- * 
- * @tparam _val 
- * @param query 
- * @param subject 
- * @param qa 
- * @param sa 
- * @param h 
- * @return DiagonalSeeds 
- */
 
-template<typename _val>
-DiagonalSeeds xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa, hit& h)
-{
-	int sbj_, qry_;
-	qry_=h.query_;
-	std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
-	sbj_ = l.first;
-	unsigned delta,len;
-	const int xdrop = 23;
-	int score(0), st(0), n=1;
-	delta = 0;
-	const _val *q(query - 1), *s(subject - 1);
-	// cout<<"qa = "<<qa<<", sa = "<<qa<<endl;
-	// cout<<"q = "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",s = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
-	while (score - st < xdrop
-		&& *q != AlphabetSet<_val>::PADDING_CHAR
-		&& *s != AlphabetSet<_val>::PADDING_CHAR)
-	{
-		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		if (st > score) {
-			score = st;
-			delta = n;
-		}
-		--q;
-		--s;
-		++n;
-		// cout<<"ql = "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",sl = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
 
-		// sbj_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
-		// qry_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
-	}
-	q = query;
-	s = subject;
-	st = score;
-	n = 1;
-	len = 0;
-	while (score - st < xdrop
-		&& *q != AlphabetSet<_val>::PADDING_CHAR
-		&& *s != AlphabetSet<_val>::PADDING_CHAR)
-	{
-		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		if (st > score) {
-			score = st;
-			len = n;
-		}
-		++q;
-		++s;
-		++n;
-		// cout<<"qr = "<<AlphabetAttributes<_val>::ALPHABET[*q]<<",sr = "<<AlphabetAttributes<_val>::ALPHABET[*s]<<endl;
 
-		// sbj_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
-		// qry_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
-	}
-	// cout<<"qa = "<<qry_<<", sa = "<<sbj_<<endl;
-	len += delta;
-	//int query_pos, int subject_pos, int len, int score
-	// cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
-	return DiagonalSeeds(qa - delta, sa - delta, len, score,h,qry_,sbj_);
-}
-/*
-template<typename _val, typename _locr, typename _locq>
-DiagonalSegment xdrop_ungapped(const _val *query, const _val *subject, int qa, int sa)
-{
-	const int xdrop = VATParameters::xdrop;
-	int score = 0, st = 0;
-	int n = 1, delta = 0, len = 0;
 
-	int q = qa - 1, s = sa - 1;
-	const _val *ql (query-1), *sl (subject-1);
-	while (score - st < xdrop
-			&& *ql != AlphabetSet<_val>::PADDING_CHAR
-			&& *sl != AlphabetSet<_val>::PADDING_CHAR)
-	{
-		st += ScoreMatrix::get().letter_score(*ql, mask_critical(*sl));
-		if (st > score) 
-		{
-			score = st;
-			delta = n;
-		}
-		--q;
-		--s;
-		--ql;
-		--sl;
-		++n;
-	}
-
-	q = qa;
-	s = sa;
-	st = score;
-	n = 1;
-	while (score - st < xdrop
-			&& *ql != AlphabetSet<_val>::PADDING_CHAR
-			&& *sl != AlphabetSet<_val>::PADDING_CHAR)
-	{
-		st += ScoreMatrix::get().letter_score(*ql, mask_critical(*sl));
-		if (st > score) {
-			score = st;
-			len = n;
-		}
-		++q;
-		++s;
-		++ql;
-		++sl;
-		++n;
-	}
-	return DiagonalSegment(qa - delta, sa - delta, len + delta, score);
-}
-*/
 #endif /* ALIGN_UNGAPPED_H_ */

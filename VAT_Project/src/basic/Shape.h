@@ -6,7 +6,7 @@
 #include "VATConsts.h"
 #include "value.h"
 #include "SeedPartition.h"
-#include "../utils/hash_function.h"
+#include "../tools/hash_function.h"
 #include "NuclScoreMatrix.h"
 #include "ReducedAlpha.h"
 
@@ -105,37 +105,29 @@ class Shape
 		return true;
 	}
 
-	// inline bool set_seed(uint64_t &s, const DNA *seq) const
-	// {
-	// 	s = 0;
-	// 	double f = 0;
-	// 	for(unsigned i=0;i<weight_;++i) 
-	// 	{
-	// 		DNA l = seq[positions_[i]];
-	// 		if(l == AlphabetAttributes<DNA>::MASK_CHAR || l == AlphabetSet<DNA>::PADDING_CHAR)
-	// 			return false;
-	// 		l = mask_critical(l);
-	// 		unsigned r = ReducedAlpha<DNA>::reduction(l);
-	// 		f += background_freq[r];
-	// 		s *= ReducedAlpha<DNA>::reduction.size();
-	// 		s += uint64_t(r);
-	// 	}
-	// 	s = murmur_hash()(s);
-	// 	if(use_seed_freq<DNA>() && f > VATParameters::max_seed_freq) return false;
-
-	// 	return true;
-	// }
-/*
- x << y = x * (2^y)
- 1ULL<<2*k = 1*2^2k = 4^k
-
-  N=N>>2 then N will become N=N/(2^2). Thus, N=32/(2^2)=8
-
-  N=N<<2 then N will become N=N*(2^2). Thus, N=22*(2^2)=88 which can be written as 01011000.
-minimizer = minimizer << 2 | c) & mask;  
-*/
-	//template<>
 	inline bool set_seed(uint64_t &s, const DNA *seq) const
+	{
+		s = 0;
+		double f = 0;
+		for(unsigned i=0;i<weight_;++i) 
+		{
+			DNA l = seq[positions_[i]];
+			if(l == AlphabetAttributes<DNA>::MASK_CHAR || l == AlphabetSet<DNA>::PADDING_CHAR)
+				return false;
+			l = mask_critical(l);
+			unsigned r = ReducedAlpha<DNA>::reduction(l);
+			f += background_freq[r];
+			s *= ReducedAlpha<DNA>::reduction.size();
+			s += uint64_t(r);
+		}
+		s = murmur_hash()(s);
+		if(use_seed_freq<DNA>() && f > VATParameters::max_seed_freq) return false;
+
+		return true;
+	}
+
+	//template<>
+	inline bool set_seed_minimizer(uint64_t &s, const DNA *seq) const
 	{
 
 		s = 0;
@@ -150,17 +142,17 @@ minimizer = minimizer << 2 | c) & mask;
 			l = mask_critical(l);
 			unsigned r = ReducedAlpha<DNA>::reduction(l);
 			// cout<<"r = "<<r<<endl;
-			minimizer = minimizer +  (r<<2*(weight_-i-1));
-			// cout<<"r = "<<r<<", k = "<<weight_-i-1<<", (1ULL<<2*(weight_-i-1))= "<<(r<<2*(weight_-i-1))<<",minimizer= "<<minimizer<<endl;
+			minimizer = minimizer + r*pow(4,weight_-i-1);
+			// cout<<"k-1 = "<<weight_-i-1<<",r = "<<r<<", 4^k-1 = "<<pow(4,weight_-i-1)<<", minimizer = "<<minimizer<<endl;
 			f += background_freq[r];
 			// s *= ReducedAlpha<_val>::reduction.size();
-			// cout<<AlphabetAttributes<DNA>::ALPHABET[r];
+			// cout<<AlphabetAttributes<_val>::ALPHABET[r];
 			// s += uint64_t(r);
 		}
 		// cout<<endl;
 		s = hash64()(minimizer,mask);
-		// s = murmur_hash()(minimizer);
-		// cout<<"minimizer = "<<s<<endl;
+		// s = murmur_hash()(s);
+		// cout<<"minimizer = "<<minimizer<<endl;
 		if(use_seed_freq<DNA>() && f > VATParameters::max_seed_freq) return false;
 
 		return true;

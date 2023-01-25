@@ -46,32 +46,32 @@ class score_vector<uint8_t>
 
 	explicit score_vector(unsigned a, const __m128i &seq)
 	{
-		if(VATParameters::have_ssse3) {
-#ifdef __SSSE3__
-			set_ssse3(a, seq);
-#else
-			set_generic(a, seq);
-#endif
-		} else
+// 		if(VATParameters::have_ssse3) {
+// #ifdef __SSSE3__
+// 			set_ssse3(a, seq);
+// #else
+// 			set_generic(a, seq);
+// #endif
+// 		} else
 			set_generic(a, seq);
 	}
 
-	void set_ssse3(unsigned a, const __m128i &seq)
-	{
-#ifdef __SSSE3__
-		const __m128i *row = reinterpret_cast<const __m128i*>(&score_matrix::get().matrix8u()[a << 5]);
+// 	void set_ssse3(unsigned a, const __m128i &seq)
+// 	{
+// #ifdef __SSSE3__
+// 		const __m128i *row = reinterpret_cast<const __m128i*>(&score_matrix::get().matrix8u()[a << 5]);
 
-		__m128i high_mask = _mm_slli_epi16(_mm_and_si128(seq, _mm_set1_epi8(0x10)), 3);
-		__m128i seq_low = _mm_or_si128(seq, high_mask);
-		__m128i seq_high = _mm_or_si128(seq, _mm_xor_si128(high_mask, _mm_set1_epi8(0x80)));
+// 		__m128i high_mask = _mm_slli_epi16(_mm_and_si128(seq, _mm_set1_epi8(0x10)), 3);
+// 		__m128i seq_low = _mm_or_si128(seq, high_mask);
+// 		__m128i seq_high = _mm_or_si128(seq, _mm_xor_si128(high_mask, _mm_set1_epi8(0x80)));
 
-		__m128i r1 = _mm_load_si128(row);
-		__m128i r2 = _mm_load_si128(row+1);
-		__m128i s1 = _mm_shuffle_epi8(r1, seq_low);
-		__m128i s2 = _mm_shuffle_epi8(r2, seq_high);
-		data_ = _mm_or_si128(s1, s2);
-#endif
-	}
+// 		__m128i r1 = _mm_load_si128(row);
+// 		__m128i r2 = _mm_load_si128(row+1);
+// 		__m128i s1 = _mm_shuffle_epi8(r1, seq_low);
+// 		__m128i s2 = _mm_shuffle_epi8(r2, seq_high);
+// 		data_ = _mm_or_si128(s1, s2);
+// #endif
+// 	}
 
 	void set_generic(unsigned a, const __m128i &seq)
 	{

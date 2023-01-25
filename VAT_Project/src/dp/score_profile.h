@@ -82,7 +82,7 @@ struct score_profile
 {
 
 	template<typename _val>
-	inline void set(const __m128i &seq)
+	inline void set_(const __m128i &seq)
 	{
 		assert(sizeof(data_)/sizeof(score_vector<_score>) >= AlphabetAttributes<_val>::ALPHABET_SIZE);
 		/*unsigned j = 0;

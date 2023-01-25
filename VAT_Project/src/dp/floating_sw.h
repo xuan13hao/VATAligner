@@ -5,36 +5,19 @@
 
 #include "../basic/Hits.h"
 #include "scalar_dp_matrix.h"
-#include "../utils/direction.h"
+#include "../tools/direction.h"
 #include "scalar_traceback.h"
-/**
- * @brief smithWaterman with Direction
- * 
- * @tparam _val DNA or Protein
- * @tparam _dir Left or Right
- * @tparam _score 
- * @tparam _traceback Traceback
- * @param query query sequence
- * @param subject subject sequence 
- * @param band band 
- * @param xdrop xdrop 
- * @param gap_open 
- * @param gap_extend 
- * @param transcript_buf 
- * @return local_match<_val> 
- * 
- */
-
 
 template<typename _val, typename _dir, typename _score, typename _traceback>
-local_match<_val> smithWatermanDirection(const _val *query, const _val *subject, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf)
+local_match<_val> floating_sw_dir(const _val *query, const _val *subject, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf)
 {
 	using std::max;
-	// int signal_p = 0; 
+
 	_score max_score = 0, column_max = 0;
 	int j = 0, i_max = -1, j_best = -1, i_best = -1;
 	Scalar_dp_matrix<_score,_traceback> mtx (band);
 	const _val *x = query, *y = subject;
+	
 	while(*y != AlphabetSet<_val>::PADDING_CHAR && max_score - column_max < xdrop) 
 	{
 		typename Scalar_dp_matrix<_score,_traceback>::Column_iterator it = mtx.column(j, i_max);
@@ -47,10 +30,11 @@ local_match<_val> smithWatermanDirection(const _val *query, const _val *subject,
 			++i_max;
 			column_max += ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, i_max, _dir()));
 		}
-		for(; it.valid() && (get_dir(x, it.row(), _dir())) != AlphabetSet<_val>::PADDING_CHAR; ++it) 
+		// cout<<(int)get_dir(x, it.row(), _dir())<<endl;
+		for(; it.valid() && get_dir(x, it.row(), _dir()) != AlphabetSet<_val>::PADDING_CHAR; ++it) 
 		{
-
-			const _score match_score = ScoreMatrix::get().letter_score((mask_critical(*y)), get_dir(x, it.row(), _dir()));
+			const _score match_score = ScoreMatrix::get().letter_score(mask_critical(*y), get_dir(x, it.row(), _dir()));
+			// cout<<"y= "<<(int)mask_critical(*y)<<", x = "<<(int)get_dir(x, it.row(), _dir())<<endl;
 			const _score s = max(max(it.diag() + match_score, vgap), it.hgap_in());
 			if(s > column_max) 
 			{
@@ -63,15 +47,12 @@ local_match<_val> smithWatermanDirection(const _val *query, const _val *subject,
 			it.score() = s;
 		}
 
-		if(column_max > max_score) 
-		{
+		if(column_max > max_score) {
 			max_score = column_max;
 			j_best = j;
 			i_best = i_max;
 		}
-		// _val y_signal_site = inc_dir(y, Left());
 		y = inc_dir(y, _dir());
-		// _val y_signal_site_1 = inc_dir(y_signal_site,Left());
 		++j;
 	}
 
@@ -79,11 +60,11 @@ local_match<_val> smithWatermanDirection(const _val *query, const _val *subject,
 }
 
 template<typename _val, typename _score, typename _traceback>
-void floatingSmithWaterman(const _val *query, local_match<_val> &segment, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf, const _traceback& = Score_only (), const _score& = int())
+void floating_sw(const _val *query, local_match<_val> &segment, int band, _score xdrop, _score gap_open, _score gap_extend, vector<char> &transcript_buf, const _traceback& = Score_only (), const _score& = int())
 {
 	// cout<<"floating_sw"<<endl;
-	segment += smithWatermanDirection<_val,Right,_score,_traceback>(query, segment.subject_, band, xdrop, gap_open, gap_extend, transcript_buf);
-	const local_match<_val> left (smithWatermanDirection<_val,Left,_score,_traceback>(query, segment.subject_, band, xdrop, gap_open, gap_extend, transcript_buf));
+	segment += floating_sw_dir<_val,Right,_score,_traceback>(query, segment.subject_, band, xdrop, gap_open, gap_extend, transcript_buf);
+	const local_match<_val> left (floating_sw_dir<_val,Left,_score,_traceback>(query, segment.subject_, band, xdrop, gap_open, gap_extend, transcript_buf));
 	if(left.query_len_ > 0) {
 		segment -= left;
 		segment.query_begin_--;

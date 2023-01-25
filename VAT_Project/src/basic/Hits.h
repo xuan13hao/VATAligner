@@ -1,63 +1,49 @@
-#ifndef __HITS_H__
-#define __HITS_H__
 
 
+#ifndef MATCH_H_
+#define MATCH_H_
 
 #include "sequence.h"
-#include "../utils/async_buffer.h"
+#include "../tools/async_buffer.h"
+//include "../tools/util.h"
 #include "EditTranscript.h"
 
 enum Strand { FORWARD, REVERSE };
 
-Interval normalized_range(unsigned pos, int len, Strand strand)
+interval normalized_range(unsigned pos, int len, Strand strand)
 {
 	return strand == FORWARD
-			? Interval (pos, pos + len)
-			: Interval (pos + 1 + len, pos + 1);
+			? interval (pos, pos + len)
+			: interval (pos + 1 + len, pos + 1);
 }
 
-// template<typename _locr, typename _locl>
-class hit
+template<typename _locr, typename _locl>
+class Hits
 {
 	public:
-	// typedef typename packed_sequence_location<_locr>::type packed_loc;
+	typedef typename packed_sequence_location<_locr>::type packed_loc;
 
 	unsigned	query_;
-	int32_t	subject_;//reference 
-	int32_t		seed_offset_;//seed offset
-	hit():
+	packed_loc	subject_;//reference 
+	_locl		seed_offset_;//seed offset
+	Hits():
 		query_ (),
 		subject_ (),
 		seed_offset_ ()
 	{ }
-	hit(unsigned query, int32_t subject, int32_t seed_offset):
+	Hits(unsigned query, _locr subject, _locl seed_offset):
 		query_ (query),
 		subject_ (subject),
 		seed_offset_ (seed_offset)
 	{ 
 		// cout<<"init hit.."<<endl;
 	}
-	bool operator<(const hit &rhs) const
+	bool operator<(const Hits &rhs) const
 	{ return query_ < rhs.query_; }
 	bool blank() const
 	{ 
 		return subject_ == 0; 
 	}
-	hit& operator =(hit& a)
-    {
-		query_ = a.query_;
-		seed_offset_= a.seed_offset_;
-		subject_ = a.subject_;
-        return *this;
-    }
-	hit& operator =(const hit& a)
-    {
-		query_ = a.query_;
-		seed_offset_= a.seed_offset_;
-		subject_ = a.subject_;
-        return *this;
-    }
-
 	unsigned operator%(unsigned i) const
 	{ 
 		return (query_/6) % i; 
@@ -71,7 +57,7 @@ class hit
 		return (int64_t)subject_ - (int64_t)seed_offset_; 
 	}
 	template<unsigned _d>
-	static unsigned query_id(const hit& x)
+	static unsigned query_id(const Hits& x)
 	{
  
 		return x.query_/_d; 
@@ -80,17 +66,17 @@ class hit
 	template<unsigned _d>
 	struct Query_id
 	{
-		unsigned operator()(const hit& x) const
+		unsigned operator()(const Hits& x) const
 		{ return query_id<_d>(x); }
 	};
-	static bool cmp_subject(const hit &lhs, const hit &rhs)
+	static bool cmp_subject(const Hits &lhs, const Hits &rhs)
 	{ return lhs.subject_ < rhs.subject_; }
-	static bool cmp_normalized_subject(const hit &lhs, const hit &rhs)
+	static bool cmp_normalized_subject(const Hits &lhs, const Hits &rhs)
 	{
 		const uint64_t x = (uint64_t)lhs.subject_ + (uint64_t)rhs.seed_offset_, y = (uint64_t)rhs.subject_ + (uint64_t)lhs.seed_offset_;
 		return x < y || (x == y && lhs.seed_offset_ < rhs.seed_offset_);
 	}
-	friend std::ostream& operator<<(std::ostream &s, const hit &me)
+	friend std::ostream& operator<<(std::ostream &s, const Hits &me)
 	{
 		s << me.query_ << '\t' << me.subject_ << '\t' << me.seed_offset_ << '\n';
 		return s;
@@ -177,9 +163,9 @@ struct local_match
 		score_ += rhs.score_;
 		query_len_ += rhs.query_len_;
 	}
-	Interval query_range(Strand strand) const
+	interval query_range(Strand strand) const
 	{ return normalized_range(query_begin_, query_len_, strand); }
-	Interval subject_range() const
+	interval subject_range() const
 	{ return normalized_range(subject_begin_, subject_len_, FORWARD); }
 	void print(const sequence<const _val> &query, const sequence<const _val> &subject, const vector<char> &buf) const
 	{
@@ -213,9 +199,9 @@ struct Segment
 	{ }
 	Strand strand() const
 	{ return frame_ < 3 ? FORWARD : REVERSE; }
-	Interval query_range() const
+	interval query_range() const
 	{ return traceback_->query_range(strand()); }
-	Interval subject_range() const
+	interval subject_range() const
 	{ return traceback_->subject_range(); }
 	bool operator<(const Segment &rhs) const
 	{ return top_score_ > rhs.top_score_
@@ -236,5 +222,4 @@ struct Segment
 	int						top_score_;
 };
 
-
-#endif // __HITS_H__
+#endif /* MATCH_H_ */

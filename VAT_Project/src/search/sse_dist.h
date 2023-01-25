@@ -40,7 +40,7 @@ template<typename _val>
 __m128i reduce_seq_ssse3(const __m128i &seq)
 {
 #ifdef __SSSE3__
-	const __m128i *row = reinterpret_cast<const __m128i*>(Reduction<_val>::reduction.map8());
+	const __m128i *row = reinterpret_cast<const __m128i*>(ReducedAlpha<_val>::reduction.map8());
 	__m128i high_mask = _mm_slli_epi16(_mm_and_si128(seq, _mm_set1_epi8(0x10)), 3);
 	__m128i seq_low = _mm_or_si128(seq, high_mask);
 	__m128i seq_high = _mm_or_si128(seq, _mm_xor_si128(high_mask, _mm_set1_epi8(0x80)));

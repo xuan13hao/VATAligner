@@ -4,7 +4,7 @@
 
 #include <string>
 #include <boost/lexical_cast.hpp>
-#include "../utils/tinythread.h"
+#include "../tools/tinythread.h"
 
 using std::exception;
 using std::string;

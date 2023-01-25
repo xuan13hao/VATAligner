@@ -11,14 +11,13 @@
 using std::vector;
 using boost::thread_specific_ptr;
 
-
 template<typename _val, typename _locr, typename _locq, typename _locl>
 class HitFilter
 {
 public:
 	HitFilter(Statistics &stats,
 			   _locq q_pos,
-			   typename Trace_pt_buffer::Iterator &out):
+			   typename Trace_pt_buffer<_locr,_locl>::Iterator &out):
 		q_num_ (std::numeric_limits<unsigned>::max()),
 		seed_offset_ (std::numeric_limits<unsigned>::max()),
 		stats_ (stats),
@@ -45,7 +44,6 @@ public:
 			return;
 		unsigned left;
 		sequence<const _val> query (QuerySeqs<_val>::data_->window_infix(q_pos_ + VATConsts::seed_anchor, left));
-		// cout<<"query = "<<endl;
 		smith_waterman(query,
 				*subjects_,
 				VATParameters::hit_band,
@@ -68,16 +66,17 @@ public:
 		}
 		
 		assert(subject < ReferenceSeqs<_val>::get().raw_len());
-		//seed offset =  suject_end_position - subject_start_point = query_start - query_end
-		out_.push(hit (q_num_, subject, seed_offset_));
-		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<", q pos = "<<q_pos_<<",seed offset = "<<seed_offset_<<endl;
+		//seed offset =  suject_end_position - subject_start_point 
+		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
+		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
+		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
-		// cout<<"total hits = "<<total_hits<<endl;
 	}
 
 	void operator()(int i, const sequence<const _val> &seq, int score)
 	{ 
 		push_hit(ReferenceSeqs<_val>::data_->position(seq.data()+VATParameters::window-VATConsts::seed_anchor)); 
+	
 		stats_.inc(Statistics::GAPPED_HITS); 
 	}
 
@@ -86,7 +85,7 @@ private:
 	unsigned q_num_, seed_offset_;
 	Statistics  &stats_;
 	_locq q_pos_;
-	typename Trace_pt_buffer::Iterator &out_;
+	typename Trace_pt_buffer<_locr,_locl>::Iterator &out_;
 	//Tls<vector<sequence<const _val> > > subjects_;
 	vector<sequence<const _val> > s2;
 	vector<sequence<const _val> >* subjects_;

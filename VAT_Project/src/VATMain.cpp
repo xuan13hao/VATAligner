@@ -4,12 +4,12 @@
 #include <iterator>
 #include <boost/program_options.hpp>
 #include "basic/VATParameters.h"
-#include "utils/TimerTools.h"
-#include "database/Reference.h"
+#include "tools/TimerTools.h"
+#include "data/Reference.h"
 #include "model/RunModel.h"
-#include "utils/complexity_filter.h"
+#include "tools/complexity_filter.h"
 #include "basic/ContextSet.h"
-#include "out/view.h"
+#include "output/view.h"
 
 
 using std::cout;
@@ -28,7 +28,7 @@ int main(int ac, const char* av[])
         po::options_description general("General options");
         general.add_options()
             ("help,h", "produce help message")
-            ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(0), "number of cpu threads")
+            ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(1), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
@@ -42,8 +42,6 @@ int main(int ac, const char* av[])
         po::options_description aligner("Aligner options");
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
-			("splice", po::value<bool>(&VATParameters::is_spilced)->default_value(0), "splice alignment (0)")
-			("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
 			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
@@ -57,21 +55,23 @@ int main(int ac, const char* av[])
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
         	("reward", po::value<int>(&VATParameters::reward)->default_value(2), "match reward score (blastn only)")
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
+			("splice", po::value<bool>(&VATParameters::spilce)->default_value(0), "splice alignment (0)")
+			("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
 
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
-        	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");//future interface
+        	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
 
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
-			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-15), "maximum seed frequency")//future interface
+			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
 			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
-       		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")//future interface
-       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(20), "minimum number of identities for stage 1 hit")
+       		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
+       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(30), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(20), "xdrop for ungapped alignment")
-        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(22), "xdrop for gapped alignment in bits")
-        	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(10), "minimum raw alignment score to continue local extension")
-        	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")//future interface
+        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
+        	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
+        	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
@@ -86,7 +86,7 @@ int main(int ac, const char* av[])
         view_options.add_options()
 			("out,o", po::value<string>(&VATParameters::output_file), "output file")
 			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam)")
-			("forwardonly", "only show alignments of forward strand");//future interface
+			("forwardonly", "only show alignments of forward strand");
 
         po::options_description hidden("Hidden options");
         hidden.add_options()
@@ -123,7 +123,7 @@ int main(int ac, const char* av[])
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
         	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
-        	cout << "  protein\tAlign protein query sequences against a protein reference database" << endl;
+        	cout << "  Protein\tAlign protein query sequences against a protein reference database" << endl;
         	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;

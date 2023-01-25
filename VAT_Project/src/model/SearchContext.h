@@ -3,15 +3,15 @@
 
 #include <iostream>
 #include <boost/timer/timer.hpp>
-#include "../database/Reference.h"
-#include "../database/Queries.h"
+#include "../data/Reference.h"
+#include "../data/Queries.h"
 #include "../basic/Statistics.h"
 #include "../basic/ShapeParameter.h"
-#include "../out/join_blocks.h"
-#include "../alignment/queriesAlign.h"
+#include "../output/join_blocks.h"
+#include "../align/align_queries.h"
 #include "../search/AlignPartition.h"
 #include "../basic/ContextSet.h"
-// #include "../alignment/ObtainSeeds.h"
+
 using std::endl;
 using std::cout;
 using boost::timer::cpu_timer;
@@ -57,7 +57,7 @@ void processShapes(unsigned sid,
 	for(unsigned chunk=0;chunk < p.parts; ++chunk) 
 	{
 
-		const SeedPartitionRange range (p.getMin(chunk), p.getMax(chunk));
+		const seedp_range range (p.getMin(chunk), p.getMax(chunk));
 		// cout<<"p.getMin(chunk) = "<<p.getMin(chunk)<<", p.getMax(chunk) = "<<p.getMax(chunk)<<endl;
 		current_range = range;
 		TimerTools timer ("Building reference index", true);
@@ -109,7 +109,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
-	Trace_pt_buffer::instance = new Trace_pt_buffer (QuerySeqs<_val>::data_->get_length()/query_contexts(),
+	Trace_pt_buffer<_locr,_locl>::instance = new Trace_pt_buffer<_locr,_locl> (QuerySeqs<_val>::data_->get_length()/query_contexts(),
 			VATParameters::tmpdir,
 			VATParameters::mem_buffered());
 	timer.finish();
@@ -119,7 +119,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		processShapes<_val,_locr,_locq,_locl>(i, timer_mapping, query_chunk, query_buffer, ref_buffer);
 
 	timer.go("Closing temporary storage");
-	Trace_pt_buffer::instance->close();
+	Trace_pt_buffer<_locr,_locl>::instance->close();
 	exception_state.sync();
 	timer.go("Deallocating buffers");
 	delete[] ref_buffer;
@@ -132,23 +132,9 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		out = new OutputStreamer (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	
 	timer.go("Computing alignments");
-	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
-	delete Trace_pt_buffer::instance;
-	// cout<<"hits = "<<statistics.get(Statistics::TENTATIVE_MATCHES3)<<endl;
-	// static thread_specific_ptr<vector<DiagonalSeeds> > seeds_ptr;
-	// Tls<vector<DiagonalSeeds> > seeds_(seeds_ptr);
-	// seeds_->clear();
-	// timer.go("Obtaining Seeds");
-	// vector<DiagonalSeeds> ds;
-	// accessQueries<_val,_locr,_locl>(*Trace_pt_buffer::instance, out);
-	// cout<<"seed size = "<<seeds_->size()<<endl;
-	// for (size_t i = 0; i < ds.size(); i++)
-	// {
-	// 	cout<<ds[i].qry_id<<"\t"<<ds[i].sbj_id<<"\t"<<ds[i].i<<"\t"<<ds[i].j<<"\t"<<ds[i].len<<endl;
-	// }
-	// delete Trace_pt_buffer::instance;
+	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
+	delete Trace_pt_buffer<_locr,_locl>::instance;
 
 	if(ref_header.n_blocks > 1) {
 		timer.go("Closing temporary output file");
@@ -193,7 +179,6 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 	delete QuerySeqs<_val>::data_;
 	delete query_ids::data_;
 	delete query_source_seqs::data_;
-	// free(ds_total);
 	timer_mapping.stop();
 }
 
