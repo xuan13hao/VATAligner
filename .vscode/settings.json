@@ -73,6 +73,11 @@
         "codecvt": "cpp",
         "cuchar": "cpp",
         "scoped_allocator": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     }
 }

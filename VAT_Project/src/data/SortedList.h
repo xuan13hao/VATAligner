@@ -338,7 +338,9 @@ private:
 			sl (sl)
 		{ }
 
-
+		bool is_power_of_two(int n) {
+			return (n != 0) && ((n & (n - 1)) == 0);
+		}
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{
 			// cout<<"=========================1"<<endl;
@@ -369,12 +371,13 @@ private:
 			// cout<<"=========================beforesort"<<endl;
 			int n = sl.ptr_end(seedp) - sl.ptr_begin(seedp) ;
 			// cout<<"n = "<<n<<endl;
-			if(n < 8)
-			{
-				std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
-			}else
+			if(n >= 8 && ((n != 0) && ((n & (n - 1)) == 0)))
 			{
 				sl.sortSIMD(sl.ptr_begin(seedp), sl.ptr_end(seedp));
+			}else
+			{
+				std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
+				
 			}
 
 			// int c1 = 0;

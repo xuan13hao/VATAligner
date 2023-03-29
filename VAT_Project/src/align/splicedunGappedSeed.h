@@ -165,6 +165,32 @@ bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_
     // delete ref1;
     return false;
 }
+vector<pair<int, int>> find_exons(string sequence) {
+    vector<pair<int, int>> exon_regions; // stores start and end positions of exon regions
+    int seq_length = sequence.length();
+    bool in_exon = false;
+    int exon_start = 0;
 
+    for (int i = 0; i < seq_length; i++) {
+        if (sequence[i] == 'G' && sequence[i+1] == 'T' && sequence[i+2] == 'A' && sequence[i+3] == 'G') {
+            // stop codon, end of exon
+            if (in_exon) {
+                exon_regions.push_back(make_pair(exon_start, i+3));
+                in_exon = false;
+            }
+        } else if (sequence[i] == 'A' && sequence[i+1] == 'T' && sequence[i+2] == 'G') {
+            // start codon, beginning of exon
+            in_exon = true;
+            exon_start = i;
+        }
+    }
+
+    if (in_exon) {
+        // sequence ends in exon
+        exon_regions.push_back(make_pair(exon_start, seq_length-1));
+    }
+
+    return exon_regions;
+}
 
 #endif // __SPLICEDSEED_H__
