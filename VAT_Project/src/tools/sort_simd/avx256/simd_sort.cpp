@@ -217,14 +217,14 @@ void SIMDSort(size_t N, std::pair<uint64_t, uint64_t> *&arr) {
   for (int i = 0; i < Nkv; i += BLOCK_SIZE) {
     MaskedSortBlock2x4<uint64_t, __m256i>(kv_arr, i);
   }
-  std::cout << "Nkv = 1 " <<Nkv<< std::endl;
+  // std::cout << "Nkv = 1 " <<Nkv<< std::endl;
   // Merge sorted runs
   MaskedMergeRuns4<uint64_t, __m256i>(kv_arr, Nkv);
   for (int i = 0; i < N; i++) {
     arr[i].first = kv_arr[2 * i];
     arr[i].second = kv_arr[2 * i + 1];
   }
-  std::cout << "Nkv = 2" <<Nkv<< std::endl;
+  // std::cout << "Nkv = 2" <<Nkv<< std::endl;
 }
 
 

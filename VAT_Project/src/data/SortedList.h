@@ -272,11 +272,11 @@ private:
 
 		*/
 		int N = e - s;
-		for (size_t i = 0; i < N; i++)
-		{
-			cout<<"arr "<<i<<"= "<<s[i].key<<":"<<s[i].value<<endl;
-			// soln_arr++;
-		}
+		// for (size_t i = 0; i < N; i++)
+		// {
+		// 	cout<<"arr "<<i<<"= "<<s[i].key<<":"<<s[i].value<<endl;
+		// 	// soln_arr++;
+		// }
 		int p = N % 8;
 		int n = N;
 		std::pair<uint64_t, uint64_t> *rand_arr;
@@ -303,20 +303,20 @@ private:
 				rand_arr[i].second = MAX_uint64;
 			}	
 		}
-		cout<<"====================================="<<endl;
-    	for (size_t i = 0; i < n; i++)
-		{
-			cout<<"arr "<<i<<"= "<<rand_arr[i].first<<":"<<rand_arr[i].second<<endl;
-		}
+		// cout<<"====================================="<<endl;
+    	// for (size_t i = 0; i < n; i++)
+		// {
+		// 	cout<<"arr "<<i<<"= "<<rand_arr[i].first<<":"<<rand_arr[i].second<<endl;
+		// }
    		aligned_init<std::pair<uint64_t ,uint64_t> >(soln_arr, n);
 		std::copy(rand_arr, rand_arr + n, soln_arr);
-		cout<<"====================================="<<endl;
-    	for (size_t i = 0; i < n; i++)
-		{
-			cout<<"arr "<<i<<"= "<<soln_arr[i].first<<":"<<soln_arr[i].second<<endl;
-			// soln_arr++;
-		}
-		cout<<"===================before=================="<<endl;
+		// cout<<"====================================="<<endl;
+    	// for (size_t i = 0; i < n; i++)
+		// {
+		// 	cout<<"arr "<<i<<"= "<<soln_arr[i].first<<":"<<soln_arr[i].second<<endl;
+		// 	// soln_arr++;
+		// }
+		// cout<<"===================before=================="<<endl;
 		avx2::SIMDSort(n, soln_arr);
 		for (size_t i = 0; i < n; i++)
     	{
@@ -370,12 +370,13 @@ private:
 			// cout<<"c = "<<c<<endl;
 			// cout<<"=========================beforesort"<<endl;
 			int n = sl.ptr_end(seedp) - sl.ptr_begin(seedp) ;
-			// cout<<"n = "<<n<<endl;
 			if(n >= 8 && ((n != 0) && ((n & (n - 1)) == 0)))
 			{
+				cout<<"Using SIMD Sort "<<n<<endl;
 				sl.sortSIMD(sl.ptr_begin(seedp), sl.ptr_end(seedp));
 			}else
 			{
+				
 				std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
 				
 			}

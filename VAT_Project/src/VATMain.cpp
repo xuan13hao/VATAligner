@@ -123,7 +123,7 @@ int main(int ac, const char* av[])
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
         	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
-        	cout << "  Protein\tAlign protein query sequences against a protein reference database" << endl;
+        	cout << "  protein\tAlign protein query sequences against a protein reference database" << endl;
         	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;

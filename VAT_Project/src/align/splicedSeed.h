@@ -133,8 +133,8 @@ bool IsSpliceJunction(const Segment<_val> &j, const Segment<_val> &i)
     int i_n = 0,j_n = 0;;
     int i_len = i.traceback_->len_,j_len = j.traceback_->len_;
     string ref_seed_i, ref_seed_j;
-    string splice_signal_AG("AG");
-    string splice_signal_GT("GT");
+    // string splice_signal_AG("AG");
+    // string splice_signal_GT("GT");
     while(*sbj_i != AlphabetSet<_val>::PADDING_CHAR && i_n < i_len) 
     {
 		++sbj_i;
@@ -147,15 +147,21 @@ bool IsSpliceJunction(const Segment<_val> &j, const Segment<_val> &i)
         ref_seed_j.push_back(AlphabetAttributes<_val>::ALPHABET[*(++sbj_j)]);
 		++j_n;
 	}
-    if ((ref_seed_i.find(splice_signal_AG) != std::string::npos 
-    && ref_seed_j.find(splice_signal_GT) != std::string::npos)
-    )
+    bool i_spjunction = false;
+    bool j_spjunction = false;
+    if (ref_seed_i.substr(0, 2) == "GT" && ref_seed_i.substr(ref_seed_i.length() - 2, 2) == "AG") {
+            bool i_spjunction=  true;
+    }
+    if (ref_seed_j.substr(0, 2) == "GT" && ref_seed_j.substr(ref_seed_j.length() - 2, 2) == "AG") {
+            bool j_spjunction=  true;
+    }
+    if(i_spjunction || j_spjunction)
     {
         return true;
     }
-    // delete ref1;
-    return false;
+    else
+    {
+        return false;
+    }
 }
-
-
 #endif // __SPLICEDSEED_H__

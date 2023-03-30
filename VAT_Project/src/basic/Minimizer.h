@@ -7,7 +7,6 @@
  * @param len    length of $str
  * @param w      find a minimizer for every $w consecutive k-mers
  * @param k      k-mer size
- * @param rid    reference ID; will be copied to the output $p array
  * @param p      minimizers; p->a[i].x is the 2k-bit hash value;
  *               p->a[i].y = rid<<32 | lastPos<<1 | strand
  *               where lastPos is the position of the last base of the i-th minimizer,
@@ -49,6 +48,46 @@ string get_minimizer(string sequence, int k, int w) {
     }
 
     return minimizer;
+}
+
+
+
+vector<string> spaced_kmers(string sequence, string pattern, int k) {
+    vector<string> kmers;
+    int n = sequence.length();
+    int num_positions = pattern.length();
+    
+    for (int i = 0; i <= n - k; i++) {
+        bool valid_kmer = true;
+        string kmer = "";
+        for (int j = 0; j < num_positions; j++) {
+            if (pattern[j] == '1') {
+                if (sequence[i+j] == 'A' || sequence[i+j] == 'C' || sequence[i+j] == 'G' || sequence[i+j] == 'T') {
+                    kmer += sequence[i+j];
+                } else {
+                    valid_kmer = false;
+                    break;
+                }
+            } else {
+                kmer += '-';
+            }
+        }
+        if (valid_kmer) {
+            kmers.push_back(kmer);
+        }
+    }
+    return kmers;
+}
+
+int main() {
+    string sequence = "AGCTACGTACGTA";
+    string pattern = "1010";
+    int k = 4;
+    vector<string> kmers = spaced_kmers(sequence, pattern, k);
+    for (string kmer : kmers) {
+        cout << kmer << endl;
+    }
+    return 0;
 }
 
 #endif // __MINIMIZER_H__
