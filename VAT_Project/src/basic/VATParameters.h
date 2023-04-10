@@ -70,6 +70,7 @@ namespace VATParameters
 	extern size_t	db_size;
 	extern bool		spilce;
 	extern bool		chimera;
+	extern bool		whole_genome;
 
 	typedef enum { fast=0, sensitive=1, very_sensitive=2 } Aligner_mode;
 	extern Aligner_mode aligner_mode;

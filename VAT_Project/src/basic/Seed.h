@@ -9,7 +9,7 @@
 using namespace std;
 /**
  * DiagonalSeeds i, j, len, score
- * int query_pos, int subject_pos, int len, int score
+ * int query_pos, int subject_pos, int len, int score, string q ,s
 */
 template<typename _locr, typename _locl>
 class DiagonalSeeds
@@ -26,14 +26,16 @@ class DiagonalSeeds
 	{
 		
 	}
-	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, Hits<_locr,_locl>& h, int& q_, int& s_) :
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, Hits<_locr,_locl>& h, int& q_, int& s_,string& q, string& s) :
 	i(query_pos),
 	j(subject_pos),
 	len(len),
 	score(score),
 	hit_(h),
 	qry_id(s_),
-	sbj_id(q_)
+	sbj_id(q_),
+	qry_str(q),
+	sbj_str(s)
 	{
 		
 	}
@@ -85,19 +87,11 @@ class DiagonalSeeds
 		sbj_id = rhs.sbj_id;
 		score = rhs.score;
 		len = rhs.len;
-		qry_ = rhs.qry_;
-		sbj_ = rhs.qry_;
+		qry_str = rhs.qry_str;
+		sbj_str = rhs.sbj_str;
 
 		return *this;
 	}
-	// SeedType& operator =(const SeedType& a)
-    // {
-    //     ref_id = a.ref_id; ref_pos = a.ref_pos;
-    //     qry_id = a.qry_id; qry_pos = a.qry_pos;
-    //     ref_len = a.ref_len; qry_len = a.qry_len; 
-    //     score = a.score, is_qry_fw = a.is_qry_fw;
-    //     return *this;
-    // }
 	bool operator==(const DiagonalSeeds &rhs) const
 	{
 		return i == rhs.i && j == rhs.j && len == rhs.len;
@@ -124,8 +118,8 @@ class DiagonalSeeds
 		return s;
 	}
 	int i, j, len, score;//query_pos, subject_pos
-	string qry_;
-	string sbj_;
+	string qry_str;
+	string sbj_str;
 	int qry_id, sbj_id;
 	Hits<_locr,_locl> hit_;
 };

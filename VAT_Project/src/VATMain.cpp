@@ -57,6 +57,7 @@ int main(int ac, const char* av[])
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
 			("splice", po::value<bool>(&VATParameters::spilce)->default_value(0), "splice alignment (0)")
 			("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
+			("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
 
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");

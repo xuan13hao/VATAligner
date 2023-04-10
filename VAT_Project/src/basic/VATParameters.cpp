@@ -69,6 +69,7 @@ bool		single_domain;
 size_t		db_size;
 bool		spilce;
 bool		chimera;
+bool		whole_genome;
 
 Aligner_mode aligner_mode;
 Command algn_type;
