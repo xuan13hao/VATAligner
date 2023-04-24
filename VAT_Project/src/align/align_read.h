@@ -55,64 +55,64 @@ void align_read(Output_buffer<_val> &buffer,
 		align_sequence<_val,_locr,_locl>(*matches, stat, *local, padding, db_letters, source_query_len, i.begin(), i.end(), *transcript_buf);
 		++i;
 	}
-	if(VATParameters::spilce)
-	{
-		// cout<<"splice"<<endl;
-		vector<Segment<_val> > splice; 
-		splice = findSpliceSegments(*matches,30);
-		if(splice.size() == 0)
-			return;
+	// if(VATParameters::spilce)
+	// {
+	// 	// cout<<"splice"<<endl;
+	// 	vector<Segment<_val> > splice; 
+	// 	splice = findSpliceSegments(*matches,30);
+	// 	if(splice.size() == 0)
+	// 		return;
 
-		link_segments(splice);
-		std::sort(splice.begin(), splice.end());
-		unsigned n_hsp = 0, n_target_seq = 0;
-		typename vector<Segment<_val> >::iterator it = splice.begin();
-		const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
-				? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
+	// 	link_segments(splice);
+	// 	std::sort(splice.begin(), splice.end());
+	// 	unsigned n_hsp = 0, n_target_seq = 0;
+	// 	typename vector<Segment<_val> >::iterator it = splice.begin();
+	// 	const int min_raw_score = ScoreMatrix::get().rawscore(VATParameters::min_bit_score == 0
+	// 			? ScoreMatrix::get().bitscore(VATParameters::max_evalue, ref_header.letters, query_len) : VATParameters::min_bit_score);
 				
-		const int top_score = splice.operator[](0).score_;
-		while(it < splice.end()) {
-			const bool same_subject = it != splice.begin() && (it-1)->subject_id_ == it->subject_id_;
-			if(!same_subject && it->score_ < min_raw_score)
-				break;
-			if(!same_subject && !VATParameters::output_range(n_target_seq, it->score_, top_score))
-				break;
-			if(same_subject && (it-1)->score_ == it->score_) {
-				++it;
-				continue;
-			}
-			if(static_cast<double>(it->traceback_->identities_)*100/it->traceback_->len_ < VATParameters::min_id) {
-				++it;
-				continue;
-			}
-			if(same_subject && VATParameters::single_domain) {
-				++it;
-				continue;
-			}
+	// 	const int top_score = splice.operator[](0).score_;
+	// 	while(it < splice.end()) {
+	// 		const bool same_subject = it != splice.begin() && (it-1)->subject_id_ == it->subject_id_;
+	// 		if(!same_subject && it->score_ < min_raw_score)
+	// 			break;
+	// 		if(!same_subject && !VATParameters::output_range(n_target_seq, it->score_, top_score))
+	// 			break;
+	// 		if(same_subject && (it-1)->score_ == it->score_) {
+	// 			++it;
+	// 			continue;
+	// 		}
+	// 		if(static_cast<double>(it->traceback_->identities_)*100/it->traceback_->len_ < VATParameters::min_id) {
+	// 			++it;
+	// 			continue;
+	// 		}
+	// 		if(same_subject && VATParameters::single_domain) {
+	// 			++it;
+	// 			continue;
+	// 		}
 
-			if(n_hsp == 0)
-				buffer.write_query_record(query);
+	// 		if(n_hsp == 0)
+	// 			buffer.write_query_record(query);
 
-			buffer.print_match(*it, source_query_len, QuerySeqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
+	// 		buffer.print_match(*it, source_query_len, QuerySeqs<_val>::get()[query*contexts + it->frame_], query, *transcript_buf);
 
-			++n_hsp;
-			if(!same_subject)
-				++n_target_seq;
-			if(VATParameters::alignment_traceback && it->traceback_->gap_openings_ > 0)
-				stat.inc(Statistics::GAPPED);
-			++it;
-		}
+	// 		++n_hsp;
+	// 		if(!same_subject)
+	// 			++n_target_seq;
+	// 		if(VATParameters::alignment_traceback && it->traceback_->gap_openings_ > 0)
+	// 			stat.inc(Statistics::GAPPED);
+	// 		++it;
+	// 	}
 
-		if(n_hsp > 0)
-			buffer.finish_query_record();
+	// 	if(n_hsp > 0)
+	// 		buffer.finish_query_record();
 
-		stat.inc(Statistics::OUT_MATCHES, matches->size());
-		if(ref_header.n_blocks == 1) {
-			stat.inc(Statistics::MATCHES, n_hsp);
-			if(n_hsp > 0)
-				stat.inc(Statistics::ALIGNED);
-		}
-	}else{
+	// 	stat.inc(Statistics::OUT_MATCHES, matches->size());
+	// 	if(ref_header.n_blocks == 1) {
+	// 		stat.inc(Statistics::MATCHES, n_hsp);
+	// 		if(n_hsp > 0)
+	// 			stat.inc(Statistics::ALIGNED);
+	// 	}
+	// }else{
 	// cout<<"splice = "<<splice.size()<<endl;
 	if(matches->size() == 0)
 		return;
@@ -181,6 +181,6 @@ void align_read(Output_buffer<_val> &buffer,
 			stat.inc(Statistics::ALIGNED);
 	}
 	}
-}
+// }
 
 #endif /* ALIGN_READ_H_ */

@@ -1,0 +1,152 @@
+[
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/VATMain.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/VATMain.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/VATMain.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/basic/VATParameters.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/basic/VATParameters.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/basic/VATParameters.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/tinythread.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/tinythread.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/tinythread.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/sort_simd/common.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/common.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/common.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/sort_simd/avx256/merge_util.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/merge_util.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/merge_util.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/sort_simd/avx256/simd_sort.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/simd_sort.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/simd_sort.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/sort_simd/avx256/sort_util.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/sort_util.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/sort_util.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin",
+  "command": "/usr/bin/c++ -DBOOST_ALL_NO_LIB -DBOOST_ATOMIC_DYN_LINK -DBOOST_CHRONO_DYN_LINK -DBOOST_IOSTREAMS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DBOOST_THREAD_DYN_LINK -DBOOST_TIMER_DYN_LINK -I/home/xuan/VATAligner/VAT_Project/src/tools/include/avx256  -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare -O3 -DNDEBUG -std=gnu++14 -o CMakeFiles/VAT.dir/src/tools/sort_simd/avx256/Utils.cpp.o -c /home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/Utils.cpp",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/tools/sort_simd/avx256/Utils.cpp"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_encoding.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_encoding.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_encoding.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_filter.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_filter.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_filter.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_message.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_message.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_message.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_options.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_options.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_options.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_program.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_program.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_program.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_psi_priv.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_psi_priv.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_psi_priv.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_query_info.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_query_info.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_query_info.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_seg.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_seg.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_seg.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_stat.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_stat.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_stat.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/blast_util.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_util.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/blast_util.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/ncbi_erf.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_erf.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_erf.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/ncbi_math.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_math.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_math.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/ncbi_std.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_std.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/ncbi_std.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/raw_scoremat.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/raw_scoremat.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/raw_scoremat.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_blosum45.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum45.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum45.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_blosum50.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum50.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum50.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_blosum90.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum90.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum90.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_blosum62.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum62.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum62.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_blosum80.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum80.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_blosum80.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_pam30.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam30.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam30.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_pam70.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam70.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam70.c"
+},
+{
+  "directory": "/home/xuan/VATAligner/VAT_Project/bin/src/algo/blast/core",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG -o CMakeFiles/blast_core.dir/sm_pam250.c.o -c /home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam250.c",
+  "file": "/home/xuan/VATAligner/VAT_Project/src/algo/blast/core/sm_pam250.c"
+}
+]

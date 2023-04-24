@@ -101,7 +101,7 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
 }
 /**
  * int i, j, len, score;//query_pos, subject_pos
-*/
+
 template<typename _locr, typename _locl>
 int distanceSegment(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) //alpha(j,i)
 {
@@ -131,7 +131,7 @@ int gapCost(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl
         return gapcost;
     }
     
-}
+}*/
 /**
 Use std::string::find as follows:
 
@@ -142,7 +142,7 @@ Note: "found!" will be printed if s2 is a substring of s1, both s1 and s2 are of
 
 splice juntion GT.........AG 
 */
-
+/*
 template<typename _locr, typename _locl>
 bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) 
 {
@@ -181,6 +181,6 @@ bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_
     }
 
 }
-
+*/
 
 #endif // __FINDWHOLEGENOSEEDS_H__
