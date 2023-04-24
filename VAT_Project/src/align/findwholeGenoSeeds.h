@@ -67,28 +67,29 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
     int match_score = 0;
     vector<int> dp(s_, 0);
     vector<int> pre(s_, -1);
-    dp[0] = diagonal_segment[0].len;
+    dp[0] = diagonal_segment[0].score;
     std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds<_locr,_locl>::cmp_subject_end);
     
     for (size_t i = 1; i < diagonal_segment.size(); i++)
     {
-        int pressor_score = diagonal_segment[i].len; 
+        int pressor_score = diagonal_segment[i].score; 
         int max_pre = i;
         // int gap_score = -MAX;
         for(j = 0; j < i; j++) 
         {
             // int gap_score = -MAX;
-            int gap_distance = distanceSegment(diagonal_segment[j], diagonal_segment[i]);
+            // int gap_distance = distanceSegment(diagonal_segment[j], diagonal_segment[i]);
                 // if it fits the requirement of macro-gap
-            int tdiff = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j);
-            int qdiff = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) ;
+            // int tdiff = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j);
+            // int qdiff = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) ;
             // if(abs(tdiff - qdiff) <= max_gap)
             // {
             //     gap_score = diagonal_segment[i].score_; 
             // }
-            int gap_cost = gapCost(diagonal_segment[j], diagonal_segment[i]);    
-            int splice_score = IsSpliceJunction(diagonal_segment[j], diagonal_segment[i]) ? -MAX : 0; 
-            int score = diagonal_segment[j].len+ gap_distance - gap_cost + splice_score;
+            // int gap_cost = gapCost(diagonal_segment[j], diagonal_segment[i]);    
+            // int splice_score = IsSpliceJunction(diagonal_segment[j], diagonal_segment[i]) ? -MAX : 0; 
+            // int score = diagonal_segment[j].len+ gap_distance - gap_cost + splice_score;
+            int score = diagonal_segment[j].score - gap_cost
             if (pressor_score < score)
             {  
                 pressor_score = score;
