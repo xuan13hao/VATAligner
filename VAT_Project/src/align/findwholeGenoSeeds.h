@@ -62,54 +62,38 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
 {
     vector<DiagonalSeeds<_locr,_locl> > chained_seed;
     int s_ =  diagonal_segment.size();
-    int i, score, qdiff, tdiff, diffdiff, gap_cost, j, best_j;
-    int h = 50; // number of previous anchors to check
-    int match_score = 0;
-    vector<int> dp(s_, 0);
-    vector<int> pre(s_, -1);
+    vector<int> dp(s_+1, 0);
+    vector<int> pre(s_+1, -1);
     dp[0] = diagonal_segment[0].score;
     std::sort(diagonal_segment.begin(),diagonal_segment.end(),DiagonalSeeds<_locr,_locl>::cmp_subject_end);
     
-    for (size_t i = 1; i < diagonal_segment.size(); i++)
+    for (auto i = 1; i < s_; i++)
     {
-        int pressor_score = diagonal_segment[i].score; 
+        int pressor_score = diagonal_segment[i].score;
         int max_pre = i;
-        // int gap_score = -MAX;
-        for(j = 0; j < i; j++) 
+        const int subject_end = diagonal_segment[i].j;
+        for (auto j = i - 1; j >= 0 && i - j <= 50; j--)
         {
-            // int gap_score = -MAX;
-            // int gap_distance = distanceSegment(diagonal_segment[j], diagonal_segment[i]);
-                // if it fits the requirement of macro-gap
-            // int tdiff = static_cast<int>(diagonal_segment[j].j) - static_cast<int>(diagonal_segment[i].j);
-            // int qdiff = static_cast<int>(diagonal_segment[j].i) - static_cast<int>(diagonal_segment[i].i) ;
-            // if(abs(tdiff - qdiff) <= max_gap)
-            // {
-            //     gap_score = diagonal_segment[i].score_; 
-            // }
-            // int gap_cost = gapCost(diagonal_segment[j], diagonal_segment[i]);    
-            // int splice_score = IsSpliceJunction(diagonal_segment[j], diagonal_segment[i]) ? -MAX : 0; 
-            // int score = diagonal_segment[j].len+ gap_distance - gap_cost + splice_score;
-            int score = diagonal_segment[j].score - gap_cost
-            if (pressor_score < score)
-            {  
-                pressor_score = score;
+            const int diff = subject_end - diagonal_segment[j].j;
+            if (diff > max_gap) break;
+            const int score_j = diagonal_segment[j].score;
+            if (pressor_score < score_j)
+            {
+                pressor_score = score_j;
                 max_pre = j;
-            } 
+            }
         }
-        dp[i] = pressor_score;
-        pre[i] = max_pre;
+        dp[i+1] = pressor_score;
+        pre[i+1] = max_pre;
     }
-    vector<int> exons;
     for (int i = s_; i > 0; ) {
         if (pre[i] != -1) {
             chained_seed.push_back(diagonal_segment[pre[i]]);
-            exons.push_back(pre[i]);
             i = pre[i];
         } else {
             i--;
         }
     }
-    std::reverse(exons.begin(),exons.end());
     std::reverse(chained_seed.begin(),chained_seed.end());
 
     return chained_seed;
