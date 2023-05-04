@@ -1,86 +1,88 @@
 #include <iostream>
 #include <vector>
-#include <unordered_map>
-
+#include <algorithm>
+#include <assert.h>  
 using namespace std;
-/*
-This implementation takes as input the vector of anchor points anchors and the vector of synteny blocks blocks, where each synteny block is represented as a vector of anchor points. It returns a vector order that contains the indices of the anchor points in the order determined by the Anchor-Align algorithm.
 
-The implementation uses an unordered map anchor_index to map each anchor point to its index in the anchors vector. It then initializes a vector visited to keep track of which anchor points have already been visited, and a variable pos to keep track of the current position in the order.
+struct DiagonalSeeds {
+    int i, j, len, score;
+    DiagonalSeeds(int query_pos, int subject_pos, int len, int score) :
+        i(query_pos),
+        j(subject_pos),
+        len(len),
+        score(score) {}
+};
 
-The algorithm then iterates over each anchor point, starting from the first, and performs a breadth-first search to determine the order of the remaining anchor points. At each step, it finds the unvisited anchor point that is closest to the last visited anchor point in the current synteny block and adds it to the order.
-
-Finally, the implementation returns the vector order containing the indices of the anchor points in the determined order.
-
-Note that this is a simple implementation and may not be optimal for large-scale genome comparisons. More efficient implementations may use data structures such as priority queues or dynamic programming to improve performance.
-*/
-vector<int> anchor_align(vector<int>& anchors, vector<vector<int>>& blocks) {
-    int n = anchors.size();
-    unordered_map<int, int> anchor_index;
-    for (int i = 0; i < n; i++) {
-        anchor_index[anchors[i]] = i;
+bool compare_anchors(const DiagonalSeeds& a1, const DiagonalSeeds& a2) {
+    if (a1.score != a2.score) {
+        return a1.score > a2.score;
     }
-    vector<int> order(n);
-    vector<bool> visited(n);
-    int pos = 0;
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            visited[i] = true;
-            order[pos++] = i;
-            int last = anchors[i];
-            while (pos < n) {
-                int max_len = -1;
-                int next = -1;
-                for (int j = 0; j < n; j++) {
-                    if (!visited[j]) {
-                        int len = -1;
-                        for (int k = 0; k < blocks[last].size(); k++) {
-                            int index = anchor_index[blocks[last][k]];
-                            if (index == j) {
-                                len = k;
-                                break;
-                            }
-                        }
-                        if (len > max_len) {
-                            max_len = len;
-                            next = j;
-                        }
-                    }
-                }
-                visited[next] = true;
-                order[pos++] = next;
-                last = anchors[next];
+    if (a1.len != a2.len) {
+        return a1.len > a2.len;
+    }
+    if (a1.i != a2.i) {
+        return a1.i < a2.i;
+    }
+    return a1.j < a2.j;
+}
+
+void anchor_align(vector<DiagonalSeeds>& anchors, vector<vector<DiagonalSeeds>>& synteny_blocks) {
+    // Sort anchors by score, length, i, j
+    sort(anchors.begin(), anchors.end(), compare_anchors);
+
+    // Loop through all anchors and group them into synteny blocks
+    for (const auto& anchor : anchors) {
+        bool found_synteny_block = false;
+        for (auto& block : synteny_blocks) {
+            // Check if anchor is compatible with the synteny block
+            const DiagonalSeeds& last_anchor = block.back();
+            if (anchor.i > last_anchor.i && anchor.j > last_anchor.j) {
+                block.push_back(anchor);
+                found_synteny_block = true;
+                break;
             }
         }
-    }
-    return order;
-}
-
-vector<int> anchor_align(vector<int>& anchors, vector<vector<int>>& blocks);
-
-void test_anchor_align() {
-    vector<int> anchors = {1, 3, 5, 7};
-    vector<vector<int>> blocks = {{1, 2, 3}, {3, 4, 5}, {5, 6, 7}};
-    vector<int> expected_order = {0, 1, 2, 3};
-    vector<int> actual_order = anchor_align(anchors, blocks);
-    if (actual_order == expected_order) {
-        cout << "Test case passed." << endl;
-    } else {
-        cout << "Test case failed." << endl;
-        cout << "Expected order: ";
-        for (int i = 0; i < expected_order.size(); i++) {
-            cout << expected_order[i] << " ";
+        if (!found_synteny_block) {
+            // Create a new synteny block with the current anchor
+            synteny_blocks.push_back({anchor});
         }
-        cout << endl;
-        cout << "Actual order: ";
-        for (int i = 0; i < actual_order.size(); i++) {
-            cout << actual_order[i] << " ";
-        }
-        cout << endl;
     }
-}
 
+    // Order the synteny blocks
+    sort(synteny_blocks.begin(), synteny_blocks.end(), [](const vector<DiagonalSeeds>& a, const vector<DiagonalSeeds>& b) {
+        const DiagonalSeeds& a1 = a.front();
+        const DiagonalSeeds& a2 = a.back();
+        const DiagonalSeeds& b1 = b.front();
+        const DiagonalSeeds& b2 = b.back();
+        if (a1.i != b1.i) {
+            return a1.i < b1.i;
+        }
+        if (a2.i != b2.i) {
+            return a2.i < b2.i;
+        }
+        return a1.j < b1.j;
+    });
+}
 int main() {
-    test_anchor_align();
+    vector<DiagonalSeeds> anchors = {
+        DiagonalSeeds(1, 3, 10, 50),
+        DiagonalSeeds(2, 5, 8, 45),
+        DiagonalSeeds(3, 7, 6, 40),
+        DiagonalSeeds(4, 1, 7, 30),
+        DiagonalSeeds(5, 2, 9, 35),
+        DiagonalSeeds(6, 4, 5, 20),
+        DiagonalSeeds(7, 6, 12, 60)
+    };
+
+    vector<vector<DiagonalSeeds>> synteny_blocks;
+    anchor_align(anchors, synteny_blocks);
+
+    for (const auto& block : synteny_blocks) {
+        cout << "Synteny block:" << endl;
+        for (const auto& anchor : block) {
+            cout << "i: " << anchor.i << " j: " << anchor.j << " len: " << anchor.len << " score: " << anchor.score << endl;
+        }
+    }
+
     return 0;
 }
