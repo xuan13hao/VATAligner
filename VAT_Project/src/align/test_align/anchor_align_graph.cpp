@@ -9,14 +9,14 @@ using namespace std;
 
 Anchor-Align is a popular algorithm used in computational genomics to detect the order and orientation of synteny blocks, which are regions of conserved genomic structure between different species or individuals.
 
-The Anchor-Align algorithm takes as input a set of anchor points, which are highly conserved regions in the genomes being compared, and a set of synteny blocks, which are subsequences of the genomes that share common structure. The algorithm constructs a graph where the anchor points are nodes and the edges represent the adjacency of the anchor points within the synteny blocks. The edges are weighted by the number of times that a pair of anchor points are adjacent in the synteny blocks.
-
-The algorithm then orders the anchor points by their degree in the graph, which is the number of edges that each anchor point has. The intuition behind this ordering is that anchor points that are adjacent to many other anchor points are likely to be in the correct order and orientation, while those with few connections are more likely to be in the wrong order or orientation.
-
+The Anchor-Align algorithm takes as input a set of anchor points, which are highly conserved regions in the genomes being compared, and a set of synteny blocks, which are subsequences of the genomes that share common structure. 
+The algorithm constructs a graph where the anchor points are nodes and the edges represent the adjacency of the anchor points within the synteny blocks. 
+The edges are weighted by the number of times that a pair of anchor points are adjacent in the synteny blocks.
+The algorithm then orders the anchor points by their degree in the graph, which is the number of edges that each anchor point has. 
+The intuition behind this ordering is that anchor points that are adjacent to many other anchor points are likely to be in the correct order and orientation, while those with few connections are more likely to be in the wrong order or orientation.
 Finally, the algorithm outputs the ordered set of anchor points, which can be used to infer the order and orientation of the synteny blocks.
 
 Anchor-Align has been shown to be effective in many applications of comparative genomics, such as genome assembly, gene prediction, and phylogenetics.
-
 
 Create a hash table to store the indices of the anchor points.
 Create an anchor-based graph and initialize its edges to 0.

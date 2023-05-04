@@ -18,19 +18,6 @@ class DiagonalSeeds
 	{
 		
 	}
-	// DiagonalSeeds(int query_pos, int subject_pos, int len, int score, Hits<_locr,_locl>& h, int& q_, int& s_,string& q, string& s) :
-	// i(query_pos),
-	// j(subject_pos),
-	// len(len),
-	// score(score),
-	// hit_(h),
-	// qry_id(s_),
-	// sbj_id(q_),
-	// qry_str(q),
-	// sbj_str(s)
-	// {
-		
-	// }
 
 	bool empty() const
 	{
@@ -115,34 +102,6 @@ class DiagonalSeeds
 	// int qry_id, sbj_id;
 };
 
-
-// vector<DiagonalSeeds> findWholeGenSeeds(vector<DiagonalSeeds>& diagonal_segment, int max_gap)
-// {
-//     vector<DiagonalSeeds> seeds;
-//     int n = diagonal_segment.size();
-//     int i = 0;
-
-//     while (i < n) {
-//         // Start a new seed
-//         int j = i + 1;
-//         int start = diagonal_segment[i].i;
-//         int end = diagonal_segment[i].i + diagonal_segment[i].len - 1;
-
-//         while (j < n && diagonal_segment[j].i <= end + max_gap) {
-//             // Extend the seed
-//             end = diagonal_segment[j].i + diagonal_segment[j].len - 1;
-//             j++;
-//         }
-
-//         // Add the seed to the list
-//         seeds.push_back(DiagonalSeeds(start, diagonal_segment[i].j, end - start + 1, 0));
-
-//         // Move to the next diagonal
-//         i = j;
-//     }
-
-//     return seeds;
-// }
 
 vector<DiagonalSeeds> findWholeGenSeeds(vector<DiagonalSeeds>& diagonal_segment, int max_gap)
 {
