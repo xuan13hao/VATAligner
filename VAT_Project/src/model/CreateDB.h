@@ -31,7 +31,13 @@ void CreateDB(_val)
 		timer.go("Loading sequences");
 		SequenceSet<DNA>* ss;
 		int n_seq = 0;
-		n_seq = ReadingSeqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ReferenceSeqs<_val>::data_, ReferenceIds::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
+		if(VATParameters::db_type == "nucl")
+		{
+			n_seq = ReadingSeqs<_val,_val,Double_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ReferenceSeqs<_val>::data_, ReferenceIds::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
+		}else
+		{
+			n_seq = ReadingSeqs<_val,_val,Single_strand>(db_file, FASTA_format<_val> (), (SequenceSet<_val>**)&ReferenceSeqs<_val>::data_, ReferenceIds::data_, ss, (size_t)(VATParameters::chunk_size * 1e9));
+		}
 		if(n_seq == 0)
 			break;
 		ref_header.letters += ReferenceSeqs<_val>::data_->letters();

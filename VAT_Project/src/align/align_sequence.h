@@ -93,7 +93,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	} else if(VATParameters::whole_genome)
 	{
 		vector<DiagonalSeeds<_locr,_locl> > whole_gen;
-		const int max_gap = 150; 
+		const int max_gap = 50000; 
 		whole_gen = findWholeGenSeeds(diagonalsegment_, max_gap);
 		for (size_t i = 0; i < whole_gen.size(); i++)
 		{

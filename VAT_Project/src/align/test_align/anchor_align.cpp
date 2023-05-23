@@ -70,8 +70,10 @@ int main() {
         DiagonalSeeds(3, 7, 6, 40),
         DiagonalSeeds(4, 1, 7, 30),
         DiagonalSeeds(5, 2, 9, 35),
-        DiagonalSeeds(6, 4, 5, 20),
-        DiagonalSeeds(7, 6, 12, 60)
+        DiagonalSeeds(6, 4, 5, 40),
+        DiagonalSeeds(7, 6, 12, 60),
+        DiagonalSeeds(1, 5, 11, 61),
+        DiagonalSeeds(2, 6, 14, 48)
     };
 
     vector<vector<DiagonalSeeds>> synteny_blocks;

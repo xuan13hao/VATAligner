@@ -10,3 +10,10 @@ vim match
 ./VAT protein -d pfam.vatf -q ../data/pfam_test.fa -a match
 
 
+Database File = ../data/test_all.fa
+Sequences = 2, letters = 6915160
+Total time = 0.2s
+
+Database File = ../data/test_all.fa
+Sequences = 1, letters = 3457580
+Total time = 0.1s

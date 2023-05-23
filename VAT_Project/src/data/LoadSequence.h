@@ -15,6 +15,14 @@ template<typename _ival, typename _val, typename _strand>
 size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 { ss.push_back(seq); return seq.size(); }
 
+template<>
+size_t push_seq<DNA,DNA,Double_strand>(AlphabetSet<DNA> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
+{
+	ss.push_back(seq);
+	ss.push_back(Translator::reverse(seq));
+	return seq.size()*2;
+}
+
 /*
 template<>
 size_t push_seq_double(AlphabetSet<DNA> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
@@ -112,7 +120,13 @@ size_t ReadingSeqs(Input_stream &file,
 	try {
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
 			ids->push_back(id);
-			letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+			// if (VATParameters::dna)
+			// {
+				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+			// }else
+			// {
+			// 	letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+			// }
 			++n;
 		}
 	} catch(invalid_sequence_char_exception &e) {
