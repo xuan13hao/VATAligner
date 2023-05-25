@@ -15,13 +15,14 @@ template<typename _ival, typename _val, typename _strand>
 size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 { ss.push_back(seq); return seq.size(); }
 
-template<>
-size_t push_seq<DNA,DNA,Double_strand>(AlphabetSet<DNA> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
-{
-	ss.push_back(seq);
-	ss.push_back(Translator::reverse(seq));
-	return seq.size()*2;
-}
+// template<>
+// size_t push_seq<DNA,DNA,Double_strand>(AlphabetSet<DNA> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
+// {
+// 	cout<<"running double strand"<<endl;
+// 	ss.push_back(seq);
+// 	ss.push_back(Translator::reverse(seq));
+// 	return seq.size()*2;
+// }
 
 /*
 template<>
@@ -120,13 +121,24 @@ size_t ReadingSeqs(Input_stream &file,
 	try {
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
 			ids->push_back(id);
-			// if (VATParameters::dna)
-			// {
-				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
-			// }else
-			// {
-			// 	letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
-			// }
+			letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+			print_complement_sequence(seq);
+			if(VATParameters::makevatdb && VATParameters::db_type == "nucl")
+			{
+				// Create complementary sequence
+				vector<_ival> complement_seq = Translator::reverse(seq);
+				// Add complementary sequence
+				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, complement_seq);
+				print_complement_sequence(complement_seq);
+				// Rename id with suffix '-'
+				id.push_back('_');
+				id.push_back('m');
+				id.push_back('i');
+				id.push_back('n');
+				id.push_back('u');
+				id.push_back('s');
+				ids->push_back(id);
+			}
 			++n;
 		}
 	} catch(invalid_sequence_char_exception &e) {
@@ -143,5 +155,11 @@ size_t ReadingSeqs(Input_stream &file,
 	}
 	return n;
 }
-
+template<typename _ival>
+void print_complement_sequence(const std::vector<_ival>& sequence) {
+    for (const _ival& element : sequence) {
+        cout << AlphabetAttributes<_ival>::ALPHABET[element];
+    }
+    cout << endl;
+}
 #endif /* LOAD_SEQS_H_ */

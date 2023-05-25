@@ -9,13 +9,15 @@ class Translator
 public:
 
 	static const DNA reverseNucleotide[5];
+	static const Protein reverseProtein[5];
 	static const Protein lookup[5][5][5];
 	static const Protein lookupReverse[5][5][5];
 	static const Protein STOP;
 
 	static DNA getReverseComplement(DNA nucleotide)
 	{ return reverseNucleotide[(int) nucleotide]; }
-
+	static Protein getReverseComplement(Protein nucleotide)
+	{ return reverseProtein[(int) nucleotide]; }
 	static Protein getAminoAcid(vector<DNA> const &dnaSequence, size_t pos)
 	{ return lookup[(int) dnaSequence[pos]][(int)dnaSequence[pos+1]][(int)dnaSequence[pos+2]]; }
 
@@ -27,9 +29,16 @@ public:
 		vector<DNA> r;
 		for(vector<DNA>::const_reverse_iterator i=seq.rbegin(); i!=seq.rend(); ++i)
 			r.push_back(getReverseComplement(*i));
+		std::reverse(r.begin(),r.end());
 		return r;
 	}
-
+	static vector<Protein> reverse(const vector<Protein> &seq)
+	{
+		vector<Protein> r;
+		for(vector<Protein>::const_reverse_iterator i=seq.rbegin(); i!=seq.rend(); ++i)
+			r.push_back(getReverseComplement(*i));
+		return r;
+	}
 	static size_t translate(vector<DNA> const &dnaSequence, vector<Protein> *proteins)
 	{
 		size_t length_ = dnaSequence.size(), d, n;
@@ -125,7 +134,7 @@ public:
 };
 
 const DNA Translator::reverseNucleotide[5] = { 3, 2, 1, 0, 4 };
-
+const Protein Translator::reverseProtein[5] = { 3, 2, 1, 0, 4 };
 const Protein Translator::lookup[5][5][5] = {
 { { 11,2,11,2,23 },
 { 16,16,16,16,16 },

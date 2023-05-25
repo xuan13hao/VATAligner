@@ -100,53 +100,6 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
 
 }
 
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-
-using namespace std;
-
-vector<int> anchor_align(vector<int>& anchors, vector<vector<int>>& blocks) {
-    int n = anchors.size();
-    unordered_map<int, int> anchor_index;
-    for (int i = 0; i < n; i++) {
-        anchor_index[anchors[i]] = i;
-    }
-    vector<int> order(n);
-    vector<bool> visited(n);
-    int pos = 0;
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            visited[i] = true;
-            order[pos++] = i;
-            int last = anchors[i];
-            while (pos < n) {
-                int max_len = -1;
-                int next = -1;
-                for (int j = 0; j < n; j++) {
-                    if (!visited[j]) {
-                        int len = -1;
-                        for (int k = 0; k < blocks[last].size(); k++) {
-                            int index = anchor_index[blocks[last][k]];
-                            if (index == j) {
-                                len = k;
-                                break;
-                            }
-                        }
-                        if (len > max_len) {
-                            max_len = len;
-                            next = j;
-                        }
-                    }
-                }
-                visited[next] = true;
-                order[pos++] = next;
-                last = anchors[next];
-            }
-        }
-    }
-    return order;
-}
 
 
 /**
