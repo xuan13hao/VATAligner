@@ -129,7 +129,7 @@ size_t ReadingSeqs(Input_stream &file,
 				vector<_ival> complement_seq = Translator::reverse(seq);
 				// Add complementary sequence
 				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, complement_seq);
-				print_complement_sequence(complement_seq);
+				// print_complement_sequence(complement_seq);
 				// Rename id with suffix '-'
 				id.push_back('_');
 				id.push_back('m');

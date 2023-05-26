@@ -29,7 +29,7 @@ public:
 		vector<DNA> r;
 		for(vector<DNA>::const_reverse_iterator i=seq.rbegin(); i!=seq.rend(); ++i)
 			r.push_back(getReverseComplement(*i));
-		std::reverse(r.begin(),r.end());
+		// std::reverse(r.begin(),r.end());
 		return r;
 	}
 	static vector<Protein> reverse(const vector<Protein> &seq)
