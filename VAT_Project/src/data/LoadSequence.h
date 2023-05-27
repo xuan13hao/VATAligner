@@ -122,7 +122,7 @@ size_t ReadingSeqs(Input_stream &file,
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
 			ids->push_back(id);
 			letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
-			print_complement_sequence(seq);
+			// print_complement_sequence(seq);
 			if(VATParameters::makevatdb && VATParameters::db_type == "nucl")
 			{
 				// Create complementary sequence

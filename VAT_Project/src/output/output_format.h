@@ -16,6 +16,7 @@ class Output_format
 	{ }
 	virtual ~Output_format()
 	{ }
+
 };
 
 template<typename _val>
@@ -24,43 +25,63 @@ class Blast_tab_format : public Output_format<_val>
 	public:
 	Blast_tab_format()
 	{ }
-
 	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
-		// cout<<"1.............1"<<endl;
-
-		// cout<<"len = "<<r.len<<endl;
-		// cout<<"query_name = "<<r.query_name()<<endl;
-		// cout<<"subject_name = "	<< r.subject_name <<endl;
-		// cout<<"identities = "	<< r.identities*100/r.len <<endl;
-		// 	cout<<"mismatches = "	<< r.mismatches << endl;
-		// 	cout<<"gap_openings = "	<< r.gap_openings << endl;
-		// 	cout<<"query_begin = "	<< r.query_begin+1 << endl;
-		// 	cout<<"len = "	<< r.query_end()+1 << endl;
-		// 	cout<<"subject_begin = "	<< r.subject_begin+1 << endl;
-		// 	cout<<"subject_begin = "	<< r.subject_begin+r.subject_len << endl;
-		// cout<<"r.score = "	<< r.score<< endl;
-		// cout<<"r.db_letters() = "	<< r.db_letters()<< endl;
-		// cout<<"r.query().size()= "	<< r.query().size()<< endl;
-		// // cout<<"evalue = "<<ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size())<<endl;
-		// cout<<"bitscore = "<<ScoreMatrix::get().bitscore(r.score) <<endl;
-		out << r.query_name() << '\t'
-				<< r.subject_name << '\t'
-				<< (double)r.identities*100/r.len << '\t'
-				<< r.len << '\t'
-				<< r.mismatches << '\t'
-				<< r.gap_openings << '\t'
-				<< r.query_begin+1 << '\t'
-				<< r.query_end()+1 << '\t'
-				<< r.subject_begin+1 << '\t'
-				<< r.subject_begin+r.subject_len << '\t';
-		out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
-		out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+		// 	string sub_name = r.subject_name;
+		// 	uint32_t sbj_start= r.subject_begin+1;
+		// 	uint32_t sbj_end= r.subject_begin+r.subject_len ;
+		// cout<<"running 1"<<endl;
+		if(containsSuffix(r.subject_name,"_minus"))
+		{
+			// cout<<"running"<<endl;
+			string sub_name = removeSuffix(r.subject_name,"_minus");
+			// cout<<"sub_name = "<<sub_name<<endl;
+			uint32_t sbj_start= r.total_subject_len - r.subject_begin;
+			uint32_t sbj_end= r.total_subject_len  - r.subject_begin-r.subject_len + 1;
+			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<endl;
+			out << r.query_name() << '\t'
+					<< sub_name << '\t'
+					<< (double)r.identities*100/r.len << '\t'
+					<< r.len << '\t'
+					<< r.mismatches << '\t'
+					<< r.gap_openings << '\t'
+					<< r.query_begin+1 << '\t'
+					<< r.query_end()+1 << '\t'
+					<< sbj_start<< '\t'
+					<< sbj_end<< '\t';
+			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+		}else{		
+			out << r.query_name() << '\t'
+					<< r.subject_name << '\t'
+					<< (double)r.identities*100/r.len << '\t'
+					<< r.len << '\t'
+					<< r.mismatches << '\t'
+					<< r.gap_openings << '\t'
+					<< r.query_begin+1 << '\t'
+					<< r.query_end()+1 << '\t'
+					<< r.subject_begin+1<< '\t'
+					<< r.subject_begin+r.subject_len << '\t';
+			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+		}
 	}
 
 	virtual ~Blast_tab_format()
 	{ }
-
+	static bool containsSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length()) {
+			std::string strSuffix = str.substr(str.length() - suffix.length());
+			return strSuffix == suffix;
+		}
+		return false;
+	}
+	static std::string removeSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length() && str.substr(str.length() - suffix.length()) == suffix) {
+			return str.substr(0, str.length() - suffix.length());
+		}
+		return str;
+	}
 	static size_t print_salltitles(Text_buffer &buf, const char *id)
 	{
 		size_t n = 0;

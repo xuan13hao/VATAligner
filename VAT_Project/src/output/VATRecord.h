@@ -110,7 +110,19 @@ public:
 	VATMatchRecord(const VATQueryRecord<_val> &query_record):
 		parent_ (query_record)
 	{ }
-
+	bool containsSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length()) {
+			std::string strSuffix = str.substr(str.length() - suffix.length());
+			return strSuffix == suffix;
+		}
+		return false;
+	}
+	std::string removeSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length() && str.substr(str.length() - suffix.length()) == suffix) {
+			return str.substr(0, str.length() - suffix.length());
+		}
+		return str;
+	}
 	const string& query_name() const
 	{ return parent_.query_name; }
 
@@ -198,6 +210,7 @@ Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<
 	r.transcript.read(it);
 	r.subject_name = r.parent_.file_.ref_name(subject_id);
 	r.total_subject_len = r.parent_.file_.ref_len(subject_id);
+	cout<<"r.subject_name = "<<r.subject_name<<",r.total_subject_len =  "<<r.total_subject_len<<endl;
 	if(r.parent_.file_.mode() == blastx) {
 		r.frame = (flag&(1<<6)) == 0 ? r.query_begin % 3 : 3+(r.parent_.source_seq.size() - 1 - r.query_begin)%3;
 		r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), true);
@@ -207,11 +220,18 @@ Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<
 	} else {
 		r.frame = 0;
 		r.translated_query_begin = r.query_begin;
+		// if(r.containsSuffix(r.subject_name ,"_minus"))
+		// {
+		// 	r.subject_begin = r.total_subject_len - r.len;
+		// }
 		// r.frame = (flag&(1<<6)) == 0 ? 0 : 1;
 		// r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), false);
 	}
 	r.parse();
 	return it;
 }
+
+
+
 
 #endif /* DAA_RECORD_H_ */
