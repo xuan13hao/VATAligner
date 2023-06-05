@@ -31,7 +31,7 @@ class Blast_tab_format : public Output_format<_val>
 		// 	uint32_t sbj_start= r.subject_begin+1;
 		// 	uint32_t sbj_end= r.subject_begin+r.subject_len ;
 		// cout<<"running 1"<<endl;
-		if(containsSuffix(r.subject_name,"_minus"))
+		if(containsSuffix(r.subject_name,"_minus") && (!containsSuffix(r.query_name(),"_minus")))
 		{
 			// cout<<"running"<<endl;
 			string sub_name = removeSuffix(r.subject_name,"_minus");
@@ -51,7 +51,50 @@ class Blast_tab_format : public Output_format<_val>
 					<< sbj_end<< '\t';
 			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
 			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
-		}else{		
+		}else if ((!containsSuffix(r.subject_name,"_minus")) && (containsSuffix(r.query_name(),"_minus")))
+		{
+			string qry_name = removeSuffix(r.query_name(),"_minus");
+			// cout<<"sub_name = "<<sub_name<<endl;
+			uint32_t qry_start= r.translated_query_len- r.query_begin;
+			uint32_t qry_end= r.translated_query_len  - r.query_begin-r.len + 1;
+			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<endl;
+			out << qry_name << '\t'
+					<< r.subject_name << '\t'
+					<< (double)r.identities*100/r.len << '\t'
+					<< r.len << '\t'
+					<< r.mismatches << '\t'
+					<< r.gap_openings << '\t'
+					<< qry_start+1 << '\t'
+					<< qry_end +1 << '\t'
+					<< r.subject_begin+1<< '\t'
+					<< r.subject_begin+r.subject_len << '\t';
+			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+		}else if ((containsSuffix(r.subject_name,"_minus")) && (containsSuffix(r.query_name(),"_minus")))
+		{
+			string sub_name = removeSuffix(r.subject_name,"_minus");
+			// cout<<"sub_name = "<<sub_name<<endl;
+			uint32_t sbj_start= r.total_subject_len - r.subject_begin;
+			uint32_t sbj_end= r.total_subject_len  - r.subject_begin-r.subject_len + 1;
+			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<endl;
+			string qry_name = removeSuffix(r.query_name(),"_minus");
+			// cout<<"sub_name = "<<sub_name<<endl;
+			uint32_t qry_start= r.translated_query_len- r.query_begin;
+			uint32_t qry_end= r.translated_query_len  - r.query_begin-r.len + 1;
+			out << qry_name << '\t'
+					<< sub_name << '\t'
+					<< (double)r.identities*100/r.len << '\t'
+					<< r.len << '\t'
+					<< r.mismatches << '\t'
+					<< r.gap_openings << '\t'
+					<< qry_start << '\t'
+					<< qry_end << '\t'
+					<< sbj_start<< '\t'
+					<< sbj_end<< '\t';
+			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+		}
+		else{		
 			out << r.query_name() << '\t'
 					<< r.subject_name << '\t'
 					<< (double)r.identities*100/r.len << '\t'

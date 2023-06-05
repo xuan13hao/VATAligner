@@ -11,52 +11,6 @@
 #define MAX 999999999
 // #include "kvec.h"
 using std::vector;
-/**
- * 	
- * int i, j, len, score;//query_pos, subject_pos
-	string qry_;
-	string sbj_;
-	int qry_id, sbj_id;
-
-
-vector<int> findPossibleExons(string dna, vector<int>& seeds, int k) {
-    int n = dna.size();
-    vector<int> dp(n+1, 0);
-    vector<int> pre(n+1, -1);
-
-    for (int i = 0; i < n; i++) {
-        if (i < k-1) {
-            dp[i+1] = 0; // non-coding region
-        } else {
-            dp[i+1] = (dna[i] == 'A' || dna[i] == 'T' || dna[i] == 'C' || dna[i] == 'G') ? 1 : 0; // coding region
-        }
-    }
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < i; j++) {
-            if (find(seeds.begin(), seeds.end(), j+1) != seeds.end()) { // check if seed is qualified
-                if (dp[j+1] > 0 && dp[j+1] + 1 > dp[i+1]) {
-                    dp[i+1] = dp[j+1] + 1; // update max exon length
-                    pre[i+1] = j; // mark previous position
-                }
-            }
-        }
-    }
-
-    vector<int> exons;
-    for (int i = n; i > 0; ) {
-        if (pre[i] != -1) {
-            exons.push_back(pre[i]);
-            i = pre[i];
-        } else {
-            i--;
-        }
-    }
-    reverse(exons.begin(), exons.end());
-    return exons;
-}
-*/
-
 template<typename _locr, typename _locl>
 vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr,_locl> > & diagonal_segment,int max_gap)
 {
@@ -95,95 +49,67 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
         }
     }
     std::reverse(chained_seed.begin(),chained_seed.end());
+    vector<vector<DiagonalSeeds<_locr, _locl>>> synteny_blocks;
+    anchor_align(chained_seed, synteny_blocks);
+    // Concatenate synteny blocks into results vector
+    vector<DiagonalSeeds<_locr, _locl>> results;
+    for (const auto& block : synteny_blocks) {
+        results.insert(results.end(), block.begin(), block.end());
+    }
+    return results;
 
-    return chained_seed;
-
-}
-
-
-
-/**
- * int i, j, len, score;//query_pos, subject_pos
-
-template<typename _locr, typename _locl>
-int distanceSegment(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) //alpha(j,i)
-{
-    int q_distance = i.i - j.i;
-    int s_distance = i.j - j.j;
-    int distance = min(q_distance,s_distance);
-    int i_len = i.len;
-    int alph_value = min(distance,i_len);
-    return alph_value;
 }
 
 template<typename _locr, typename _locl>
-int gapCost(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) //beta(j,i)
-{
-    int q_distance = i.i - j.i;
-    int s_distance = i.j - j.j;
-    int gaps = abs(q_distance - s_distance);
-    if(gaps == 0)
-    {
-        return 0;
-    }else if (gaps > 150)
-    {
-        return 1000000;
-    }else
-    {   //15 means the mean seed length
-        int gapcost = 0.01*15*abs(gaps)+0.05*log2(abs(gaps));
-        return gapcost;
-    }
-    
-}*/
-/**
-Use std::string::find as follows:
+void anchor_align(vector<DiagonalSeeds<_locr, _locl>>& anchors, vector<vector<DiagonalSeeds<_locr, _locl>>>& synteny_blocks) {
+    // Sort anchors by score, length, i, j
+    sort(anchors.begin(), anchors.end(), [](const DiagonalSeeds<_locr, _locl>& a, const DiagonalSeeds<_locr, _locl>& b) {
+        if (a.score != b.score) {
+            return a.score > b.score;
+        }
+        if (a.len != b.len) {
+            return a.len > b.len;
+        }
+        if (a.i != b.i) {
+            return a.i < b.i;
+        }
+        return a.j < b.j;
+    });
 
-if (s1.find(s2) != std::string::npos) {
-    std::cout << "found!" << '\n';
+    // Loop through all anchors and group them into synteny blocks
+    for (const auto& anchor : anchors) {
+        bool found_synteny_block = false;
+        for (auto& block : synteny_blocks) {
+            // Check if anchor is compatible with the synteny block
+            const DiagonalSeeds<_locr, _locl>& last_anchor = block.back();
+            if (anchor.i > last_anchor.i && anchor.j > last_anchor.j) {
+                block.push_back(anchor);
+                found_synteny_block = true;
+                break;
+            }
+        }
+        if (!found_synteny_block) {
+            // Create a new synteny block with the current anchor
+            synteny_blocks.push_back({ anchor });
+        }
+    }
+
+    // Order the synteny blocks
+    sort(synteny_blocks.begin(), synteny_blocks.end(), [](const vector<DiagonalSeeds<_locr, _locl>>& a, const vector<DiagonalSeeds<_locr, _locl>>& b) {
+        const DiagonalSeeds<_locr, _locl>& a1 = a.front();
+        const DiagonalSeeds<_locr, _locl>& a2 = a.back();
+        const DiagonalSeeds<_locr, _locl>& b1 = b.front();
+        const DiagonalSeeds<_locr, _locl>& b2 = b.back();
+        if (a1.i != b1.i) {
+            return a1.i < b1.i;
+        }
+        if (a2.i != b2.i) {
+            return a2.i < b2.i;
+        }
+        return a1.j < b1.j;
+    });
 }
-Note: "found!" will be printed if s2 is a substring of s1, both s1 and s2 are of type std::string.
 
-splice juntion GT.........AG 
-*/
-/*
-template<typename _locr, typename _locl>
-bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) 
-{
-    string ref_seed_i, ref_seed_j, query_i,query_j;
-    ref_seed_i = i.sbj_str;
-    ref_seed_j = j.sbj_str;
 
-    query_i = i.qry_str;
-    query_j = j.qry_str;
-
-    bool ref_i_spjunction = false;
-    bool ref_j_spjunction = false;
-    bool query_i_spjunction = false;
-    bool query_j_spjunction = false;
-
-    if (ref_seed_i.substr(0, 2) == "GT" && ref_seed_i.substr(ref_seed_i.length() - 2, 2) == "AG") {
-            bool ref_i_spjunction=  true;
-    }
-    if (ref_seed_j.substr(0, 2) == "GT" && ref_seed_j.substr(ref_seed_j.length() - 2, 2) == "AG") {
-            bool ref_j_spjunction=  true;
-    }
-    if (query_i.substr(0, 2) == "GT" && query_i.substr(query_i.length() - 2, 2) == "AG") {
-            bool query_i_spjunction=  true;
-    }
-    if (query_j.substr(0, 2) == "GT" && query_j.substr(query_j.length() - 2, 2) == "AG") {
-            bool query_j_spjunction=  true;
-    }
-
-    if((query_i_spjunction && ref_i_spjunction)  || (ref_j_spjunction&&query_j_spjunction))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-
-}
-*/
 
 #endif // __FINDWHOLEGENOSEEDS_H__
