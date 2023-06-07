@@ -109,6 +109,32 @@ void anchor_align(vector<DiagonalSeeds<_locr, _locl>>& anchors, vector<vector<Di
     });
 }
 
+/*
+int main() {
+    vector<DiagonalSeeds> anchors = {
+        DiagonalSeeds(1, 3, 10, 50),
+        DiagonalSeeds(2, 5, 8, 45),
+        DiagonalSeeds(3, 7, 6, 40),
+        DiagonalSeeds(4, 1, 7, 30),
+        DiagonalSeeds(5, 2, 9, 35),
+        DiagonalSeeds(6, 4, 5, 40),
+        DiagonalSeeds(7, 6, 12, 60),
+        DiagonalSeeds(1, 5, 11, 61),
+        DiagonalSeeds(2, 6, 14, 48)
+    };
 
+    vector<vector<DiagonalSeeds>> synteny_blocks;
+    anchor_align(anchors, synteny_blocks);
+
+    for (const auto& block : synteny_blocks) {
+        cout << "Synteny block:" << endl;
+        for (const auto& anchor : block) {
+            cout << "i: " << anchor.i << " j: " << anchor.j << " len: " << anchor.len << " score: " << anchor.score << endl;
+        }
+    }
+
+    return 0;
+}
+*/
 
 #endif // __FINDWHOLEGENOSEEDS_H__
