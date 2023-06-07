@@ -31,7 +31,7 @@ class Statistics
 	{
 		// log_stream << "Used ref size = " << data_[REF_SIZE] << endl;
 		// log_stream << "Traceback errors = " << data_[BIAS_ERRORS] << endl;
-		cout << "Seed hits = " << data_[SEED_HITS] << endl;
+		// cout << "Seed hits = " << data_[SEED_HITS] << endl;
 		//cout << "Tentative hits (stage 1) = " << data_[TENTATIVE_MATCHES1] << endl;
 		//cout << "Tentative hits (stage 2) = " << data_[TENTATIVE_MATCHES2] << endl;
 		//cout << "Tentative hits (stage 3) = " << data_[TENTATIVE_MATCHES3] << endl;

@@ -125,6 +125,27 @@ class Shape
 
 		return true;
 	}
+/*
+inline uint64_t calculate_minimizer(const DNA *seq, unsigned start, unsigned length)
+{
+    const unsigned k = length;  // Size of the minimizer
+    const uint64_t max_val = std::numeric_limits<uint64_t>::max();
+
+    uint64_t min_seed = max_val;
+    for (unsigned i = start; i < start + length - k + 1; ++i)
+    {
+        uint64_t seed;
+        if (set_seed(seed, &seq[i]))
+        {
+            if (seed < min_seed)
+                min_seed = seed;
+        }
+    }
+
+    return min_seed;
+}
+*/
+
 
 	//template<>
 	inline bool set_seed_minimizer(uint64_t &s, const DNA *seq) const

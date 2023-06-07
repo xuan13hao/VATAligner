@@ -43,7 +43,7 @@ struct Reference_header
 struct Database_format_exception : public exception
 {
 	virtual const char* what() const throw()
-	{ return "Database file is not a DIAMOND database."; }
+	{ return "Database file is not a VAT database."; }
 };
 
 template<typename _val>

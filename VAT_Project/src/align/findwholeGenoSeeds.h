@@ -6,9 +6,7 @@
 #include <string>
 #include <cmath>
 #include <assert.h>
-#include <set>
 #include "../basic/Seed.h"
-#define MAX 999999999
 // #include "kvec.h"
 using std::vector;
 template<typename _locr, typename _locl>
@@ -40,7 +38,8 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
         dp[i+1] = pressor_score;
         pre[i+1] = max_pre;
     }
-    for (int i = s_; i > 0; ) {
+    for (int i = s_; i > 0; ) 
+    {
         if (pre[i] != -1) {
             chained_seed.push_back(diagonal_segment[pre[i]]);
             i = pre[i];

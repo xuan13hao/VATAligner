@@ -23,7 +23,9 @@ class SequenceSet : public AlphabetSet<_val>
 	{ }
 
 	void print_stats() const
-	{ cout << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; }
+	{ 
+		// cout << "Sequences = " << this->get_length() << ", letters = " << this->letters() << endl; 
+	}
 
 	pair<size_t,size_t> len_bounds(size_t min_len) const
 	{
