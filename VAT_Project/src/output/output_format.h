@@ -83,29 +83,6 @@ class Blast_tab_format : public Output_format<_val>
 			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
 			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
 	}
-	/*
-		if(containsSuffix(r.subject_name,"_minus") && (!containsSuffix(r.query_name(),"_minus")))
-		{
-			// cout<<"running"<<endl;
-			string sub_name = removeSuffix(r.subject_name,"_minus");
-			// cout<<"sub_name = "<<sub_name<<endl;
-			uint32_t sbj_start= r.total_subject_len - r.subject_begin;
-			uint32_t sbj_end= r.total_subject_len  - r.subject_begin-r.subject_len + 1;
-			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<endl;
-			out << r.query_name() << '\t'
-					<< sub_name << '\t'
-					<< (double)r.identities*100/r.len << '\t'
-					<< r.len << '\t'
-					<< r.mismatches << '\t'
-					<< r.gap_openings << '\t'
-					<< r.query_begin+1 << '\t'
-					<< r.query_end()+1 << '\t'
-					<< sbj_start<< '\t'
-					<< sbj_end<< '\t';
-			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
-			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
-		}
-	*/
 
 	virtual ~Blast_tab_format()
 	{ }
