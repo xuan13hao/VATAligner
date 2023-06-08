@@ -8,8 +8,6 @@
 #include <assert.h>
 #include <set>
 #include "../basic/Seed.h"
-#define MAX 999999999
-// #include "kvec.h"
 using std::vector;
 /**
  * 	
@@ -22,6 +20,7 @@ using std::vector;
 template<typename _locr, typename _locl>
 vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_locl> > & diagonal_segment,int max_gap)
 {
+    int MAX = 999999;
     vector<DiagonalSeeds<_locr,_locl> > chained_seed;
     int s_ =  diagonal_segment.size();
     vector<int> dp(s_+1, 0);
@@ -108,16 +107,16 @@ splice juntion GT.........AG
 template<typename _locr, typename _locl>
 bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) 
 {
-    int i_len = i.len,j_len = j.len;
+    // int i_len = i.len,j_len = j.len;
     string ref_seed_i = i.sbj_str;
     string ref_seed_j = j.sbj_str;
     bool i_spjunction = false;
     bool j_spjunction = false;
     if (ref_seed_i.substr(0, 2) == "GT" && ref_seed_i.substr(ref_seed_i.length() - 2, 2) == "AG") {
-            bool i_spjunction=  true;
+            i_spjunction=  true;
     }
     if (ref_seed_j.substr(0, 2) == "GT" && ref_seed_j.substr(ref_seed_j.length() - 2, 2) == "AG") {
-            bool j_spjunction=  true;
+            j_spjunction=  true;
     }
     if(i_spjunction || j_spjunction)
     {

@@ -1,19 +1,12 @@
 ./VAT makevatdb --dbtype nucl --in ../data/test_all.fa -d mt
 ./VAT dna -d mt.vatf -q ../data/test_forward_reads.fa -a match
 
+./VAT makevatdb --dbtype nucl --in ../data/ref.fa -d mt
+./VAT dna -d mt.vatf -q ../data/query.fa -a match
 ./VAT view -a match.vatr -o match
-./VAT view -a match.vatr -o match -f sam
-
 vim match
 
 ./VAT makevatdb --dbtype prot --in ../data/pfam_ref.fa -d pfam
 ./VAT protein -d pfam.vatf -q ../data/pfam_test.fa -a match
-
-
-Database File = ../data/test_all.fa
-Sequences = 2, letters = 6915160
-Total time = 0.2s
-
-Database File = ../data/test_all.fa
-Sequences = 1, letters = 3457580
-Total time = 0.1s
+./VAT view -a match.vatr -o match
+vim match

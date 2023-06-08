@@ -210,7 +210,7 @@ Binary_buffer::Iterator& operator>>(Binary_buffer::Iterator &it, VATMatchRecord<
 	r.transcript.read(it);
 	r.subject_name = r.parent_.file_.ref_name(subject_id);
 	r.total_subject_len = r.parent_.file_.ref_len(subject_id);
-	cout<<"r.subject_name = "<<r.subject_name<<",r.total_subject_len =  "<<r.total_subject_len<<endl;
+	// cout<<"r.subject_name = "<<r.subject_name<<",r.total_subject_len =  "<<r.total_subject_len<<endl;
 	if(r.parent_.file_.mode() == blastx) {
 		r.frame = (flag&(1<<6)) == 0 ? r.query_begin % 3 : 3+(r.parent_.source_seq.size() - 1 - r.query_begin)%3;
 		r.translated_query_begin = query_translated_begin<_val>(r.query_begin, r.frame, r.parent_.source_seq.size(), true);

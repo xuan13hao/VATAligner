@@ -9,7 +9,7 @@ find_package(Boost
 set(CMAKE_BUILD_TYPE Release)
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -g -O3 -flto -march=native -fopenmp -Wall -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -g -O3 -flto -march=native -fopenmp -Wno-narrowing -Wno-uninitialized -Wunused-variable -Wsign-compare -Wreorder -Wpsabi -Wsign-compare")
 add_subdirectory("src/algo/blast/core")
 include_directories(${CMAKE_SOURCE_DIR}/src/tools/include/avx256)
 # include_directories(

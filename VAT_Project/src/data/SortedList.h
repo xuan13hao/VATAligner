@@ -271,14 +271,14 @@ private:
 		delete rand_arr;
 
 		*/
-		int N = e - s;
+		uint64_t N = e - s;
 		// for (size_t i = 0; i < N; i++)
 		// {
 		// 	cout<<"arr "<<i<<"= "<<s[i].key<<":"<<s[i].value<<endl;
 		// 	// soln_arr++;
 		// }
-		int p = N % 8;
-		int n = N;
+		uint64_t p = N % 8;
+		uint64_t n = N;
 		std::pair<uint64_t, uint64_t> *rand_arr;
 		std::pair<uint64_t, uint64_t> *soln_arr;
 		if(p != 0)
