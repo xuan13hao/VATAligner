@@ -247,36 +247,7 @@ private:
 	void sortSIMD(Tuple* s ,Tuple* e ) 
 	// void sortSIMD() 
 	{
-		/*
-		int test[64] = {3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4,3,1,2,4};
-		int* rand_arr;
-  		int *soln_arr;
-		aligned_init<int>(rand_arr, 64);
-		for (size_t i = 0; i < 64; i++)
-		{
-			rand_arr[i] = test[i];
-		}
-		// cout<<"============1==========="<<endl;
-		aligned_init<int>(soln_arr, 64);
-		// cout<<"======================="<<endl;
-  		std::copy(rand_arr, rand_arr + 64, soln_arr);
-		// cout<<"============2==========="<<endl;
-		avx2::SIMDSort(64, soln_arr);
-		// cout<<"============3==========="<<endl;
-		for (size_t i = 0; i < 64; i++)
-		{
-			std::cout<<"arr = "<<soln_arr[i]<<std::endl;
-		}
-		delete soln_arr;
-		delete rand_arr;
-
-		*/
 		uint64_t N = e - s;
-		// for (size_t i = 0; i < N; i++)
-		// {
-		// 	cout<<"arr "<<i<<"= "<<s[i].key<<":"<<s[i].value<<endl;
-		// 	// soln_arr++;
-		// }
 		uint64_t p = N % 8;
 		uint64_t n = N;
 		std::pair<uint64_t, uint64_t> *rand_arr;
@@ -303,20 +274,8 @@ private:
 				rand_arr[i].second = MAX_uint64;
 			}	
 		}
-		// cout<<"====================================="<<endl;
-    	// for (size_t i = 0; i < n; i++)
-		// {
-		// 	cout<<"arr "<<i<<"= "<<rand_arr[i].first<<":"<<rand_arr[i].second<<endl;
-		// }
    		aligned_init<std::pair<uint64_t ,uint64_t> >(soln_arr, n);
 		std::copy(rand_arr, rand_arr + n, soln_arr);
-		// cout<<"====================================="<<endl;
-    	// for (size_t i = 0; i < n; i++)
-		// {
-		// 	cout<<"arr "<<i<<"= "<<soln_arr[i].first<<":"<<soln_arr[i].second<<endl;
-		// 	// soln_arr++;
-		// }
-		// cout<<"===================before=================="<<endl;
 		avx2::SIMDSort(n, soln_arr);
 		for (size_t i = 0; i < n; i++)
     	{
@@ -343,32 +302,6 @@ private:
 		}
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{
-			// cout<<"=========================1"<<endl;
-			// SortedList::const_iterator j = sl.get_partition_cbegin(seedp);
-			// while(!j.at_end()) 
-			// {
-			// 	cout<<"key = "<<j.key()<<endl;
-			// 	++j;
-			// }
-			// cout<<"=========================2"<<endl;
-			// Tuple* s1 = sl.ptr_begin(seedp);
-			// cout<<"s = "<<s1->key<<endl;
-			// Tuple* e1 = sl.ptr_end(seedp);
-			// cout<<"e = "<<e1->key<<endl;
-			// cout<<"=========================3"<<endl;
-			// cout<<"=========================start"<<endl;
-			// int c = 0;
-			// Tuple* s = sl.ptr_begin(seedp);
-			// // cout<<"s = "<<s->key<<endl;
-			// Tuple* e = sl.ptr_end(seedp);
-			// while (s != e)
-			// {
-			// 	c = c + 1;
-			// 	cout<<"k = "<<s->key<<",v = "<<s->value<<endl;
-			// 	s++;
-			// }
-			// cout<<"c = "<<c<<endl;
-			// cout<<"=========================beforesort"<<endl;
 			int n = sl.ptr_end(seedp) - sl.ptr_begin(seedp) ;
 			if(n >= 8 && ((n != 0) && ((n & (n - 1)) == 0)))
 			{
@@ -381,69 +314,6 @@ private:
 				
 			}
 
-			// int c1 = 0;
-			// std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 
-			// cout<<"=========================aftersort"<<endl;
-			// // // int c = 0;
-			// Tuple* s1 = sl.ptr_begin(seedp);
-			// // cout<<"s = "<<s->key<<endl;
-			// Tuple* e1 = sl.ptr_end(seedp);
-			// while (s1 != e1)
-			// {
-			// 	c1 = c1 + 1;
-			// 	cout<<"k = "<<s1->key<<",v = "<<s1->value<<endl;
-			// 	s1++;
-			// }
-			// cout<<"c1 = "<<c1<<endl;
-			// cout<<"=========================end"<<endl;
-			// cout<<"c = "<<c<<endl;
-			// cout<<"after sort"<<endl;
-			// sl.get_partition_cbegin(seedp);
-			// const typename SortedList<_loc>::Type &idx,
-			// cout<<"+++++++++++++++++++++++++1"<<endl;
-			// SortedList::const_iterator i = sl.get_partition_cbegin(seedp);
-			
-			// while(!i.at_end()) 
-			// {
-			// 	cout<<"key = "<<i.key()<<endl;
-			// 	++i;
-			// }
-			// cout<<"+++++++++++++++++++++++++2"<<endl;
-			// int c = 0;
-			// Tuple* s = sl.ptr_begin(seedp);
-			// // cout<<"s = "<<s->key<<endl;
-			// Tuple* e = sl.ptr_end(seedp);
-			// while (s < e)
-			// {
-			// 	c = c + 1;
-			// 	cout<<"s = "<<s->key<<endl;
-			// 	s++;
-			// }
-			// cout<<"c = "<<c<<endl;
-			// cout<<"e = "<<e->key<<endl;
-			// cout<<"+++++++++++++++++++++++++3"<<endl;
-			// cout<<endl;
-			// cout<<"sl.ptr_begin(seedp) = "<<sl.ptr_begin(seedp)<<", sl.ptr_end(seedp) = "<<sl.ptr_end(seedp)<<endl;
-			// cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))<<endl;
-			// cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))++<<endl;
-			// for(int i = 1; i<VATConsts::seedp;i++)
-			// {
-			// 	cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp))[i]<<endl;
-			// }
-			
-			// for(SortedList::iterator it = sl.ptr_begin(seedp); it.at_end();it++)
-			// {
-			// 	//cout<<"sort list = "<<it<<endl;
-			// }
-			// while(true)
-			// {
-			// 	if ((sl.ptr_begin(seedp)++) != sl.ptr_end(seedp))
-			// 	{
-			// 		cout<<"sl.ptr_begin(seedp)= "<<(sl.ptr_begin(seedp)++)<<endl;	
-			// 	}
-				
-				
-			// }
 		}
 		SortedList &sl;
 	};

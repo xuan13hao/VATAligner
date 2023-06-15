@@ -120,28 +120,18 @@ size_t ReadingSeqs(Input_stream &file,
 	vector<char> id;
 	try {
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
-			ids->push_back(id);
-			letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
-			// print_complement_sequence(seq);
-			// if(VATParameters::makevatdb && VATParameters::db_type == "nucl")
-			// {
-			// 	// Create complementary sequence
-			// 	vector<_ival> complement_seq = Translator::reverse(seq);
-			// 	// Add complementary sequence
-			// 	letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, complement_seq);
-			// 	// print_complement_sequence(complement_seq);
-			// 	// Rename id with suffix '-'
-			// 	id.push_back('_');
-			// 	id.push_back('m');
-			// 	id.push_back('i');
-			// 	id.push_back('n');
-			// 	id.push_back('u');
-			// 	id.push_back('s');
-			// 	ids->push_back(id);
-			// }
-			//&& VATParameters::whole_genome
-			if(VATParameters::algn_type == VATParameters::dna)
+
+			if(VATParameters::forwardonly && VATParameters::algn_type == VATParameters::dna)
 			{
+				ids->push_back(id);
+				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+				// cout << "forwardonly"<<endl;
+				++n;
+			}
+			else if(VATParameters::algn_type == VATParameters::dna)
+			{
+				ids->push_back(id);
+				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
 				// Create complementary sequence
 				vector<_ival> complement_seq = Translator::reverse(seq);
 				// Add complementary sequence
@@ -155,8 +145,14 @@ size_t ReadingSeqs(Input_stream &file,
 				id.push_back('u');
 				id.push_back('s');
 				ids->push_back(id);
+				++n;
+			}else
+			{
+				ids->push_back(id);
+				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
+				++n;
 			}
-			++n;
+			// ++n;
 		}
 	} catch(invalid_sequence_char_exception &e) {
 		std::cerr << n << endl;
