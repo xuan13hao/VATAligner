@@ -55,10 +55,12 @@ int main(int ac, const char* av[])
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
         	("reward", po::value<int>(&VATParameters::reward)->default_value(2), "match reward score (blastn only)")
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
-			("splice", po::value<bool>(&VATParameters::spilce)->default_value(0), "splice alignment (0)")
-			("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
-			("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
-
+			// ("splice", po::value<bool>(&VATParameters::spilce)->default_value(0), "splice alignment (0)")
+			// ("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
+			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
+			("chimera", "chimera alignment")
+			("whole-genome", "whole-genome alignment")
+			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
 
@@ -70,7 +72,7 @@ int main(int ac, const char* av[])
        		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(30), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(20), "xdrop for ungapped alignment")
-        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
+        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(15), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
@@ -81,6 +83,7 @@ int main(int ac, const char* av[])
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
         	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
+			("forwardonly", "only forward strand alignment");
         	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
 
         po::options_description view_options("View options");
@@ -114,6 +117,9 @@ int main(int ac, const char* av[])
         VATParameters::debug_log = vm.count("log") > 0;
         VATParameters::salltitles = vm.count("salltitles") > 0;
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
+		VATParameters::chimera = vm.count("chimera") > 0;
+		VATParameters::whole_genome = vm.count("whole-genome") > 0;
+		VATParameters::spilce = vm.count("splice") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
 
         setup(command, ac, av);

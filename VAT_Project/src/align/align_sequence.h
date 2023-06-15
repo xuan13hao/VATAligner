@@ -41,7 +41,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		const _val* sbj = ref->data(i->subject_);
 		const _val* qry = &query[i->seed_offset_];
 		DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-		if (ds.len > 15)
+		if (ds.len > VATParameters::gapped_xdrop)
 		{
 			diagonalsegment_.push_back(ds);
 		}
@@ -49,6 +49,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	
 	if(VATParameters::chimera)
 	{
+		// cout<<"chimera"<<endl;
 		vector<ChimeraAlnType<_locr, _locl> > paired_seeds;
 		pairChimeraSeeds(diagonalsegment_, paired_seeds,query_len);
 
@@ -92,6 +93,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		}
 	} else if(VATParameters::whole_genome)
 	{
+		// cout<<"whole_genome"<<endl;
 		vector<DiagonalSeeds<_locr,_locl> > whole_gen;
 		const int max_gap = 50000; 
 		whole_gen = findWholeGenSeeds(diagonalsegment_, max_gap);
@@ -120,6 +122,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	}
 	else if(VATParameters::spilce)
 	{
+		// cout<<"spilce"<<endl;
 		vector<DiagonalSeeds<_locr,_locl> > spliced_seed;
 		const int max_gap = 150; 
 		spliced_seed = findSpliceSeeds(diagonalsegment_, max_gap);

@@ -48,6 +48,7 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
         }
     }
     std::reverse(chained_seed.begin(),chained_seed.end());
+    // cout<<"chained_seed = "<<chained_seed.size()<<endl;
     vector<vector<DiagonalSeeds<_locr, _locl>>> synteny_blocks;
     anchor_align(chained_seed, synteny_blocks);
     // Concatenate synteny blocks into results vector

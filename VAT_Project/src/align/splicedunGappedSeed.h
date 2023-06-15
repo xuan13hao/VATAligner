@@ -50,7 +50,8 @@ vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_
         dp[i+1] = pressor_score;
         pre[i+1] = max_pre;
     }
-    for (int i = s_; i > 0; ) {
+    for (int i = s_; i > 0; ) 
+    {
         if (pre[i] != -1) {
             chained_seed.push_back(diagonal_segment[pre[i]]);
             i = pre[i];
@@ -59,6 +60,7 @@ vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_
         }
     }
     std::reverse(chained_seed.begin(),chained_seed.end());
+    // cout<<"chained_seed = "<<chained_seed.size()<<endl;
     return chained_seed;
 }
 /**
