@@ -69,13 +69,14 @@ It iterates over the seeds in reverse order, computing the maximum right endpoin
 */
 
 template<typename _locr, typename _locl>
-std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(const std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap)
+std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap)
 {
     std::vector<int> dp(seeds.size());
     std::vector<int> prev(seeds.size(), -1);
     std::vector<int> maxLen(seeds.size());
     std::vector<int> maxIdx(seeds.size());
-
+    std::sort(seeds.begin(),seeds.end(),DiagonalSeeds<_locr,_locl>::cmp_subject_end);
+    int MAX = 999999;
     int bestScore = 0;
     int bestIdx = -1;
     for (int i = 0; i < seeds.size(); ++i) {
@@ -84,11 +85,11 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(const std::vector<Diago
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int gap = seeds[i].i - seeds[j].i - seeds[j].len;
+            int gap = seeds[i].j - seeds[j].j - seeds[j].len;
             if (gap > maxGap)
                 continue;
-
-            int score = dp[j] + seeds[i].len;
+            int splice_score = IsSpliceJunction(seeds[j], seeds[i]) ? -MAX : 0; 
+            int score = dp[j] + seeds[i].len+splice_score;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;
