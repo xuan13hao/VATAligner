@@ -15,7 +15,7 @@ using std::vector;
 	string qry_;
 	string sbj_;
 	int qry_id, sbj_id;
-*/
+
 
 template<typename _locr, typename _locl>
 vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_locl> > & diagonal_segment,int max_gap)
@@ -62,10 +62,55 @@ vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_
     std::reverse(chained_seed.begin(),chained_seed.end());
     // cout<<"chained_seed = "<<chained_seed.size()<<endl;
     return chained_seed;
-}
-/**
- * int i, j, len, score;//query_pos, subject_pos
+}*/
+/*
+The findSpliceSeeds function takes a vector of seeds and the maximum gap allowed between seeds to form chains. 
+It iterates over the seeds in reverse order, computing the maximum right endpoint for each seed by comparing the gaps between consecutive seeds. 
 */
+
+template<typename _locr, typename _locl>
+std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(const std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap)
+{
+    std::vector<int> dp(seeds.size());
+    std::vector<int> prev(seeds.size(), -1);
+    std::vector<int> maxLen(seeds.size());
+    std::vector<int> maxIdx(seeds.size());
+
+    int bestScore = 0;
+    int bestIdx = -1;
+    for (int i = 0; i < seeds.size(); ++i) {
+        dp[i] = seeds[i].len;
+        maxLen[i] = seeds[i].len;
+        maxIdx[i] = i;
+
+        for (int j = 0; j < i; ++j) {
+            int gap = seeds[i].i - seeds[j].i - seeds[j].len;
+            if (gap > maxGap)
+                continue;
+
+            int score = dp[j] + seeds[i].len;
+            if (score > dp[i]) {
+                dp[i] = score;
+                prev[i] = j;
+            }
+        }
+
+        if (dp[i] > bestScore) {
+            bestScore = dp[i];
+            bestIdx = i;
+        }
+    }
+
+    std::vector<DiagonalSeeds<_locr, _locl>> chainedSeeds;
+    while (bestIdx >= 0) {
+        chainedSeeds.push_back(seeds[bestIdx]);
+        bestIdx = prev[bestIdx];
+    }
+
+    std::reverse(chainedSeeds.begin(), chainedSeeds.end());
+    return chainedSeeds;
+}
+
 template<typename _locr, typename _locl>
 int distanceSegment(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl> &i) //alpha(j,i)
 {

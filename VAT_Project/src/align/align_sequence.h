@@ -45,8 +45,9 @@ void align_sequence(vector<Segment<_val> > &matches,
 		{
 			diagonalsegment_.push_back(ds);
 		}
+		
 	}
-	
+	// cout<<"seed num = "<<diagonalsegment_.size()<<endl;
 	if(VATParameters::chimera)
 	{
 		// cout<<"chimera"<<endl;

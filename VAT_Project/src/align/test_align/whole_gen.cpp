@@ -129,8 +129,8 @@ vector<DiagonalSeeds> findWholeGenSeeds(vector<DiagonalSeeds>& diagonal_segment,
                 max_pre = j;
             }
         }
-        dp[i+1] = pressor_score;
-        pre[i+1] = max_pre;
+        dp[i] = pressor_score;
+        pre[i] = max_pre;
     }
     for (int i = s_; i > 0; ) {
         if (pre[i] != -1) {
@@ -144,24 +144,20 @@ vector<DiagonalSeeds> findWholeGenSeeds(vector<DiagonalSeeds>& diagonal_segment,
     return chained_seed;
 }
 
-int main()
-{
-    // Create some diagonal segments
-    vector<DiagonalSeeds> diagonal_segments = {
-        DiagonalSeeds(10, 20, 30, 50),
-        DiagonalSeeds(40, 50, 10, 30),
-        DiagonalSeeds(70, 80, 20, 10),
-        DiagonalSeeds(110, 120, 15, 40),
-        DiagonalSeeds(140, 150, 25, 20),
-        DiagonalSeeds(190, 200, 30, 80)
+int main() {
+    std::vector<DiagonalSeeds> diagonal_segment = {
+        { 0, 0, 5, 3 },
+        { 1, 2, 6, 5 },
+        { 3, 6, 7, 4 },
+        { 4, 9, 4, 2 },
+        { 7, 13, 5, 4 }
     };
+    int max_gap = 3;
 
-    // Find whole genome seeds
-    vector<DiagonalSeeds> whole_genome_seeds = findWholeGenSeeds(diagonal_segments, 5);
+    std::vector<DiagonalSeeds> chained_seeds = findWholeGenSeeds(diagonal_segment, max_gap);
 
-    // Print the seeds
-    for (const auto& seed : whole_genome_seeds) {
-        std::cout << "Seed: i=" << seed.i << " j=" << seed.j << " len=" << seed.len << " score=" << seed.score << std::endl;
+    for (const auto& seed : chained_seeds) {
+        std::cout << "i: " << seed.i << ", j: " << seed.j << ", len: " << seed.len << ", score: " << seed.score << std::endl;
     }
 
     return 0;
