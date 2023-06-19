@@ -34,7 +34,13 @@ struct File_write_exception : public VATException
 
 struct Input_stream : public io::filtering_istream
 {
-
+    /**
+     * Constructor for Input_stream.
+     * @param file_name The path to the input file.
+     * @param gzipped   Flag indicating if the file is gzip compressed.
+     * @throws file_open_exception If the file fails to open.
+     * @throws file_io_exception   If an error occurs while reading the file.
+     */
 	Input_stream(const string &file_name, bool gzipped = false):
 		file_name (file_name)
 	{
@@ -47,7 +53,7 @@ struct Input_stream : public io::filtering_istream
 				THROW_EXCEPTION(file_io_exception, file_name);
 			fclose(f);
 			if(id[0] == 0x1f && id[1] == 0x8b) {
-				log_stream << "Detected gzip compressed file " << file_name << endl;
+				// std::cout << "Detected gzip compressed file " << file_name << endl;
 				this->push(io::gzip_decompressor ());
 			}
 		}
@@ -129,6 +135,24 @@ struct Input_stream : public io::filtering_istream
 	const string file_name;
 
 };
+
+/*
+
+int main() {
+    try {
+        // Test case
+        Input_stream input("example.txt");
+        std::string line;
+        while (std::getline(input, line)) {
+            std::cout << line << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+*/
 
 struct Output_stream2
 {
