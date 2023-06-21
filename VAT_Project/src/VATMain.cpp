@@ -82,8 +82,9 @@ int main(int ac, const char* av[])
         	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
+			("forward_only", "only forward strand alignment")
         	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
-			("forwardonly", "only forward strand alignment");
+	
         	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
 
         po::options_description view_options("View options");
@@ -117,6 +118,7 @@ int main(int ac, const char* av[])
         VATParameters::debug_log = vm.count("log") > 0;
         VATParameters::salltitles = vm.count("salltitles") > 0;
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
+		VATParameters::forwardonly = vm.count("forward_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
 		VATParameters::whole_genome = vm.count("whole-genome") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;

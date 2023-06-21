@@ -64,6 +64,7 @@ double		toppercent;
 string		daa_file;
 string		output_format;
 bool		forwardonly;
+bool		forward_only;
 unsigned	fetch_size;
 bool		single_domain;
 size_t		db_size;

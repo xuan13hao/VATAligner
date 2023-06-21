@@ -65,6 +65,7 @@ namespace VATParameters
 	extern string	output_format;
 	extern string	output_file;
 	extern bool		forwardonly;
+	extern bool		forward_only;
 	extern unsigned fetch_size;
 	extern bool		single_domain;
 	extern size_t	db_size;

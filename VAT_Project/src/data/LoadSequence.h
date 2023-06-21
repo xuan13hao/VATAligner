@@ -121,7 +121,7 @@ size_t ReadingSeqs(Input_stream &file,
 	try {
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
 
-			if(VATParameters::forwardonly && VATParameters::algn_type == VATParameters::dna)
+			if(VATParameters::forward_only && VATParameters::algn_type == VATParameters::dna)
 			{
 				ids->push_back(id);
 				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);
