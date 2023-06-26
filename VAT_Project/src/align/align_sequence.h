@@ -43,7 +43,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
 		if (ds.len >= VATParameters::seed_len)
 		{
-			cout<<"seed = "<<ds<<endl;
+			// cout<<"seed = "<<ds<<endl;
 			diagonalsegment_.push_back(ds);
 		}
 		
