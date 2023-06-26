@@ -17,14 +17,14 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	int tmp_score(0);
 	delta = 0;
 	const _val *q(query - 1), *s(subject - 1);
-	while (score - st < VATParameters::seed_len
+	while (score - st < VATParameters::xdrop
 		&& *q != AlphabetSet<_val>::PADDING_CHAR
 		&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
 		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		if (*q == *s) {
+		if (*q == mask_critical(*s)) {
 			tmp_score = 1;
 		} else {
 			tmp_score = 0;
@@ -45,14 +45,14 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	st = score;
 	n = 1;
 	len = 0;
-	while (score - st < VATParameters::seed_len
+	while (score - st < VATParameters::xdrop
 		&& *q != AlphabetSet<_val>::PADDING_CHAR
 		&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
 		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		if (*q == *s) {
+		if (*q == mask_critical(*s)) {
 			tmp_score = 1;
 		} else {
 			tmp_score = 0;
@@ -69,7 +69,7 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	// cout<<"q = "<<q_<<", r = "<<r_<<endl;
 	len += delta;
 	//int query_pos, int subject_pos, int len, int score
-	// cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
+	cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
 	return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,h,qry_,sbj_,q_,r_);
 }
 
