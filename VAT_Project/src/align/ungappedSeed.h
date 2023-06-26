@@ -13,17 +13,23 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
 	sbj_ = l.first;
 	unsigned delta,len;
-	const int xdrop = 10;
 	int score(0), st(0), n=1;
+	int tmp_score(0);
 	delta = 0;
 	const _val *q(query - 1), *s(subject - 1);
-	while (score - st < xdrop
+	while (score - st < VATParameters::seed_len
 		&& *q != AlphabetSet<_val>::PADDING_CHAR
 		&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
-		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
+		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
+		if (*q == *s) {
+			tmp_score = 1;
+		} else {
+			tmp_score = 0;
+		}
+		st +=tmp_score;
 		if (st > score) {
 			score = st;
 			delta = n;
@@ -39,13 +45,19 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	st = score;
 	n = 1;
 	len = 0;
-	while (score - st < xdrop
+	while (score - st < VATParameters::seed_len
 		&& *q != AlphabetSet<_val>::PADDING_CHAR
 		&& *s != AlphabetSet<_val>::PADDING_CHAR)
 	{
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
-		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
+		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
+		if (*q == *s) {
+			tmp_score = 1;
+		} else {
+			tmp_score = 0;
+		}
+		st +=tmp_score;
 		if (st > score) {
 			score = st;
 			len = n;

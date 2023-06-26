@@ -41,7 +41,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		const _val* sbj = ref->data(i->subject_);
 		const _val* qry = &query[i->seed_offset_];
 		DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-		if (ds.len > VATParameters::gapped_xdrop)
+		if (ds.len >= VATParameters::seed_len)
 		{
 			diagonalsegment_.push_back(ds);
 		}

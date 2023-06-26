@@ -477,60 +477,71 @@ static double kls_[8][16][5] =
 
 enum ProteinMatrix {BLOSUM62, BLOSUM80, BLOSUM90, BLOSUM50, BLOSUM45, PAM250, PAM70, PAM30}; 
 enum DNAMatrix {BLAST, IDENTITY};
-#endif
 
 
+#include <iostream>
+#include <string>
 
+int getScore(char ch1, char ch2, const std::string& mode) {
+    int score = 0;
 
-class ScoreMatrixInterface {
-private:
-    char char1;
-    char char2;
-    int scoreMatrix[26][26]; // Assuming a 26x26 score matrix
-
-public:
-    void setCharacters(char c1, char c2) {
-        char1 = c1;
-        char2 = c2;
-    }
-
-    void setMatrix(const int matrix[26][26]) {
-        // Copy the score matrix values
-        for (int i = 0; i < 26; ++i) {
-            for (int j = 0; j < 26; ++j) {
-                scoreMatrix[i][j] = matrix[i][j];
-            }
-        }
-    }
-
-    int calculateScore() {
-        int char1Index = char1 - 'A';
-        int char2Index = char2 - 'A';
-
-        int score = scoreMatrix[char1Index][char2Index];
-
+    if (mode == "matrix1") {
+        // Call score matrix 1
+        std::cout << "Calling score matrix 1" << std::endl;
+        // Perform scoring logic for matrix1
+        score = 10; // Placeholder value
+    } else if (mode == "matrix2") {
+        // Call score matrix 2
+        std::cout << "Calling score matrix 2" << std::endl;
+        // Perform scoring logic for matrix2
+        score = 20; // Placeholder value
+    } else if (mode == "matrix3") {
+        // Call score matrix 3
+        std::cout << "Calling score matrix 3" << std::endl;
+        // Perform scoring logic for matrix3
+        score = 30; // Placeholder value
+    } else {
+        std::cerr << "Invalid mode specified!" << std::endl;
         return score;
     }
-};
+
+    // Perform remaining scoring logic common to all modes
+    // ...
+
+    return score;
+}
+
+void testInterface() {
+    char ch1 = 'A';
+    char ch2 = 'C';
+    std::string mode;
+
+    // Test case 1: Calling score matrix 1
+    mode = "matrix1";
+    int score = getScore(ch1, ch2, mode);
+    std::cout << "Score: " << score << std::endl;
+
+    // Test case 2: Calling score matrix 2
+    mode = "matrix2";
+    score = getScore(ch1, ch2, mode);
+    std::cout << "Score: " << score << std::endl;
+
+    // Test case 3: Calling score matrix 3
+    mode = "matrix3";
+    score = getScore(ch1, ch2, mode);
+    std::cout << "Score: " << score << std::endl;
+
+    // Test case 4: Invalid mode
+    mode = "invalid";
+    score = getScore(ch1, ch2, mode);
+    std::cout << "Score: " << score << std::endl;
+}
 
 int main() {
-    ScoreMatrixInterface interface;
-
-    int blosum62[26][26] = {
-        // Populate the BLOSUM62 score matrix here
-        // Example: using a simplified 3x3 matrix for demonstration purposes
-        { 4, -1, -2 },
-        { -1, 5, -3 },
-        { -2, -3, 6 }
-    };
-
-    interface.setCharacters('A', 'B');
-    interface.setMatrix(blosum62);
-
-    int score = interface.calculateScore();
-    std::cout << "Score: " << score << std::endl;
+    testInterface();
 
     return 0;
 }
+
 
 #endif // __SCORE_MATRIX_H__
