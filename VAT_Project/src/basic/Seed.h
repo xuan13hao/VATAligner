@@ -26,7 +26,7 @@ class DiagonalSeeds
 	{
 		
 	}
-	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, Hits<_locr,_locl>& h, int& q_, int& s_,string& q, string& s) :
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score, int match,int mismatch,Hits<_locr,_locl>& h, int& q_, int& s_,string& q, string& s) :
 	i(query_pos),
 	j(subject_pos),
 	len(len),
@@ -35,6 +35,8 @@ class DiagonalSeeds
 	qry_id(s_),
 	sbj_id(q_),
 	qry_str(q),
+	match(match),
+	mismatch(mismatch),
 	sbj_str(s)
 	{
 		
@@ -89,7 +91,8 @@ class DiagonalSeeds
 		len = rhs.len;
 		qry_str = rhs.qry_str;
 		sbj_str = rhs.sbj_str;
-
+		match = rhs.match;
+		mismatch = rhs.mismatch;
 		return *this;
 	}
 	bool operator==(const DiagonalSeeds &rhs) const
@@ -114,13 +117,14 @@ class DiagonalSeeds
 	}
 	friend std::ostream& operator<<(std::ostream &s, const DiagonalSeeds &d)
 	{
-		s << "i=" << d.i << " j=" << d.j << " l=" << d.len << " score=" << d.score;
+		s << "i=" << d.i << " j=" << d.j << " l=" << d.len << " score=" << d.score<<" match = "<<d.match<<" mismatch = "<<d.mismatch;
 		return s;
 	}
 	int i, j, len, score;//query_pos, subject_pos
 	string qry_str;
 	string sbj_str;
 	int qry_id, sbj_id;
+	int match,mismatch;
 	Hits<_locr,_locl> hit_;
 };
 

@@ -44,7 +44,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		if (ds.len >= VATParameters::seed_len)
 		{
 			// cout<<"seed = "<<ds<<endl;
-			diagonalsegment_.push_back(ds);
+		diagonalsegment_.push_back(ds);
 		}
 		
 	}

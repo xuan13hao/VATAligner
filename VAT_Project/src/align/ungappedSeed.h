@@ -14,7 +14,9 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	sbj_ = l.first;
 	unsigned delta,len;
 	int score(0), st(0), n=1;
-	int tmp_score(0);
+	int match(0);
+	int tmp_len(0);
+	int mismatch(0);
 	delta = 0;
 	const _val *q(query - 1), *s(subject - 1);
 	while (score - st < VATParameters::xdrop
@@ -25,11 +27,13 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
 		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		if (*q == mask_critical(*s)) {
-			tmp_score = 1;
+			tmp_len = 1;
+			match++;
 		} else {
-			tmp_score = 0;
+			tmp_len = 0;
+			mismatch++;
 		}
-		st +=tmp_score;
+		st +=tmp_len;
 		if (st > score) {
 			score = st;
 			delta = n;
@@ -53,11 +57,13 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
 		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
 		if (*q == mask_critical(*s)) {
-			tmp_score = 1;
+			tmp_len = 1;
+			match++;
 		} else {
-			tmp_score = 0;
+			tmp_len = 0;
+			mismatch++;
 		}
-		st +=tmp_score;
+		st +=tmp_len;
 		if (st > score) {
 			score = st;
 			len = n;
@@ -68,9 +74,15 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	}
 	// cout<<"q = "<<q_<<", r = "<<r_<<endl;
 	len += delta;
+
+	// if (len > VATParameters::seed_len) {
+    //     len = VATParameters::seed_len;
+    //     q_.resize(len);
+    //     r_.resize(len);
+    // }
 	//int query_pos, int subject_pos, int len, int score
 	// cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
-	return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,h,qry_,sbj_,q_,r_);
+	return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,match,mismatch,h,qry_,sbj_,q_,r_);
 }
 
 #endif // __UNGAPPEDSEED_H__
