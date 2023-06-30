@@ -48,7 +48,7 @@ int main(int ac, const char* av[])
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
-        	("sensitive", "enable sensitive mode (default: fast)")
+        	("long-read", "enable long-read mode (default: short)")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
@@ -109,17 +109,17 @@ int main(int ac, const char* av[])
         po::store(po::command_line_parser(ac, av).options(cmd_line_options).positional(positional).run(), vm);
         po::notify(vm);
 
-        if(vm.count("sensitive"))
-        	VATParameters::aligner_mode = VATParameters::sensitive;
+        if(vm.count("long-read"))
+        	VATParameters::aligner_mode = VATParameters::long_model;
         else
-        	VATParameters::aligner_mode = VATParameters::fast;
+        	VATParameters::aligner_mode = VATParameters::short_model;
         VATParameters::alignment_traceback = (vm.count("no-traceback") == 0);
-        VATParameters::long_mode = vm.count("long") > 0;
+        // VATParameters::long_mode = vm.count("long") > 0;
         VATParameters::verbose = vm.count("verbose") > 0;
         VATParameters::debug_log = vm.count("log") > 0;
         VATParameters::salltitles = vm.count("salltitles") > 0;
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
-		VATParameters::forwardonly = vm.count("forward_only") > 0;
+		VATParameters::forward_only = vm.count("forward_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
 		VATParameters::whole_genome = vm.count("whole-genome") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
@@ -171,11 +171,11 @@ int main(int ac, const char* av[])
 			{
 				if(VATParameters::algn_type == VATParameters::protein)
 				{
-					VATParameters::chunk_size = 0;
+					VATParameters::chunk_size = 2;
 					RunModel::ProteinAlign();
 				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
-					VATParameters::chunk_size = 0;
+					VATParameters::chunk_size = 2;
 					RunModel::DNAAlign();
 				}else
 				{
