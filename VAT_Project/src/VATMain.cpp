@@ -49,6 +49,7 @@ int main(int ac, const char* av[])
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
         	("long-read", "enable long-read mode (default: short)")
+			("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
@@ -110,7 +111,13 @@ int main(int ac, const char* av[])
         po::notify(vm);
 
         if(vm.count("long-read"))
-        	VATParameters::aligner_mode = VATParameters::long_model;
+		{
+			VATParameters::aligner_mode = VATParameters::long_model;
+		}
+		else if (vm.count("accuracy"))
+		{
+			VATParameters::aligner_mode = VATParameters::accuracy_model;
+		}
         else
         	VATParameters::aligner_mode = VATParameters::short_model;
         VATParameters::alignment_traceback = (vm.count("no-traceback") == 0);

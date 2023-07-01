@@ -74,7 +74,7 @@ namespace VATParameters
 	extern bool		whole_genome;
 	extern int		seed_len;
 
-	typedef enum { short_model=0, long_model=1 } Aligner_mode;
+	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
 	extern Aligner_mode aligner_mode;
 	typedef enum { invalid=0, makevatdb=1, protein=2, blastx=3, dna=4, view=5 } Command;
 	extern Command algn_type;

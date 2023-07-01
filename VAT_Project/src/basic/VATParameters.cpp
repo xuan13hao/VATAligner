@@ -79,12 +79,12 @@ Command algn_type;
 template<typename _val>
 void set_options(double block_size)
 {
-	/*if(aligner_mode == very_sensitive) {
+	if(aligner_mode == accuracy_model) {
 		set_option(seed_signatures, 2u);
 		set_option(hit_cap, 1024u);
 		set_option(index_mode, 3u);
 		lowmem = std::max(lowmem, 4u);
-	} else*/
+	} else
 	if(aligner_mode == long_model) {
 		set_option(seed_signatures, 1u);
 		set_option(index_mode, 2u);
