@@ -71,6 +71,7 @@ size_t		db_size;
 bool		spilce;
 bool		chimera;
 bool		whole_genome;
+bool		circ;
 int		seed_len;
 
 Aligner_mode aligner_mode;

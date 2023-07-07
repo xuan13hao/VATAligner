@@ -122,7 +122,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 
 		}
 	}
-	else if(VATParameters::spilce)
+	else if(VATParameters::spilce||VATParameters::circ)
 	{
 		// cout<<"spilce"<<endl;
 		vector<DiagonalSeeds<_locr,_locl> > spliced_seed;

@@ -61,6 +61,7 @@ int main(int ac, const char* av[])
 			// ("chimera", po::value<bool>(&VATParameters::chimera)->default_value(0), "chimera alignment (0)")
 			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
 			("chimera", "chimera alignment")
+			("circ", "circ alignment")
 			("whole-genome", "whole-genome alignment")
 			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
@@ -129,6 +130,7 @@ int main(int ac, const char* av[])
 		VATParameters::forward_only = vm.count("forward_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
 		VATParameters::whole_genome = vm.count("whole-genome") > 0;
+		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
 

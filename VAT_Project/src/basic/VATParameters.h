@@ -72,6 +72,7 @@ namespace VATParameters
 	extern bool		spilce;
 	extern bool		chimera;
 	extern bool		whole_genome;
+	extern bool		circ;
 	extern int		seed_len;
 
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
