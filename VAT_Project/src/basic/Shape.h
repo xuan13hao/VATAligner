@@ -125,7 +125,7 @@ class Shape
 
 		return true;
 	}
-/*
+
 inline uint64_t calculate_minimizer(const DNA *seq, unsigned start, unsigned length)
 {
     const unsigned k = length;  // Size of the minimizer
@@ -144,7 +144,7 @@ inline uint64_t calculate_minimizer(const DNA *seq, unsigned start, unsigned len
 
     return min_seed;
 }
-*/
+
 
 
 	//template<>
