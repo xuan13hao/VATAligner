@@ -130,14 +130,31 @@ private:
 		//insert seed with postion into seedp_range
 		void push(seed key, _pos value, const seedp_range &range)
 		{
+			// const unsigned p (seed_partition(key));
+			// if(range.contains(p)) {
+			// 	assert(n[p] < BUFFER_SIZE);
+			// 	// buf[p][n[p]++] = Tuple (key, value);
+			// 	buf[p][n[p]++] = Tuple (seed_partition_offset(key), value);
+			// 	if(n[p] == BUFFER_SIZE)
+			// 		flush(p);
+			// }
 			const unsigned p (seed_partition(key));
-			if(range.contains(p)) {
+			if (range.contains(p)) {
 				assert(n[p] < BUFFER_SIZE);
-				// buf[p][n[p]++] = Tuple (key, value);
-				buf[p][n[p]++] = Tuple (seed_partition_offset(key), value);
-				if(n[p] == BUFFER_SIZE)
+				
+				// Check the distance between the keys of the current Tuple and the new Tuple
+				if (n[p] > 0 && key - buf[p][n[p] - 1].key < 5) {
+					// If the distance is smaller than 5, update the value of the existing Tuple
+					buf[p][n[p] - 1].value = value;
+				} else {
+					// Otherwise, add the new Tuple to the buffer
+					buf[p][n[p]++] = Tuple(seed_partition_offset(key), value);
+				}
+				
+				if (n[p] == BUFFER_SIZE)
 					flush(p);
 			}
+
 		}
 		void flush(unsigned p)
 		{
@@ -221,6 +238,7 @@ private:
 				// cout<<"seq = "<<seq[j]<<endl;
 				if(sh.set_seed(key, &seq[j]))//get key via seq
 					it->push(key, seqs.position(i, j), range);
+					
 			}
 		}
 		//copy all buffer data into ptr set
