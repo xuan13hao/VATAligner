@@ -2,7 +2,7 @@
 
 #ifndef MATCH_H_
 #define MATCH_H_
-
+#include <cmath>        // std::abs
 #include "sequence.h"
 #include "../tools/async_buffer.h"
 //include "../tools/util.h"
@@ -214,6 +214,39 @@ struct Segment
 		unsigned operator()(const Segment& x) const
 		{ return x.subject_id_; }
 	};
+
+    // Member function to check strong compatibility with another segment
+    bool isStronglyCompatible(const Segment<_val>& other) const
+    {
+		int MAX_INDEL = 5;
+		int MAX_DISTANCE = 5000;
+        // Check non-overlapping: Segments should not overlap
+        bool nonOverlapping = (query_range().end_ < other.query_range().begin_) ||
+                              (other.query_range().end_ < query_range().begin_);
+
+        // Check locality: Segments should be close in query coordinates (e.g., within a certain distance)
+        bool locality = static_cast<int>(query_range().end_ - other.query_range().begin_) <= MAX_DISTANCE;
+
+        // Check small INDEL: Compare subject coordinates to check for small INDELs
+        bool smallIndel = (static_cast<int>(subject_range().end_ - other.subject_range().begin_) <= MAX_INDEL) ||
+                          (static_cast<int>(other.subject_range().end_ - subject_range().begin_) <= MAX_INDEL);
+
+        // Combine the conditions to determine strong compatibility
+        return  nonOverlapping && locality && smallIndel;
+    }
+    bool isChimericMapping(const Segment<_val>& other) const
+    {
+		int MAX_DISTANCE_IN_REFERENCE = 5;
+        // Check if segments correspond to different reference sequences
+        bool differentReference = (subject_id_ != other.subject_id_);
+
+        // Check if segments are too far away in a single reference sequence
+        bool farAwayInReference = (static_cast<int>(this->subject_range().end_ - other.subject_range().end_) > MAX_DISTANCE_IN_REFERENCE);
+
+        // Determine if segments induce chimeric mapping
+        return differentReference || farAwayInReference;
+    }
+
 	int						score_;
 	unsigned				frame_;
 	local_match<_val>	   *traceback_;

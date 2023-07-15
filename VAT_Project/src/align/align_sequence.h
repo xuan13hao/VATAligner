@@ -9,6 +9,8 @@
 #include "./ungappedSeed.h"
 #include "findwholeGenoSeeds.h"
 #include "splicedunGappedSeed.h"
+#include "dp_chain_chimera.h"
+
 using std::vector;
 
 template<typename _val, typename _locr, typename _locl>
@@ -32,6 +34,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	vector<DiagonalSeeds<_locr,_locl> > diagonalsegment_;
 	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i)
 	{
+		//(i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]
 		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
 		{
 			stat.inc(Statistics::DUPLICATES);
@@ -41,38 +44,24 @@ void align_sequence(vector<Segment<_val> > &matches,
 		const _val* sbj = ref->data(i->subject_);
 		const _val* qry = &query[i->seed_offset_];
 		DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-		if (ds.len >= VATParameters::seed_len)
-		{
-			// cout<<"seed = "<<ds<<endl;
-		diagonalsegment_.push_back(ds);
-		}
+		// if (ds.len >= VATParameters::gappex)
+		// {
+			diagonalsegment_.push_back(ds);
+		// }
+
 		
 	}
 	// cout<<"seed num = "<<diagonalsegment_.size()<<endl;
 	if(VATParameters::chimera)
 	{
-		// cout<<"chimera"<<endl;
-		vector<ChimeraAlnType<_locr, _locl> > paired_seeds;
-		pairChimeraSeeds(diagonalsegment_, paired_seeds,query_len);
-
-		vector<DiagonalSeeds<_locr,_locl> > arm;
-		for (size_t i = 0; i < paired_seeds.size(); i++)
+		// vector<DiagonalSeeds<_locr,_locl> > chimera = diagonalsegment_;
+		int max_gap = 10;
+		// cout<<"chimera = "<<endl;
+		vector<DiagonalSeeds<_locr,_locl> > chimera = findchimericSeeds(diagonalsegment_,max_gap);
+		// cout<<"chimera = "<<chimera.size()<<endl;
+		for (size_t i = 0; i < chimera.size(); i++)
 		{
-			arm.push_back(paired_seeds[i].arm1);
-			if(paired_seeds[i].is_chimera)
-			{
-				if(paired_seeds[i].arm2.len > 0)
-				{
-					arm.push_back(paired_seeds[i].arm2);
-				}
-				
-			}
-		}
-		if(arm.size()<6)
-		{
-			for (size_t i = 0; i < arm.size(); i++)
-			{
-				Hits<_locr,_locl> h = arm[i].hit_;
+				Hits<_locr,_locl> h = chimera[i].hit_;
 				local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
 				floating_sw(&query[h.seed_offset_],
 						local.back(),
@@ -90,9 +79,10 @@ void align_sequence(vector<Segment<_val> > &matches,
 				to_source_space(local.back(), frame, dna_len);
 				stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
 				stat.inc(Statistics::OUT_HITS);
-			}
 
 		}
+
+		
 	} else if(VATParameters::whole_genome)
 	{
 		// cout<<"whole_genome"<<endl;

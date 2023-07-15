@@ -117,7 +117,15 @@ void align_read(Output_buffer<_val> &buffer,
 	if(matches->size() == 0)
 		return;
 
-	link_segments(*matches);
+	if(VATParameters::whole_genome)
+	{
+		link_wgs_segments(*matches);
+	}
+	else
+	{
+		link_segments(*matches);
+	}
+	
 
 
 	std::sort(matches->begin(), matches->end());

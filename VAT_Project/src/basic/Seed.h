@@ -115,6 +115,17 @@ class DiagonalSeeds
 	{
 		return x.subject_end() < y.subject_end();
 	}
+
+	bool isChimericMapping(const DiagonalSeeds& other) const {
+        // Check if seeds correspond to different reference sequences
+        bool differentReference = (i != other.i);
+		int MAX_DISTANCE_IN_REFERENCE = 5;
+        // Check if seeds are too far away in a single reference sequence
+        bool farAwayInReference = (std::abs(static_cast<int>(j - other.j)) > MAX_DISTANCE_IN_REFERENCE);
+
+        // Determine if seeds induce chimeric mapping
+        return differentReference || farAwayInReference;
+    }
 	friend std::ostream& operator<<(std::ostream &s, const DiagonalSeeds &d)
 	{
 		s << "i=" << d.i << " j=" << d.j << " l=" << d.len << " score=" << d.score<<" match = "<<d.match<<" mismatch = "<<d.mismatch;

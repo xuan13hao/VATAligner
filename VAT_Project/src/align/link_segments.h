@@ -60,4 +60,106 @@ void link_segments(vector<Segment<_val> > &hsp_list)
 	}
 }
 
+template<typename _val>
+void link_Chimeric_segments(vector<Segment<_val> > &hsp_list)
+{
+    hsp_list = hsp_list;
+}
+
+
+template<typename _val>
+void link_wgs_segments(vector<Segment<_val>>& hsp_list)
+{
+    // Define a vector to store the detected synteny blocks
+    vector<vector<Segment<_val>>> syntenyBlocks;
+
+    // Sort the hsp_list based on the comp_subject comparison function
+    std::sort(hsp_list.begin(), hsp_list.end(), Segment<_val>::comp_subject);
+
+    // Iterate over the hsp_list to detect synteny blocks
+    for (const Segment<_val>& segment : hsp_list)
+    {
+        bool addedToBlock = false;
+
+        // Try to add the segment to an existing synteny block
+        for (vector<Segment<_val>>& block : syntenyBlocks)
+        {
+            if (segment.isStronglyCompatible(block.front()))
+            {
+                block.push_back(segment);
+                addedToBlock = true;
+                break;
+            }
+        }
+
+        // If the segment didn't fit into any existing block, create a new block
+        if (!addedToBlock)
+        {
+            syntenyBlocks.push_back({ segment });
+        }
+    }
+
+    // Order the synteny blocks based on a specific criteria (e.g., top_score_)
+    std::sort(syntenyBlocks.begin(), syntenyBlocks.end(),
+              [](const vector<Segment<_val>>& block1, const vector<Segment<_val>>& block2) {
+                  return block1.front().top_score_ > block2.front().top_score_;
+              });
+
+    // Clear the hsp_list vector
+    hsp_list.clear();
+
+    // Concatenate the ordered synteny blocks into the hsp_list vector
+    for (const vector<Segment<_val>>& block : syntenyBlocks)
+    {
+        hsp_list.insert(hsp_list.end(), block.begin(), block.end());
+    }
+}
+
+template<typename _val>
+void findchimericSegments(std::vector<Segment<_val>>& segments, int maxDistance) {
+    std::vector<int> dp(segments.size());
+    std::vector<int> prev(segments.size(), -1);
+    std::vector<int> maxLen(segments.size());
+    std::vector<int> maxIdx(segments.size());
+
+    int bestScore = 0;
+    int bestIdx = -1;
+
+    for (int i = 0; i < segments.size(); ++i) {
+        dp[i] = segments[i].score_;
+        maxLen[i] = segments[i].score_;
+        maxIdx[i] = i;
+
+        for (int j = 0; j < i; ++j) {
+            if (!segments[i].isChimericMapping(segments[j]))
+                continue;
+
+            int distance = std::abs(static_cast<int>(segments[i].subject_range().begin_) - static_cast<int>(segments[j].subject_range().end_));
+            if (distance > maxDistance)
+                continue;
+
+            int score = dp[j] + segments[i].score_;
+            if (score > dp[i]) {
+                dp[i] = score;
+                prev[i] = j;
+            }
+        }
+
+        if (dp[i] > bestScore) {
+            bestScore = dp[i];
+            bestIdx = i;
+        }
+    }
+
+    std::vector<std::vector<Segment<_val>>> chainedSegments;
+    while (bestIdx >= 0) {
+        chainedSegments.push_back({ segments[bestIdx] });
+        bestIdx = prev[bestIdx];
+    }
+
+    std::reverse(chainedSegments.begin(), chainedSegments.end());
+}
+
+
+
 #endif /* LINK_SEGMENTS_H_ */
