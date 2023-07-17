@@ -118,7 +118,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
         results.insert(results.end(), block.begin(), block.end());
     }
     return results;
-    return chainedSeeds;
+    // return chainedSeeds;
 }
 
 
