@@ -10,7 +10,7 @@
 #include "findwholeGenoSeeds.h"
 #include "splicedunGappedSeed.h"
 #include "dp_chain_chimera.h"
-
+#include "chaining.h"
 using std::vector;
 
 template<typename _val, typename _locr, typename _locl>
@@ -148,10 +148,15 @@ void align_sequence(vector<Segment<_val> > &matches,
 	}
 	else
 	{
+		vector<DiagonalSeeds<_locr,_locl> > seeds;
+		int max_gap = 50000; 
+		int maxIndel = 0; 
+		int maxLocalDistance = 40; 
+		seeds = chainingSeeds(diagonalsegment_, max_gap,maxIndel,maxLocalDistance);
 
-		for (size_t i = 0; i < diagonalsegment_.size(); i++)
+		for (size_t i = 0; i < seeds.size(); i++)
 		{
-			Hits<_locr,_locl> h = diagonalsegment_[i].hit_;
+			Hits<_locr,_locl> h = seeds[i].hit_;
 			local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
 			floating_sw(&query[h.seed_offset_],
 					local.back(),

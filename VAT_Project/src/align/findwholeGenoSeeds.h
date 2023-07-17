@@ -85,7 +85,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
 
             bool localDistance = (queryDistance < maxLocalDistance && targetDistance < maxLocalDistance);
             bool smallIndel = (indel < maxIndel);
-
+            // weakly compatible
             if (queryDistance > maxDistance || targetDistance > maxDistance || !localDistance || !smallIndel)
                 continue;
 
