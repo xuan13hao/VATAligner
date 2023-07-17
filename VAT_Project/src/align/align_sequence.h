@@ -85,10 +85,15 @@ void align_sequence(vector<Segment<_val> > &matches,
 		
 	} else if(VATParameters::whole_genome)
 	{
-		// cout<<"whole_genome"<<endl;
+		/*
+		int maxDistance, int maxIndel, int maxLocalDistance
+		*/
+		
 		vector<DiagonalSeeds<_locr,_locl> > whole_gen;
-		const int max_gap = 50000; 
-		whole_gen = findWholeGenSeeds(diagonalsegment_, max_gap);
+		int max_gap = 50000; 
+		int maxIndel = 5; 
+		int maxLocalDistance = 40; 
+		whole_gen = ChainWGSSeeds(diagonalsegment_, max_gap,maxIndel,maxLocalDistance);
 		for (size_t i = 0; i < whole_gen.size(); i++)
 		{
 				Hits<_locr,_locl> h = whole_gen[i].hit_;
