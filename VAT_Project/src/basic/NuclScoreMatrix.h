@@ -123,9 +123,9 @@ class Blastscoreblk
 	{ 
 		if (x == y)
 		{
-			return 1;
+			return 4;
 		}
-		return -1;
+		return -5;
 		//return getNuclMatchScore((char)AlphabetAttributes<DNA>::ALPHABET[x],(char)AlphabetAttributes<DNA>::ALPHABET[y]);
 	}
         // const int blast_lambbda = 1.28;

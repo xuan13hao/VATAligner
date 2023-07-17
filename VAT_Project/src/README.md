@@ -29,29 +29,5 @@ VAT view -a match.vatr -o match
 vim match
 ```
 
-'''R
-perfect 8
-partial_multi   0
-both_multi      0
-partial_wrong   66
-both_wrong      72844
-partial_miss    926930
-both_miss       152
->>>Strand-level statistics:
-correct 927012
-unique  997898
 
->>>Read-level statistics:
-perfect 795095
-partial_multi   46942
-both_multi      295
-partial_wrong   31895
-both_wrong      111865
-partial_miss    13844
-both_miss       64
->>>Strand-level statistics:
-correct 1682871
-unique  1815362
-
-'''
 
