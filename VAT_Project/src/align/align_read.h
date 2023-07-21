@@ -120,6 +120,7 @@ void align_read(Output_buffer<_val> &buffer,
 	if(VATParameters::whole_genome)
 	{
 		link_wgs_segments(*matches);
+		link_segments(*matches);
 	}
 	else
 	{

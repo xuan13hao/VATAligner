@@ -219,7 +219,7 @@ struct Segment
     bool isStronglyCompatible(const Segment<_val>& other) const
     {
 		int MAX_INDEL = 5;
-		int MAX_DISTANCE = 5000;
+		int MAX_DISTANCE = 50000;
         // Check non-overlapping: Segments should not overlap
         bool nonOverlapping = (query_range().end_ < other.query_range().begin_) ||
                               (other.query_range().end_ < query_range().begin_);
@@ -246,7 +246,31 @@ struct Segment
         // Determine if segments induce chimeric mapping
         return differentReference || farAwayInReference;
     }
+	bool isCompatible(const Segment<_val>& seg1, const Segment<_val>& seg2) {
+		// Check if segments are on the same frame (forward or reverse strand)
+		if (seg1.frame_ != seg2.frame_)
+			return false;
 
+		// Check if the segments are on the same subject sequence (subject_id)
+		if (seg1.subject_id_ != seg2.subject_id_)
+			return false;
+
+		// Assuming 'local_match' has members query_begin_, query_len_, subject_begin_
+		// Check if segments are overlapping and adjacent in the query range
+		unsigned overlap = std::min(seg1.traceback_->query_begin_ + seg1.traceback_->query_len_,
+									seg2.traceback_->query_begin_ + seg2.traceback_->query_len_)
+						- std::max(seg1.traceback_->query_begin_, seg2.traceback_->query_begin_);
+
+		if (overlap > 0) {
+			// If overlap is greater than zero, the segments are overlapping
+			// Check if the segments are adjacent in the query range
+			unsigned gap = seg2.traceback_->query_begin_ - (seg1.traceback_->query_begin_ + seg1.traceback_->query_len_);
+			if (gap == 1)
+				return true;
+		}
+
+		return false;
+	}
 	int						score_;
 	unsigned				frame_;
 	local_match<_val>	   *traceback_;
