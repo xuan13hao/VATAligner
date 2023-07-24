@@ -80,22 +80,21 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSee
     int bestScore = 0;
     int bestIdx = -1;
     for (int i = 0; i < seeds.size(); ++i) {
-        dp[i] = seeds[i].len;
-        maxLen[i] = seeds[i].len;
+        dp[i] = seeds[i].score;
+        maxLen[i] = seeds[i].score;
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
             int gap = seeds[i].j - seeds[j].j - seeds[j].len;
-            if (gap > maxGap)
-                continue;
+            // if (gap > maxGap)
+            //     continue;
             int splice_score = IsSpliceJunction(seeds[j]) ? -MAX : 0;
             int circ_score = 0;
             if(VATParameters::circ)
             {
-                // cout<<"circ"<<endl;
                circ_score =  isCandidateBackSplicedJunction(seeds[j])? -MAX : 0;
             }
-            int score = dp[j] + seeds[i].len+splice_score+circ_score;
+            int score = dp[j] + seeds[i].score+splice_score+circ_score;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;
@@ -149,29 +148,16 @@ int gapCost(const DiagonalSeeds<_locr,_locl> &j, const DiagonalSeeds<_locr,_locl
     
 }
 /**
-Use std::string::find as follows:
-
-if (s1.find(s2) != std::string::npos) {
-    std::cout << "found!" << '\n';
-}
-Note: "found!" will be printed if s2 is a substring of s1, both s1 and s2 are of type std::string.
-
 splice juntion GT.........AG 
 */
 template<typename _locr, typename _locl>
 bool IsSpliceJunction(const DiagonalSeeds<_locr,_locl> &i) 
 {
-    // int i_len = i.len,j_len = j.len;
     string ref_seed_i = i.sbj_str;
-    // string ref_seed_j = j.sbj_str;
     bool i_spjunction = false;
-    // bool j_spjunction = false;
     if (ref_seed_i.substr(0, 2) == "GT" && ref_seed_i.substr(ref_seed_i.length() - 2, 2) == "AG") {
             i_spjunction=  true;
     }
-    // if (ref_seed_j.substr(0, 2) == "GT" && ref_seed_j.substr(ref_seed_j.length() - 2, 2) == "AG") {
-    //         j_spjunction=  true;
-    // }
     if(i_spjunction)
     {
         return true;

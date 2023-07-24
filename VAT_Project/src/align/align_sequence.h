@@ -55,7 +55,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	if(VATParameters::chimera)
 	{
 		// vector<DiagonalSeeds<_locr,_locl> > chimera = diagonalsegment_;
-		int max_gap = 10;
+		int max_gap = 2000;
 		// cout<<"chimera = "<<endl;
 		vector<DiagonalSeeds<_locr,_locl> > chimera = findchimericSeeds(diagonalsegment_,max_gap);
 		// cout<<"chimera = "<<chimera.size()<<endl;
@@ -121,7 +121,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 	{
 		// cout<<"spilce"<<endl;
 		vector<DiagonalSeeds<_locr,_locl> > spliced_seed;
-		const int max_gap = 150; 
+		const int max_gap = 250; 
 		spliced_seed = findSpliceSeeds(diagonalsegment_, max_gap);
 		for (size_t i = 0; i < spliced_seed.size(); i++)
 		{
