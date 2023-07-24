@@ -321,7 +321,7 @@ private:
 		void operator()(unsigned thread_id ,unsigned seedp) const
 		{
 			int n = sl.ptr_end(seedp) - sl.ptr_begin(seedp) ;
-			if(n >= 8 && ((n != 0) && ((n & (n - 1)) == 0)))
+			if((n >= 8 && ((n != 0) && ((n & (n - 1)) == 0))) && VATParameters::simd_sort)
 			{
 				// cout<<"Using SIMD Sort "<<n<<endl;
 				sl.sortSIMD(sl.ptr_begin(seedp), sl.ptr_end(seedp));

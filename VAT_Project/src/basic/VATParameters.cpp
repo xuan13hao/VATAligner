@@ -73,7 +73,7 @@ bool		chimera;
 bool		whole_genome;
 bool		circ;
 int		seed_len;
-
+bool		simd_sort;
 Aligner_mode aligner_mode;
 Command algn_type;
 
