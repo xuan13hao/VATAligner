@@ -79,8 +79,8 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int queryDistance = std::abs(static_cast<int>(seeds[i].i - seeds[j].i));
-            int targetDistance = std::abs(static_cast<int>(seeds[i].j - seeds[j].j));
+            int queryDistance = std::abs(static_cast<int>(seeds[i].i+ seeds[i].len- seeds[j].i - seeds[j].len));
+            int targetDistance = std::abs(static_cast<int>(seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len));
             int indel = std::abs(static_cast<int>(queryDistance - targetDistance));
 
             bool localDistance = (queryDistance < maxLocalDistance && targetDistance < maxLocalDistance);
@@ -139,7 +139,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> findWholeGenSeeds(std::vector<DiagonalS
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int gap = seeds[i].i - seeds[j].i - seeds[j].len;
+            int gap = seeds[i].i + seeds[i].len- seeds[j].i - seeds[j].len;
             if (gap > maxGap)
                 continue;
 

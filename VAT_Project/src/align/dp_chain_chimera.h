@@ -76,7 +76,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> findchimericSeeds(std::vector<DiagonalS
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int distance = std::abs(static_cast<int>(seeds[i].j - seeds[j].j));
+            int distance = std::abs(static_cast<int>(seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len));
             // if (distance < maxDistance || !seeds[i].isChimericMapping(seeds[j]))
             //     continue;
             //weakly compatible

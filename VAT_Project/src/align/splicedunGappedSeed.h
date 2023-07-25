@@ -85,7 +85,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSee
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int gap = seeds[i].j - seeds[j].j - seeds[j].len;
+            int gap = seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len;
             // if (gap > maxGap)
             //     continue;
             // int splice_score = IsSpliceJunction(seeds[j]) ? -MAX : 0;

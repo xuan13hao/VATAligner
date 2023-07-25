@@ -23,24 +23,25 @@ std::vector<DiagonalSeeds<_locr, _locl>> chainingSeeds(std::vector<DiagonalSeeds
     int bestIdx = -1;
 
     for (int i = 0; i < seeds.size(); ++i) {
-        dp[i] = seeds[i].score;
+        dp[i] = seeds[i].len;
         maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
-            int queryDistance = std::abs(static_cast<int>(seeds[i].i - seeds[j].i));
-            int targetDistance = std::abs(static_cast<int>(seeds[i].j - seeds[j].j));
-            int indel = std::abs(queryDistance - targetDistance);
+            int queryDistance = std::abs(static_cast<int>(seeds[i].i+ seeds[i].len- seeds[j].i - seeds[j].len));
+            int targetDistance = std::abs(static_cast<int>(seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len));
+            int indel = std::abs(static_cast<int>(queryDistance - targetDistance));
 
-            bool colinear = (seeds[i].i < seeds[j].i && seeds[i].j < seeds[j].j) || (seeds[i].i > seeds[j].i && seeds[i].j > seeds[j].j);
-            bool nonOverlapping = (seeds[i].i > seeds[j].i + seeds[j].len) || (seeds[i].j > seeds[j].j + seeds[j].len);
+
+            bool colinear = (seeds[i].i + seeds[i].len < seeds[j].i + seeds[j].len && seeds[i].j + seeds[i].len < seeds[j].j + seeds[j].len) || (seeds[i].i + seeds[i].len> seeds[j].i + seeds[j].len && seeds[i].j + seeds[i].len> seeds[j].j+ seeds[j].len);
+            bool nonOverlapping = (seeds[i].i + seeds[i].len> seeds[j].i + seeds[j].len) || (seeds[i].j  + seeds[i].len> seeds[j].j + seeds[j].len);
             bool localDistance = (queryDistance < maxLocalDistance && targetDistance < maxLocalDistance);
             bool smallIndel = (indel < maxIndel);
             //strongly and weakly compatible
             // if (queryDistance > maxDistance || targetDistance > maxDistance || !colinear || !nonOverlapping || !localDistance || !smallIndel)
             //     continue;
 
-            int score = dp[j] + seeds[i].score;
+            int score = dp[j] + seeds[i].len;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;

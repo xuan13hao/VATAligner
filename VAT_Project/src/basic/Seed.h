@@ -134,7 +134,7 @@ class DiagonalSeeds
 	bool isChimericMapping(const DiagonalSeeds& other) const {
 		int MAX_DISTANCE_IN_REFERENCE = 5;
         // Check if seeds are too far away in a single reference sequence
-        bool farAwayInReference = (std::abs(static_cast<int>(j - other.j)) > MAX_DISTANCE_IN_REFERENCE);
+        bool farAwayInReference = (std::abs(static_cast<int>(j+len - other.j-other.len)) > MAX_DISTANCE_IN_REFERENCE);
 
         // Determine if seeds induce chimeric mapping
         return farAwayInReference;
