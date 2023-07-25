@@ -75,6 +75,8 @@ namespace VATParameters
 	extern bool		circ;
 	extern int		seed_len;
 	extern bool		simd_sort;
+	extern int		match;
+	extern int		mismatch;
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
 	extern Aligner_mode aligner_mode;
 	typedef enum { invalid=0, makevatdb=1, protein=2, blastx=3, dna=4, view=5 } Command;

@@ -74,6 +74,8 @@ bool		whole_genome;
 bool		circ;
 int		seed_len;
 bool		simd_sort;
+int		match;
+int		mismatch;
 Aligner_mode aligner_mode;
 Command algn_type;
 
