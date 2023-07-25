@@ -25,15 +25,6 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	{
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
-		// st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		// if (*q == mask_critical(*s)) {
-		// 	tmp_len = 1;
-		// 	match++;
-		// } else {
-		// 	tmp_len = 0;
-		// 	mismatch++;
-		// }
-		// st +=tmp_len;
 		if (st > score) {
 			score = st;
 			delta = n;
@@ -56,14 +47,6 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 		q_.push_back(AlphabetAttributes<_val>::ALPHABET[*q]);
 		r_.push_back(AlphabetAttributes<_val>::ALPHABET[*s]);
 		st += ScoreMatrix::get().letter_score(*q, mask_critical(*s));
-		// if (*q == mask_critical(*s)) {
-		// 	tmp_len = 1;
-		// 	match++;
-		// } else {
-		// 	tmp_len = 0;
-		// 	mismatch++;
-		// }
-		// st +=tmp_len;
 		if (st > score) {
 			score = st;
 			len = n;
@@ -74,15 +57,32 @@ DiagonalSeeds<_locr, _locq> ungappedSeeds(const _val *query, const _val *subject
 	}
 	// cout<<"q = "<<q_<<", r = "<<r_<<endl;
 	len += delta;
+	//DiagonalSeeds(int query_pos, int subject_pos, int len, int score,Hits<_locr,_locl>& h, bool splice, bool back_splice)
+    bool i_spjunction = false;
+    if (r_.substr(0, 2) == "GT" && r_.substr(r_.length() - 2, 2) == "AG") 
+	{
+            i_spjunction=  true;
+	}
+	bool BackSplicedJunction = false;
+    if (len < 8) {
+        BackSplicedJunction = false; // Seed is too short to be a candidate junction
+    }
+    // Check for splice site motifs
+    size_t donorPos = q_.find("GT");
+    size_t acceptorPos = q_.find("AG");
 
-	// if (len > VATParameters::seed_len) {
-    //     len = VATParameters::seed_len;
-    //     q_.resize(len);
-    //     r_.resize(len);
-    // }
-	//int query_pos, int subject_pos, int len, int score
-	// cout<<"i = "<<qa - delta<<",j ="<<sa - delta<<", len = "<<len + delta<<", score = "<<score<<", delta = "<<delta<<", len = "<<len<<endl;
-	return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,match,mismatch,h,qry_,sbj_,q_,r_);
+    // Check if both donor and acceptor motifs are present
+    if (donorPos == std::string::npos || acceptorPos == std::string::npos) {
+        BackSplicedJunction = false; // Seed does not contain both donor and acceptor motifs
+    }
+
+    // Check orientation
+    if (donorPos > acceptorPos) {
+        BackSplicedJunction = true; // Seed has the reverse orientation of splice sites
+    }
+
+	return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,h,i_spjunction,BackSplicedJunction);
+	// return DiagonalSeeds<_locr, _locq>(qa - delta, sa - delta, len, score,match,mismatch,h,qry_,sbj_,q_,r_);
 }
 
 #endif // __UNGAPPEDSEED_H__

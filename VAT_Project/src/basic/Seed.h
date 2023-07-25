@@ -16,7 +16,10 @@ class DiagonalSeeds
 {
     public:
 	DiagonalSeeds() :
-		len(0)
+		len(0),
+		IsSpliceJunction(false),
+		isCandidateBackSplicedJunction(false)
+		
 	{}
 	DiagonalSeeds(int query_pos, int subject_pos, int len, int score) :
 		i(query_pos),
@@ -41,7 +44,17 @@ class DiagonalSeeds
 	{
 		
 	}
-
+	DiagonalSeeds(int query_pos, int subject_pos, int len, int score,Hits<_locr,_locl>& h, bool splice, bool back_splice) :
+	i(query_pos),
+	j(subject_pos),
+	len(len),
+	score(score),
+	hit_(h),
+	IsSpliceJunction(splice),
+	isCandidateBackSplicedJunction(back_splice)
+	{
+		
+	}
 	bool empty() const
 	{
 		return len == 0;
@@ -92,6 +105,8 @@ class DiagonalSeeds
 		qry_str = rhs.qry_str;
 		sbj_str = rhs.sbj_str;
 		match = rhs.match;
+		IsSpliceJunction = rhs.IsSpliceJunction;
+		isCandidateBackSplicedJunction = rhs.isCandidateBackSplicedJunction; 
 		mismatch = rhs.mismatch;
 		return *this;
 	}
@@ -117,14 +132,12 @@ class DiagonalSeeds
 	}
 
 	bool isChimericMapping(const DiagonalSeeds& other) const {
-        // Check if seeds correspond to different reference sequences
-        bool differentReference = (i != other.i);
 		int MAX_DISTANCE_IN_REFERENCE = 5;
         // Check if seeds are too far away in a single reference sequence
         bool farAwayInReference = (std::abs(static_cast<int>(j - other.j)) > MAX_DISTANCE_IN_REFERENCE);
 
         // Determine if seeds induce chimeric mapping
-        return differentReference || farAwayInReference;
+        return farAwayInReference;
     }
 	friend std::ostream& operator<<(std::ostream &s, const DiagonalSeeds &d)
 	{
@@ -136,6 +149,7 @@ class DiagonalSeeds
 	string sbj_str;
 	int qry_id, sbj_id;
 	int match,mismatch;
+	bool IsSpliceJunction,isCandidateBackSplicedJunction; 
 	Hits<_locr,_locl> hit_;
 };
 

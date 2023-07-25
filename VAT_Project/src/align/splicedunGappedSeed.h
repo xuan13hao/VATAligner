@@ -80,21 +80,23 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSee
     int bestScore = 0;
     int bestIdx = -1;
     for (int i = 0; i < seeds.size(); ++i) {
-        dp[i] = seeds[i].score;
-        maxLen[i] = seeds[i].score;
+        dp[i] = seeds[i].len;
+        maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
 
         for (int j = 0; j < i; ++j) {
             int gap = seeds[i].j - seeds[j].j - seeds[j].len;
             // if (gap > maxGap)
             //     continue;
-            int splice_score = IsSpliceJunction(seeds[j]) ? -MAX : 0;
+            // int splice_score = IsSpliceJunction(seeds[j]) ? -MAX : 0;
+            int splice_score = seeds[j].IsSpliceJunction ? -MAX : 0;
             int circ_score = 0;
             if(VATParameters::circ)
             {
-               circ_score =  isCandidateBackSplicedJunction(seeds[j])? -MAX : 0;
+                circ_score =  seeds[j].isCandidateBackSplicedJunction ? -MAX : 0;
+            //    circ_score =  isCandidateBackSplicedJunction(seeds[j])? -MAX : 0;
             }
-            int score = dp[j] + seeds[i].score+splice_score+circ_score;
+            int score = dp[j] + seeds[i].len+splice_score+circ_score;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;
@@ -190,34 +192,6 @@ bool isCandidateBackSplicedJunction(const DiagonalSeeds<_locr,_locl> &j) {
     }
 
     return false; // Seed does not meet the criteria for a candidate junction
-}
-
-vector<pair<int, int>> find_exons(string sequence) {
-    vector<pair<int, int>> exon_regions; // stores start and end positions of exon regions
-    int seq_length = sequence.length();
-    bool in_exon = false;
-    int exon_start = 0;
-
-    for (int i = 0; i < seq_length; i++) {
-        if (sequence[i] == 'G' && sequence[i+1] == 'T' && sequence[i+2] == 'A' && sequence[i+3] == 'G') {
-            // stop codon, end of exon
-            if (in_exon) {
-                exon_regions.push_back(make_pair(exon_start, i+3));
-                in_exon = false;
-            }
-        } else if (sequence[i] == 'A' && sequence[i+1] == 'T' && sequence[i+2] == 'G') {
-            // start codon, beginning of exon
-            in_exon = true;
-            exon_start = i;
-        }
-    }
-
-    if (in_exon) {
-        // sequence ends in exon
-        exon_regions.push_back(make_pair(exon_start, seq_length-1));
-    }
-
-    return exon_regions;
 }
 
 #endif // __SPLICEDSEED_H__

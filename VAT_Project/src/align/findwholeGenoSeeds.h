@@ -89,7 +89,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
             if (queryDistance > maxDistance || targetDistance > maxDistance || !localDistance || !smallIndel)
                 continue;
 
-            int score = dp[j] + seeds[i].score;
+            int score = dp[j] + seeds[i].len;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;

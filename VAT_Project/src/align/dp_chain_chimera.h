@@ -71,7 +71,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> findchimericSeeds(std::vector<DiagonalS
     int bestIdx = -1;
 
     for (int i = 0; i < seeds.size(); ++i) {
-        dp[i] = seeds[i].score;
+        dp[i] = seeds[i].len;
         maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
 
@@ -82,7 +82,7 @@ std::vector<DiagonalSeeds<_locr, _locl>> findchimericSeeds(std::vector<DiagonalS
             //weakly compatible
             if (!seeds[i].isChimericMapping(seeds[j]))
                 continue;
-            int score = dp[j] + seeds[i].score;
+            int score = dp[j] + seeds[i].len;
             if (score > dp[i]) {
                 dp[i] = score;
                 prev[i] = j;
