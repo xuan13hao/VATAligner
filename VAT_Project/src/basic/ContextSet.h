@@ -69,9 +69,9 @@ void setup(const string &command, int ac, const char **av)
 	} 
 	else {
 		if(po::gap_open == -1)
-			po::gap_open = 3;
+			po::gap_open = 5;
 		if(po::gap_extend == -1)
-			po::gap_extend = 2;
+			po::gap_extend = 3;
 		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,

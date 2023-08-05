@@ -36,7 +36,7 @@ int main(int ac, const char* av[])
         po::options_description makedb("Makedb options");
         makedb.add_options()
         	("in,i", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
-        	("block-size,b", po::value<double>(&VATParameters::chunk_size), "sequence block size in billions of letters (default=2)")
+        	("block-size,b", po::value<double>(&VATParameters::chunk_size)->default_value(4), "sequence block size in billions of letters (default=4)")
         	;
 
         po::options_description aligner("Aligner options");
@@ -47,7 +47,7 @@ int main(int ac, const char* av[])
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
-        	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
+        	("id", po::value<double>(&VATParameters::min_id)->default_value(70), "minimum identity% to report an alignment")
         	("long-read", "enable long-read mode (default: short)")
 			("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
@@ -60,14 +60,14 @@ int main(int ac, const char* av[])
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
 			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
-			("simd_sort", "SIMD-Sort Double Index")
+			("simd_sort", "Double-index based on SIMD")
 			("chimera", "chimera alignment")
 			("circ", "circ alignment")
 			("whole-genome", "whole-genome alignment")
 			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
-
+//1111111111111111
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
 			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
@@ -75,18 +75,18 @@ int main(int ac, const char* av[])
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
        		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(25), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
-        	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(18), "xdrop for ungapped alignment")
-        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(20), "xdrop for gapped alignment in bits")
+        	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(25), "xdrop for ungapped alignment")
+        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(25), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
-        	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
+        	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096*2), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
-			("forward_only", "only forward strand alignment")
+			("for_only", "only forward strand alignment")
         	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
 	
         	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
@@ -128,7 +128,7 @@ int main(int ac, const char* av[])
         VATParameters::debug_log = vm.count("log") > 0;
         VATParameters::salltitles = vm.count("salltitles") > 0;
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
-		VATParameters::forward_only = vm.count("forward_only") > 0;
+		VATParameters::forward_only = vm.count("for_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
 		VATParameters::whole_genome = vm.count("whole-genome") > 0;
 		VATParameters::circ = vm.count("circ") > 0;
@@ -151,47 +151,47 @@ int main(int ac, const char* av[])
         } 
 		else if (VATParameters::algn_type == VATParameters::makevatdb && vm.count("in") && vm.count("db")) 
 		{
-        	if(vm.count("block-size") == 0)
-			{
+        	// if(vm.count("block-size") == 0)
+			// {
 				if (vm.count("dbtype")&&VATParameters::db_type == "nucl")
 				{
-					VATParameters::chunk_size = 2;
+					// VATParameters::chunk_size = 8;
 					RunModel::CreateDNADB();
 				}
 				else if (vm.count("dbtype")&&VATParameters::db_type == "prot")
 				{
-					VATParameters::chunk_size = 2;
+					// VATParameters::chunk_size = 8;
 					RunModel::CreateProteinDB();
 				}else
 				{
 					cerr << "Failed to get databasetype. Please refer to the readme for instructions." << endl;
 				}
 				
-			}
+			// }
 
         } else if ((VATParameters::algn_type == VATParameters::protein
         		//|| VATParameters::command == VATParameters::blastx
 				|| VATParameters::algn_type == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{
-        	if(vm.count("block-size") > 0) 
-			{
-        		cerr << "Warning: --block-size option should be set for the makevatdb command." << endl;
-        	} else
-			{
+        	// if(vm.count("block-size") > 0) 
+			// {
+        	// 	cerr << "Warning: --block-size option should be set for the makevatdb command." << endl;
+        	// } else
+			// {
 				if(VATParameters::algn_type == VATParameters::protein)
 				{
-					VATParameters::chunk_size = 2;
+					// VATParameters::chunk_size = 8;
 					RunModel::ProteinAlign();
 				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
-					VATParameters::chunk_size = 2;
+					// VATParameters::chunk_size = 8;
 					RunModel::DNAAlign();
 				}else
 				{
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
 				}
-			}
+			// }
         } else if(VATParameters::algn_type == VATParameters::view && vm.count("vaa") > 0)
         	view();
         else
