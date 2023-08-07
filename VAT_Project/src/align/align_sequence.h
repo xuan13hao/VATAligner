@@ -25,7 +25,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		typename Trace_pt_buffer<_locr,_locl>::Vector::iterator &end,
 		vector<char> &transcript_buf)
 {
-	std::cout << "align_sequence" <<std::endl;
+	// std::cout << "align_sequence" <<std::endl;
 	std::sort(begin, end, Hits<_locr,_locl>::cmp_normalized_subject);
 	const unsigned q_num (begin->query_);
 	const sequence<const _val> query (QuerySeqs<_val>::get()[q_num]);
