@@ -33,7 +33,7 @@ class AsynchronousBuffer
 		bins_ (bins),
 		bin_size_ ((input_count + bins_ - 1) / bins_)
 	{
-		log_stream << "Async_buffer() " << input_count << ',' << bin_size_ << endl;
+		cout << "Async_buffer() " << input_count << ',' << bin_size_ << endl;
 		for(unsigned j=0;j<VATParameters::threads();++j)
 			for(unsigned i=0;i<bins;++i) {
 				tmp_file_.push_back(TempFile ());
@@ -41,7 +41,6 @@ class AsynchronousBuffer
 				size_.push_back(0);
 			}
 	}
-
 	struct Iterator
 	{
 		Iterator(AsynchronousBuffer &parent, unsigned thread_num):
@@ -86,7 +85,7 @@ class AsynchronousBuffer
 		for(ptr_vector<OutputStreamer>::iterator i=out_.begin();i!=out_.end();++i)
 			i->close();
 		out_.clear();
-		log_stream << "Async_buffer.close() " << endl;
+		cout << "Async_buffer.close() " << endl;
 	}
 
 	void load(vector<_t> &data, unsigned bin) const
@@ -94,7 +93,7 @@ class AsynchronousBuffer
 		size_t size = 0;
 		for(unsigned i=0;i<VATParameters::threads();++i)
 			size += size_[i*bins_+bin];
-		log_stream << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
+		cout << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
 		data.resize(size);
 		_t* ptr = data.data();
 		for(unsigned i=0;i<VATParameters::threads();++i) {

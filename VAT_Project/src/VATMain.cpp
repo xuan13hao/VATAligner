@@ -36,7 +36,7 @@ int main(int ac, const char* av[])
         po::options_description makedb("Makedb options");
         makedb.add_options()
         	("in,i", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
-        	("block-size,b", po::value<double>(&VATParameters::chunk_size)->default_value(4), "sequence block size in billions of letters (default=4)")
+        	("block-size,b", po::value<double>(&VATParameters::chunk_size)->default_value(2), "sequence block size in billions of letters (default=4)")
         	;
 
         po::options_description aligner("Aligner options");
@@ -47,7 +47,7 @@ int main(int ac, const char* av[])
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
-        	("id", po::value<double>(&VATParameters::min_id)->default_value(70), "minimum identity% to report an alignment")
+        	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
         	("long-read", "enable long-read mode (default: short)")
 			("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
@@ -83,7 +83,7 @@ int main(int ac, const char* av[])
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
-        	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096*2), "trace point fetch size")
+        	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
 			("for_only", "only forward strand alignment")

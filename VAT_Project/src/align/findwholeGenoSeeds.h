@@ -77,8 +77,9 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
         dp[i] = seeds[i].score;
         maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
-
-        for (int j = 0; j < i; ++j) {
+//i - j <= 50
+        for (int j = std::max(0, i - 50); j < i; ++j) {
+        // for (int j = 0; j < i; ++j) {
             int queryDistance = std::abs(static_cast<int>(seeds[i].i+ seeds[i].len- seeds[j].i - seeds[j].len));
             int targetDistance = std::abs(static_cast<int>(seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len));
             int indel = std::abs(static_cast<int>(queryDistance - targetDistance));
@@ -86,8 +87,10 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
             bool localDistance = (queryDistance < maxLocalDistance && targetDistance < maxLocalDistance);
             bool smallIndel = (indel < maxIndel);
             // weakly compatible
-            if (queryDistance > maxDistance || targetDistance > maxDistance || !localDistance || !smallIndel)
+            if (queryDistance > maxDistance || targetDistance > maxDistance)
                 continue;
+            // if (queryDistance > maxDistance || targetDistance > maxDistance || !localDistance || !smallIndel)
+            //     continue;
 
             int score = dp[j] + seeds[i].len;
             if (score > dp[i]) {
@@ -110,18 +113,18 @@ std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds
 
     std::reverse(chainedSeeds.begin(), chainedSeeds.end());
 
-    vector<vector<DiagonalSeeds<_locr, _locl>>> synteny_blocks;
-    anchor_align(chainedSeeds, synteny_blocks);
-    // Concatenate synteny blocks into results vector
-    vector<DiagonalSeeds<_locr, _locl>> results;
-    for (const auto& block : synteny_blocks) {
-        results.insert(results.end(), block.begin(), block.end());
-    }
-    return results;
-    // return chainedSeeds;
+
+    return chainedSeeds;
 }
 
-
+    // vector<vector<DiagonalSeeds<_locr, _locl>>> synteny_blocks;
+    // anchor_align(chainedSeeds, synteny_blocks);
+    // // Concatenate synteny blocks into results vector
+    // vector<DiagonalSeeds<_locr, _locl>> results;
+    // for (const auto& block : synteny_blocks) {
+    //     results.insert(results.end(), block.begin(), block.end());
+    // }
+    // return results;
 
 template<typename _locr, typename _locl>
 std::vector<DiagonalSeeds<_locr, _locl>> findWholeGenSeeds(std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap)

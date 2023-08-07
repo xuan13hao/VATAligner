@@ -69,7 +69,7 @@ public:
 		//seed offset =  suject_end_position - subject_start_point 
 		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
 		out_.push(Hits<_locr,_locl> (q_num_, subject, seed_offset_));
-		// cout<<"q_num = "<<q_num_<<", subject = "<<subject<<",seed offset = "<<seed_offset_<<endl;
+		// cout<<"hit num = "<<out_.size()<<endl;
 		stats_.inc(Statistics::TENTATIVE_MATCHES3);
 	}
 
