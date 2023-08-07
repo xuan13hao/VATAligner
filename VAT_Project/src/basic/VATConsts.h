@@ -12,7 +12,7 @@ class VATConsts
 		seedp_bits = 10,
 		seedp = 1<<seedp_bits,
 		max_seed_weight = 32,
-		seqp_bits = 11,
+		seqp_bits = 8,
 		seqp = 1<<seqp_bits,
 		max_shapes = 5,
 		index_modes = 3,
