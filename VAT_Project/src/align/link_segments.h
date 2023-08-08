@@ -98,12 +98,27 @@ void link_wgs_segments(vector<Segment<_val>>& hsp_list)
             syntenyBlocks.push_back({ segment });
         }
     }
-
-    // Order the synteny blocks based on a specific criteria (e.g., top_score_)
+    // Order the synteny blocks based on the start and end positions of the first local_match in each segment
+    // Order the synteny blocks based on the positions of the first and last local_match in each segment
     std::sort(syntenyBlocks.begin(), syntenyBlocks.end(),
               [](const vector<Segment<_val>>& block1, const vector<Segment<_val>>& block2) {
-                  return block1.front().top_score_ > block2.front().top_score_;
+                  const local_match<_val>& firstMatch1 = block1.front().traceback_->subject_begin_;
+                  const local_match<_val>& lastMatch1 = block1.back().traceback_->subject_begin_;
+                  const local_match<_val>& firstMatch2 = block2.front().traceback_->subject_begin_;
+                  const local_match<_val>& lastMatch2 = block2.back().traceback_->subject_begin_;
+
+                  // Compare the positions of the first and last local_match segments
+                  if (firstMatch1.subject_begin_ != firstMatch2.subject_begin_) {
+                      return firstMatch1.subject_begin_ < firstMatch2.subject_begin_;
+                  } else {
+                      return lastMatch1.subject_begin_ < lastMatch2.subject_begin_;
+                  }
               });
+    // // Order the synteny blocks based on a specific criteria (e.g., top_score_)
+    // std::sort(syntenyBlocks.begin(), syntenyBlocks.end(),
+    //           [](const vector<Segment<_val>>& block1, const vector<Segment<_val>>& block2) {
+    //               return block1.front().top_score_ > block2.front().top_score_;
+    //           });
 
     // Clear the hsp_list vector
     hsp_list.clear();
