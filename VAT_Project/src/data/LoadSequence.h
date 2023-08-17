@@ -15,6 +15,14 @@ template<typename _ival, typename _val, typename _strand>
 size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 { ss.push_back(seq); return seq.size(); }
 
+// template<typename _ival, typename _val, typename _strand>
+// size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
+// {
+// 	ss.push_back(seq);
+// 	ss.push_back(Translator::reverse(seq));
+// 	return seq.size()*2;
+// }
+
 // template<>
 // size_t push_seq<DNA,DNA,Double_strand>(AlphabetSet<DNA> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
 // {

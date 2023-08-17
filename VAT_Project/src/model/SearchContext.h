@@ -77,7 +77,7 @@ void processShapes(unsigned sid,
 				range);
 		timer.finish();
 
-		timer.go("Searching alignments");
+		timer.go("Searching seeds");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
 
 		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
@@ -132,7 +132,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 		out = new OutputStreamer (tmp_file.back());
 	} else
 		out = &master_out.stream();
-	timer.go("Computing alignments");
+	timer.go("Generating seeds...");
 	alignQueries<_val,_locr,_locl>(*Trace_pt_buffer<_locr,_locl>::instance, out);
 	delete Trace_pt_buffer<_locr,_locl>::instance;
 

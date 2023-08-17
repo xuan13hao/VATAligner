@@ -18,6 +18,7 @@ vim match
 ```console
 VAT makevatdb --dbtype nucl --in ../data/test_all.fa -d mt
 VAT dna -d mt.vatf -q ../data/test_forward_reads.fa -a match --whole-genome
+VAT dna -d hp.vatf -q ../data/H_pyloriJ99_Eslice.fasta -a match --whole-genome --match 1 --mismatch -1
 VAT view -a match.vatr -o match
 vim match
 ```

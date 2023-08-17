@@ -101,7 +101,7 @@ void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer*
 
 		
 		v.init();
-		timer.go("Computing alignments");
+		timer.go("Generating seeds...");
 		if(ref_header.n_blocks > 1) {
 			Align_context<_val,_locr,_locl,Temp_output_buffer<_val> > context (v, output_file);
 			launch_thread_pool(context, VATParameters::threads());
