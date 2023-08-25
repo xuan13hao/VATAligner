@@ -38,7 +38,24 @@ class SequenceSet : public AlphabetSet<_val>
 		}
 		return pair<size_t,size_t> (min, max);
 	}
-
+	sequence<const _val> window_infix_query(size_t offset, unsigned &left) const
+	{
+	    const _val* begin (this->data(offset));
+	    unsigned n (0);
+	    while(*begin != AlphabetSet<_val>::PADDING_CHAR && n <= VATParameters::window) {
+	      --begin;
+	      ++n;
+	    }
+	    ++begin;
+	    left = VATParameters::window + 1 - n;
+	    const _val* end (this->data(offset));
+	    n = 0;
+	    while(*end != AlphabetSet<_val>::PADDING_CHAR && n < VATParameters::window) {
+	      ++end;
+	      ++n;
+	    }
+	    return sequence<const _val> (begin, end - begin);
+	  }
 	sequence<const _val> window_infix(size_t offset, unsigned &left) const
 	{
 		const _val* begin (this->data(offset));
@@ -70,7 +87,24 @@ class SequenceSet : public AlphabetSet<_val>
 		const _val* s (this->data(offset - VATParameters::window));
 		return sequence<const _val> (s, 2*VATParameters::window, begin - s);
 	}
+	sequence<const _val> window_infix_dp_right(size_t offset, unsigned len) const
+	{
+	        const _val* begin (this->data(offset));
+		return sequence<const _val> (begin, len, 0);
+	}
 
+	sequence<const _val> window_infix_dp_left(size_t offset, unsigned len) const
+	{
+	        const _val* begin (this->data(offset));
+		unsigned n (0);
+		while(*begin != AlphabetSet<_val>::PADDING_CHAR && n < len) {
+		        --begin;
+			++n;
+		}
+		++begin;
+		const _val* s (this->data(offset - len + 1));
+		return sequence<const _val> (s, len, begin - s);
+	}
 	vector<size_t> partition() const
 	{
 		vector<size_t> v;

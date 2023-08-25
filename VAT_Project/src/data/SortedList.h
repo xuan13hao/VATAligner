@@ -70,10 +70,10 @@ class SortedList
 	{
 		TimerTools timer ("Building seed list", false);
 		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
-		launch_scheduled_thread_pool(build_context, VATConsts::seqp, VATParameters::threads());
+		launch_scheduled_thread_pool(build_context, VATConsts::seqp, 2*VATParameters::threads());
 		timer.go("Sorting seed list");
 		Sort_context sort_context (*this);
-		launch_scheduled_thread_pool(sort_context, VATConsts::seedp, VATParameters::threads());
+		launch_scheduled_thread_pool(sort_context, VATConsts::seedp, 2*VATParameters::threads());
 	}
 
 	template<typename _t>

@@ -98,7 +98,8 @@ struct local_match
 		score_ (),
 		query_len_ (),
 		query_anchor_ (0),
-		subject_ (0)
+		subject_ (0),
+		subject_position_ (0)
 	{ }
 	local_match(int score):
 		len_ (0),
@@ -111,7 +112,8 @@ struct local_match
 		score_ (score),
 		query_len_ (0),
 		query_anchor_ (0),
-		subject_ (0)
+		subject_ (0),
+		subject_position_ (0)
 	{ }
 	local_match(int query_anchor, const _val *subject):
 		len_ (0),
@@ -124,9 +126,24 @@ struct local_match
 		score_ (0),
 		query_len_ (0),
 		query_anchor_ (query_anchor),
-		subject_ (subject)
+		subject_ (subject),
+		subject_position_ (0)
 	{ }
-	local_match(unsigned len, unsigned query_begin, unsigned query_len, unsigned subject_len, unsigned gap_openings, unsigned identities, unsigned mismatches, signed subject_begin, signed score):
+        local_match(int query_anchor, const _val *subject, unsigned long position):
+                len_ (0),
+		query_begin_ (0),
+		subject_len_ (0),
+	        gap_openings_ (0),
+		identities_ (0),
+		mismatches_ (0),
+		subject_begin_ (0),
+		score_ (0),
+		query_len_ (0),
+		query_anchor_ (query_anchor),
+		subject_ (subject),
+		subject_position_(position)
+        { }
+        local_match(unsigned len, unsigned query_begin, unsigned query_len, unsigned subject_len, unsigned gap_openings, unsigned identities, unsigned mismatches, signed subject_begin, signed score, int query_anchor, unsigned long position):
 		len_ (len),
 		query_begin_ (query_begin),
 		subject_len_ (subject_len),
@@ -136,9 +153,10 @@ struct local_match
 		subject_begin_ (subject_begin),
 		score_ (score),
 		query_len_ (query_len),
-		query_anchor_ (0),
-		subject_ (0)
-	{ }
+		query_anchor_ (query_anchor),
+		subject_ (0),
+		subject_position_ (position)
+        { }
 	local_match& operator+=(const local_match& rhs)
 	{
 		add(rhs);
@@ -180,6 +198,7 @@ struct local_match
 	unsigned len_, query_begin_, subject_len_, gap_openings_, identities_, mismatches_;
 	signed subject_begin_, score_, query_len_, query_anchor_;
 	const _val *subject_;
+	unsigned long subject_position_;
 	Edit_transcript transcript_right_, transcript_left_;
 };
 

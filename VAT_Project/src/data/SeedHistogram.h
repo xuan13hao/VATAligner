@@ -101,7 +101,7 @@ class SeedHistogram
 	{
 		memset(data_, 0, sizeof(data_));
 		Build_context<_val> context (seqs, *this);
-		launch_scheduled_thread_pool(context, VATConsts::seqp, VATParameters::threads());
+		launch_scheduled_thread_pool(context, VATConsts::seqp, 2*VATParameters::threads());
 	}
 
 	const ShapeHistogram& get(unsigned index_mode, unsigned sid) const
