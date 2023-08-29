@@ -59,19 +59,15 @@ struct Align_context
 		_buffer *buffer = 0;
 		while(queue.get(i, buffer, query_range) && !exception_state()) {
 			try {
-
-				// switch(1) {
-				// // case 6:
-				// // 	align_queries<_val,_locr,_locl,6>(query_range.begin, query_range.end, *buffer, st);
-				// // 	break;
-				// // case 2:
-				// // 	align_queries<_val,_locr,_locl,2>(query_range.begin, query_range.end, *buffer, st);
-				// // 	break;
-				// case 1:
+				switch(query_contexts()) {
+				case 6:
+					alignQueries<_val,_locr,_locl,6>(query_range.begin, query_range.end, *buffer, st);
+					break;
+				default:
 					alignQueries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
+				}
+					// alignQueries<_val,_locr,_locl,1>(query_range.begin, query_range.end, *buffer, st);
 
-
-				// }
 				queue.push(i);
 			} catch(std::exception &e) {
 				exception_state.set(e);

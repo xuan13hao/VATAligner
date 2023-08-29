@@ -87,70 +87,31 @@ void align_sequence(vector<Segment<_val> > &matches,
 		
 	} else if(VATParameters::whole_genome)
 	{
-		/*
-		int maxDistance, int maxIndel, int maxLocalDistance
-		*/
-	/*
-		std::cout << "ChainWGSSeeds 1" <<std::endl;
-		vector<DiagonalSeeds<_locr,_locl> > whole_gen;
-		int max_gap = 50000; 
-		int maxIndel = 5; 
-		int maxLocalDistance = 40; 
-		auto start = std::chrono::high_resolution_clock::now();
-		whole_gen = ChainWGSSeeds(diagonalsegment_, max_gap,maxIndel,maxLocalDistance);
-		auto end = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    
-    	std::cout << "Whole-genome chaining processing " << duration << " microseconds to run." << std::endl;
-    
-		for (size_t i = 0; i < whole_gen.size(); i++)
+
+		for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
 		{
-				Hits<_locr,_locl> h = whole_gen[i].hit_;
-				local.push_back(local_match<_val> (h.seed_offset_, ref->data(h.subject_)));
-				floating_sw(&query[h.seed_offset_],
-						local.back(),
-						padding[frame],
-						ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
-						VATParameters::gap_open + VATParameters::gap_extend,
-						VATParameters::gap_extend,
-						transcript_buf,
-						Traceback ());
-				const int score = local.back().score_;
-				std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(h.subject_);
-				matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
-				anchored_transform(local.back(), l.second, h.seed_offset_);
-				stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
-				to_source_space(local.back(), frame, dna_len);
-				stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
-				stat.inc(Statistics::OUT_HITS);
-
+			if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) {
+				stat.inc(Statistics::DUPLICATES);
+				continue;
+			}
+			local.push_back(local_match<_val> (i->seed_offset_, ref->data(i->subject_)));
+			floating_sw(&query[i->seed_offset_],
+					local.back(),
+					padding[frame],
+					ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+					VATParameters::gap_open + VATParameters::gap_extend,
+					VATParameters::gap_extend,
+					transcript_buf,
+					Traceback ());
+			const int score = local.back().score_;
+			std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(i->subject_);
+			matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
+			anchored_transform(local.back(), l.second, i->seed_offset_);
+			stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
+			to_source_space(local.back(), frame, dna_len);
+			stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
+			stat.inc(Statistics::OUT_HITS);
 		}
-		*/
-
-	for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
-	{
-		if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) {
-			stat.inc(Statistics::DUPLICATES);
-			continue;
-		}
-		local.push_back(local_match<_val> (i->seed_offset_, ref->data(i->subject_)));
-		floating_sw(&query[i->seed_offset_],
-				local.back(),
-				padding[frame],
-				ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
-				VATParameters::gap_open + VATParameters::gap_extend,
-				VATParameters::gap_extend,
-				transcript_buf,
-				Traceback ());
-		const int score = local.back().score_;
-		std::pair<size_t,size_t> l = ReferenceSeqs<_val>::data_->local_position(i->subject_);
-		matches.push_back(Segment<_val> (score, frame, &local.back(), l.first));
-		anchored_transform(local.back(), l.second, i->seed_offset_);
-		stat.inc(Statistics::ALIGNED_QLEN, local.back().query_len_);
-		to_source_space(local.back(), frame, dna_len);
-		stat.inc(Statistics::SCORE_TOTAL, local.back().score_);
-		stat.inc(Statistics::OUT_HITS);
-	}
 	}
 	else if(VATParameters::spilce||VATParameters::circ)
 	{

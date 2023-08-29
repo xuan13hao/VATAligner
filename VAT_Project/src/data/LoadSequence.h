@@ -15,6 +15,28 @@ template<typename _ival, typename _val, typename _strand>
 size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 { ss.push_back(seq); return seq.size(); }
 
+template<>
+size_t push_seq<DNA,Protein,Double_strand>(AlphabetSet<Protein> &ss, AlphabetSet<DNA>& source_seqs, const vector<DNA> &seq)
+{
+	source_seqs.push_back(seq);
+	if(seq.size() < 2) {
+		for(unsigned j=0;j<6;++j)
+			ss.fill(0, AlphabetAttributes<Protein>::MASK_CHAR);
+		return 0;
+	}
+	vector<Protein> proteins[6];
+	size_t n = Translator::translate(seq, proteins);
+
+	unsigned bestFrames (Translator::computeGoodFrames(proteins, VATParameters::get_run_len(seq.size()/3)));
+	for(unsigned j = 0; j < 6; ++j) {
+		if(bestFrames & (1 << j))
+			ss.push_back(proteins[j]);
+		else
+			ss.fill(proteins[j].size(), AlphabetAttributes<Protein>::MASK_CHAR);
+	}
+	return n;
+}
+
 // template<typename _ival, typename _val, typename _strand>
 // size_t push_seq(AlphabetSet<_val> &ss, AlphabetSet<DNA>& source_seqs, const vector<_ival> &seq)
 // {
@@ -129,7 +151,7 @@ size_t ReadingSeqs(Input_stream &file,
 	try {
 		while(letters < max_letters && format.get_seq(id, seq, file)) {
 
-			if(VATParameters::forward_only && VATParameters::algn_type == VATParameters::dna)
+			if(VATParameters::forward_only && VATParameters::algn_type == VATParameters::dna||VATParameters::algn_type == VATParameters::blastx)
 			{
 				ids->push_back(id);
 				letters += push_seq<_ival,_val,_strand>(**seqs, *source_seqs, seq);

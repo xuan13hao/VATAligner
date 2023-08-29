@@ -4,7 +4,7 @@
 #include "CreateDB.h"
 #include "DNAAlignFlow.h"
 #include "ProteinAlignFlow.h"
-
+#include "BlastxAlignFlow.h"
 
 class RunModel
 {
@@ -13,12 +13,6 @@ class RunModel
     {
         CreateDB(DNA());
     }
-    /*
-    void static CreateDoubleStrandDNADB()
-    {
-        CreateDNA_DB();
-    }
-    */
     void static CreateProteinDB()
     {
         CreateDB(Protein());
@@ -32,6 +26,10 @@ class RunModel
     void static ProteinAlign()
     {
         ProteinMasterThread<Protein>();
+    }
+    void static BlastxAlign()
+    {
+        BlastxMasterThread<Protein>();
     }
 };
 

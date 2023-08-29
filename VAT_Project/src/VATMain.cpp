@@ -36,14 +36,14 @@ int main(int ac, const char* av[])
         po::options_description makedb("Makedb options");
         makedb.add_options()
         	("in,i", po::value<string>(&VATParameters::input_ref_file), "input reference file in FASTA format")
-        	("block-size,b", po::value<double>(&VATParameters::chunk_size)->default_value(2), "sequence block size in billions of letters (default=4)")
+        	("block-size,b", po::value<double>(&VATParameters::chunk_size)->default_value(4), "sequence block size in billions of letters (default=4)")
         	;
 
         po::options_description aligner("Aligner options");
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
-			("top", po::value<double>(&VATParameters::toppercent)->default_value(90), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
+			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
@@ -170,7 +170,7 @@ int main(int ac, const char* av[])
 			// }
 
         } else if ((VATParameters::algn_type == VATParameters::protein
-        		//|| VATParameters::command == VATParameters::blastx
+        		|| VATParameters::algn_type == VATParameters::blastx
 				|| VATParameters::algn_type == VATParameters::dna)
         		&& vm.count("query") && vm.count("db") && vm.count("vaa")) 
 		{
@@ -187,6 +187,9 @@ int main(int ac, const char* av[])
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::DNAAlign();
+				}else if (VATParameters::algn_type == VATParameters::blastx)
+				{
+					RunModel::BlastxAlign();
 				}else
 				{
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
