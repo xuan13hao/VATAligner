@@ -145,6 +145,7 @@ int main(int ac, const char* av[])
         	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
         	cout << "  protein\tAlign protein query sequences against a protein reference database" << endl;
         	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
+			cout <<"   blastx\tAlign DNA query sequences against a protein reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;

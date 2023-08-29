@@ -72,18 +72,6 @@ unsigned query_translated_begin(unsigned query_begin, unsigned frame, unsigned d
 		return dna_len-query_begin-1;
 }
 template<>
-unsigned query_translated_begin<DNA>(unsigned query_begin, unsigned frame, unsigned dna_len, bool query_translated)
-{
-	if(!query_translated)
-		return query_begin;
-	int f = frame <= 2 ? frame+1 : 2-frame;
-	if (f > 0)
-		return (query_begin - (f-1))/3;
-	else
-		return (dna_len + f - query_begin)/3;
-}
-
-template<>
 unsigned query_translated_begin<Protein>(unsigned query_begin, unsigned frame, unsigned dna_len, bool query_translated)
 {
 	if(!query_translated)
@@ -94,5 +82,17 @@ unsigned query_translated_begin<Protein>(unsigned query_begin, unsigned frame, u
 	else
 		return (dna_len + f - query_begin)/3;
 }
+
+// template<>
+// unsigned query_translated_begin<Protein>(unsigned query_begin, unsigned frame, unsigned dna_len, bool query_translated)
+// {
+// 	if(!query_translated)
+// 		return query_begin;
+// 	int f = frame <= 2 ? frame+1 : 2-frame;
+// 	if (f > 0)
+// 		return (query_begin - (f-1))/3;
+// 	else
+// 		return (dna_len + f - query_begin)/3;
+// }
 
 #endif /* MATCH_FUNC_H_ */
