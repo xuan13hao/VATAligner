@@ -1,0 +1,12 @@
+>>>Read-level statistics:
+perfect 850591
+partial_multi   25834
+both_multi      198
+partial_wrong   31815
+both_wrong      73031
+partial_miss    18459
+both_miss       72
+>>>Strand-level statistics:
+correct 1777290
+unique  1879098
+(base) xuan@HAO:~/VATAligner/build$ ./VAT dna -d marine -q ~/test_data/test_data/marine.sim.duplex.fn -a match --for_only --chimera --match 1 --mismatch -1 --ungapped-score 40 --xdrop 40

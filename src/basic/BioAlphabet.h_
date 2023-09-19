@@ -1,0 +1,119 @@
+#ifndef __BIOALPHABET_H__
+#define __BIOALPHABET_H__
+#include <assert.h>
+
+
+template<typename T>
+class BioAlphabet
+{
+    public:
+
+    BioAlphabet(const char type)
+    {
+        switch(type)
+        {
+          case 'D' :
+            initDNA();
+            break;
+          case 'R' :
+            initRNA();
+            break;
+          case 'P' :
+            initProtein();
+            break;
+        }
+    }
+
+    T operator()(char c) const
+    {
+       assert(data_[(long)c] == invalid);
+       return data_[(long)c];
+    }
+//ACGTN  
+//MRWSYKVHDBX
+    void initDNA()
+    {
+      data_[(long)'A'] = 0;
+      data_[(long)'C'] = 1;
+      data_[(long)'G'] = 2;
+      data_[(long)'T'] = 3;
+      data_[(long)'N'] = 4;
+      data_[(long)'M'] = 4;
+      data_[(long)'R'] = 4;
+      data_[(long)'W'] = 4;
+      data_[(long)'S'] = 4;
+      data_[(long)'Y'] = 4;
+      data_[(long)'K'] = 4;
+      data_[(long)'V'] = 4;
+      data_[(long)'H'] = 4;
+      data_[(long)'D'] = 4;
+      data_[(long)'B'] = 4;
+      data_[(long)'X'] = 4;
+
+      data_[(long)'a'] = 0;
+      data_[(long)'c'] = 1;
+      data_[(long)'g'] = 2;
+      data_[(long)'t'] = 3;
+      data_[(long)'N'] = 4;
+      data_[(long)'M'] = 4;
+      data_[(long)'R'] = 4;
+      data_[(long)'W'] = 4;
+      data_[(long)'S'] = 4;
+      data_[(long)'Y'] = 4;
+      data_[(long)'K'] = 4;
+      data_[(long)'V'] = 4;
+      data_[(long)'H'] = 4;
+      data_[(long)'D'] = 4;
+      data_[(long)'B'] = 4;
+      data_[(long)'X'] = 4;
+      
+    }
+//ACGUN
+    void initRNA()
+    {
+      data_[(long)'A'] = 0;
+      data_[(long)'C'] = 1;
+      data_[(long)'G'] = 2;
+      data_[(long)'U'] = 3;
+      data_[(long)'N'] = 4;
+    }
+//ARNDCQEGHILKMFPSTWYVBJZX*
+//UO-
+    void initProtein()
+    {
+      data_[(long)'A'] = 0;
+      data_[(long)'R'] = 1;
+      data_[(long)'N'] = 2;
+      data_[(long)'D'] = 3;
+      data_[(long)'C'] = 4;
+      data_[(long)'Q'] = 5;
+      data_[(long)'E'] = 6;
+      data_[(long)'G'] = 7;
+      data_[(long)'H'] = 8;
+      data_[(long)'I'] = 9;
+      data_[(long)'L'] = 10;
+      data_[(long)'K'] = 11;
+      data_[(long)'M'] = 12;
+      data_[(long)'F'] = 13;
+      data_[(long)'P'] = 14;
+      data_[(long)'S'] = 15;
+      data_[(long)'T'] = 16;
+      data_[(long)'W'] = 17;
+      data_[(long)'Y'] = 18;
+      data_[(long)'V'] = 19;
+      data_[(long)'B'] = 20;
+      data_[(long)'J'] = 21;
+      data_[(long)'Z'] = 22;
+      data_[(long)'X'] = 23;
+      data_[(long)'*'] = 24;
+      data_[(long)'U'] = 23;
+      data_[(long)'O'] = 23;
+      data_[(long)'-'] = 23;
+    }
+
+    private:
+        static const T invalid;
+        T data_[256];
+};
+
+#endif // __BIOALPHABET_H__
