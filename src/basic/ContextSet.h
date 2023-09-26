@@ -127,22 +127,22 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 {
 	namespace po = VATParameters;
 	if(po::aligner_mode == po::long_model || po::aligner_mode == po::accuracy_model) {
-		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/8735437)));
+		po::set_option(po::hit_cap, std::max(512u, (unsigned)(chunk_db_letters/8735437)));
 	} else if (po::aligner_mode == po::short_model) {
-		po::set_option(po::hit_cap, std::max(128u, (unsigned)(chunk_db_letters/17470874)));
+		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/17470874)));
 	}
 
 	const double b = po::min_bit_score == 0 ? ScoreMatrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
 
-	if(query_len_bounds.second <= 40) {
-		po::set_option(po::min_identities, 10u);
-		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(27.0, b)));
+	if(query_len_bounds.second <= 150) {
+		po::set_option(po::min_identities, 28u);
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(30.0, b)));
 	} else {
-		po::set_option(po::min_identities, 9u);
-		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(23.0, b)));
+		po::set_option(po::min_identities, 18u);
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(25.0, b)));
 	}
 
-	if(query_len_bounds.second <= 80) {
+	if(query_len_bounds.second <= 300) {
 		const int band = po::read_padding<DNA>(query_len_bounds.second);
 		po::set_option(po::window, (unsigned)(query_len_bounds.second + band));
 		po::set_option(po::hit_band, band);

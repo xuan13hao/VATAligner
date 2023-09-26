@@ -22,7 +22,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 		TimerTools timer ("Counting low complexity seeds", false);
 		vector<unsigned> counts (VATConsts::seedp);
 		Count_context<_loc> count_context (idx, counts);
-		launch_scheduled_thread_pool(count_context, VATConsts::seedp, VATParameters::threads());
+		launch_scheduled_thread_pool(count_context, VATConsts::seedp, 2*VATParameters::threads());
 
 		timer.finish();
 		size_t n = 0;
@@ -36,7 +36,7 @@ class Masked_sequence_set : public SequenceSet<_val>
 
 		timer.go("Building position filter");
 		Build_context<_loc> build_context(idx, sid, counts, *this);
-		launch_scheduled_thread_pool(build_context, VATConsts::seedp, VATParameters::threads());
+		launch_scheduled_thread_pool(build_context, VATConsts::seedp, 2*VATParameters::threads());
 		timer.finish();
 		log_stream << "Masked positions = " << std::accumulate(counts.begin(), counts.end(), 0) << std::endl;
 	}

@@ -76,6 +76,7 @@ namespace VATParameters
 	extern int		seed_len;
 	extern bool		simd_sort;
 	extern int		match;
+	extern int		seed_partition;
 	extern int		mismatch;
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
 	extern Aligner_mode aligner_mode;

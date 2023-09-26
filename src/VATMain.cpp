@@ -31,6 +31,7 @@ int main(int ac, const char* av[])
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(1), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
+			("seed partition,P", po::value<int>(&VATParameters::seed_partition)->default_value(1024), "seed partition (1024)")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
 
         po::options_description makedb("Makedb options");
