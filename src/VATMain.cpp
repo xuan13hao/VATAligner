@@ -80,7 +80,7 @@ int main(int ac, const char* av[])
         	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(25), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
-        	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
+        	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(18), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
