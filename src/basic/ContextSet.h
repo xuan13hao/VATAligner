@@ -127,7 +127,7 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 {
 	namespace po = VATParameters;
 	if(po::aligner_mode == po::long_model || po::aligner_mode == po::accuracy_model) {
-		po::set_option(po::hit_cap, std::max(512u, (unsigned)(chunk_db_letters/8735437)));
+		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/17470874)));
 	} else if (po::aligner_mode == po::short_model) {
 		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/17470874)));
 	}

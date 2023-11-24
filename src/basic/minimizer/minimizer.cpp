@@ -1,64 +1,56 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
+// Function to compute minimizers
+std::vector<std::string> computeMinimizers(const std::string& sequence, int w, int k) {
+    std::vector<std::string> minimizers;
+    int sequenceLength = sequence.length();
 
-std::vector<uint64_t> extractMinimizers(const DNA* sequence, size_t sequenceLength, size_t kmerSize, size_t windowSize) {
-    std::vector<uint64_t> minimizers;
-    uint64_t minSeed = std::numeric_limits<uint64_t>::max();
+    if (w > sequenceLength || k > w || w <= 0 || k <= 0) {
+        // Invalid input parameters
+        return minimizers;
+    }
 
-    for (size_t i = 0; i <= sequenceLength - kmerSize; i++) {
-        uint64_t seed = 0;
-        double f = 0;
+    for (int i = 0; i <= sequenceLength - w; i++) {
+        std::string window = sequence.substr(i, w);
 
-        for (size_t j = 0; j < kmerSize; j++) {
-            DNA l = sequence[i + j];
-            if (l == AlphabetAttributes<DNA>::MASK_CHAR || l == AlphabetSet<DNA>::PADDING_CHAR) {
-                seed = 0;
-                break;
+        // Initialize the smallest k-mer with the first k-mer in the window
+        std::string smallestKmer = window.substr(0, k);
+
+        for (int j = 1; j <= w - k; j++) {
+            std::string currentKmer = window.substr(j, k);
+
+            // Compare the current k-mer with the smallest k-mer
+            if (currentKmer < smallestKmer) {
+                smallestKmer = currentKmer;
             }
-            l = mask_critical(l);
-            unsigned r = ReducedAlpha<DNA>::reduction(l);
-            f += background_freq[r];
-            seed *= ReducedAlpha<DNA>::reduction.size();
-            seed += static_cast<uint64_t>(r);
         }
 
-        seed = murmur_hash()(seed);
-        if (use_seed_freq<DNA>() && f > VATParameters::max_seed_freq)
-            seed = 0;
-
-        if (seed != 0 && seed < minSeed)
-            minSeed = seed;
-
-        if (i % windowSize == windowSize - 1) {
-            minimizers.push_back(minSeed);
-            minSeed = std::numeric_limits<uint64_t>::max();
-        }
+        minimizers.push_back(smallestKmer);
     }
 
     return minimizers;
 }
 
-// Test function to print the minimizers
-void printMinimizers(const std::vector<uint64_t>& minimizers) {
-    std::cout << "Minimizers: ";
-    for (const auto& minimizer : minimizers) {
-        std::cout << minimizer << " ";
-    }
-    std::cout << std::endl;
+// Function to compute the hash value for a k-mer
+std::size_t computeHashValue(const std::string& kmer) {
+    std::hash<std::string> hashFunction;
+    return hashFunction(kmer);
 }
 
+
 int main() {
-    // Test case
-    const char* sequence = "ACGTACGTACGT";
-    size_t sequenceLength = strlen(sequence);
-    size_t kmerSize = 4;
-    size_t windowSize = 4;
+    std::string sequence = "CCCCTTCGATGATTTCGCGCGTAAACACGTTGACGATTTTTCCGTTTTTGATGACGAGATCGGCCTTCGTTTGTTTTGCGGCGGCGGCGATTTGCTTCTGTAATGTCGAATGCATGTGGC"; // Your input sequence
+    int w = 15; // Window size
+    int k = 8;  // K-mer size
 
-    // Call the extractMinimizers function
-    std::vector<uint64_t> minimizers = extractMinimizers(sequence, sequenceLength, kmerSize, windowSize);
+    std::vector<std::string> minimizers = computeMinimizers(sequence, w, k);
 
-    // Print the resulting minimizers
-    printMinimizers(minimizers);
+    std::cout << "Minimizers:" << std::endl;
+    for (const std::string& minimizer : minimizers) {
+        std::cout <<minimizer<<":"<< computeHashValue(minimizer) << std::endl;
+    }
 
     return 0;
 }

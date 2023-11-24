@@ -16,7 +16,7 @@ class VATConsts
 		seqp = 1<<seqp_bits,
 		max_shapes = 5,
 		index_modes = 3,
-		min_shape_len = 8,
+		min_shape_len = 6,
 		max_shape_len = 36,
 		seed_anchor = 8
 	};

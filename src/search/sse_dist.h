@@ -8,6 +8,24 @@
 #endif
 
 #include "../basic/ReducedAlpha.h"
+
+template<typename _val>
+unsigned match_block_avx2(const _val *x, const _val *y)
+{
+    static const __m256i mask = _mm256_set1_epi8(0x7F);
+    __m256i r1 = _mm256_loadu_si256((__m256i const*)(x));
+    __m256i r2 = _mm256_loadu_si256((__m256i const*)(y));
+    r2 = _mm256_and_si256(r2, mask);
+
+    // Perform comparison using 256-bit AVX2 registers
+    __m256i cmp_result = _mm256_cmpeq_epi8(r1, r2);
+
+    // Extract a bitmask indicating which bytes are equal
+    int bitmask = _mm256_movemask_epi8(cmp_result);
+
+    return bitmask;
+}
+
 //The number of 1 bits in the value of x
 unsigned popcount_3(uint64_t x)
 {
@@ -34,7 +52,10 @@ unsigned match_block(const _val *x, const _val *y)
 
 template<typename _val>
 unsigned fast_match(const _val *q, const _val *s)
-{ return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); }
+{ 
+	// return popcount_3(match_block(q-16, s-16)<<16 | match_block(q, s)); 
+	return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); 
+}
 
 template<typename _val>
 __m128i reduce_seq_ssse3(const __m128i &seq)

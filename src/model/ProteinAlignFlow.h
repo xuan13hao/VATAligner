@@ -56,7 +56,7 @@ void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping,
 
 		// if(sequence_type() == amino_acid && program_options::seg == "yes") {
 		// 	timer.go("Running complexity filter");
-			// Complexity_filter<_val>::get().run(*query_seqs<_val>::data_);
+		Complexity_filter<_val>::get().run(*QuerySeqs<_val>::data_);
 		// }
 
 		timer.go("Building query histograms");

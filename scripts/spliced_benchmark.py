@@ -55,7 +55,7 @@ def count_mapped_reads(blasttab_file, simulated_reads):
     num_simulated_reads = len(simulated_reads)
     num_mapped_reads = len(mapped_reads)
     return num_mapped_reads, num_simulated_reads
-#python3 spliced_benchmark.py Anabas_exons_forward_sim.fa Anabas_match_sim_fd_2.0 
+#python3 spliced_benchmark.py Anabas_exons_sim.fa Anabas_match_sim_2.0 
 if __name__ == "__main__":
     match_file = sys.argv[2]
     fasta_file = sys.argv[1]

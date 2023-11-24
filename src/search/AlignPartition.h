@@ -2,13 +2,13 @@
 
 #ifndef ALIGN_RANGE_H_
 #define ALIGN_RANGE_H_
-
+#include <cstdlib> 
 #include "Align.h"
 #include "../basic/Statistics.h"
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void align_range(_locq q_pos,
-				 const typename SortedList<_locr>::Type::const_iterator &s,
+				 const typename SortedTuples<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
 				 unsigned sid)
@@ -46,8 +46,8 @@ void align_range(_locq q_pos,
 }
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
-void align_range(const typename SortedList<_locq>::Type::const_iterator &q,
-				 const typename SortedList<_locr>::Type::const_iterator &s,
+void align_range(const typename SortedTuples<_locq>::Type::const_iterator &q,
+				 const typename SortedTuples<_locr>::Type::const_iterator &s,
 				 Statistics &stats,
 				 typename Trace_pt_buffer<_locr,_locl>::Iterator &out,
 				 const unsigned sid)
@@ -66,8 +66,8 @@ template<typename _val, typename _locr, typename _locq, typename _locl>
 void alignPartition(unsigned hp,
 		Statistics &stats,
 		unsigned sid,
-		typename SortedList<_locr>::Type::const_iterator i,
-		typename SortedList<_locq>::Type::const_iterator j,
+		typename SortedTuples<_locr>::Type::const_iterator i,
+		typename SortedTuples<_locq>::Type::const_iterator j,
 		unsigned thread_id)
 {
 	typename Trace_pt_buffer<_locr,_locl>::Iterator* out = new typename Trace_pt_buffer<_locr,_locl>::Iterator (*Trace_pt_buffer<_locr,_locl>::instance, thread_id);
@@ -82,9 +82,14 @@ void alignPartition(unsigned hp,
 		} 
 		else 
 		{
-			align_range<_val,_locr,_locq,_locl>(j, i, stats, *out, sid);
-			++i;
-			++j;
+			// double dis = j.pre_kmer() - i.pre_kmer(); 
+			// if(dis < 5 || dis > - 5)
+			// {
+				align_range<_val,_locr,_locq,_locl>(j, i, stats, *out, sid);
+				++i;
+				++j;
+			// }
+
 		}
 	}
 	delete out;

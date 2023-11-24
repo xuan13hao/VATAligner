@@ -1,0 +1,3 @@
+/usr/bin/time -v /home/xuan/aligners/diamond/diamond blastp -d /home/xuan/aligners/diamond/reference -q  ~/VATAligner/data/protein/IPR034042.fa -o dmd_match.00001 -p 16 -e 0.00001
+/usr/bin/time -v /home/xuan/aligners/mmseqs/bin/mmseqs easy-search ~/VATAligner/data/protein/IPR034040_IPR034042.fa ~/VATAligner/data/protein/IPR034042.fa mmseq_prot.00001.m8 tmp --threads 16 -e 0.00001
+/usr/bin/time -v blastp -query  ~/VATAligner/data/protein/IPR034042.fa -db /home/xuan/aligners/blast/my_protein_db -out blast.results.00001.txt -outfmt 6 -evalue 0.00001 -num_threads 16

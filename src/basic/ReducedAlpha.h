@@ -48,6 +48,7 @@ private:
 char hsdm4s[500][20] = {"LIVFMYW", "C", "DNTSKEQRAGP", "H"};
 DIAMOND 11
 KREDQN C G H M F Y ILV W P STA"
+A C DQ EHNY FM G IL K PT RS V W
 */
 // template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
 template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("LIVFMYW C DNTSKEQRAGP H");

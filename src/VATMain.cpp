@@ -11,7 +11,9 @@
 #include "basic/ContextSet.h"
 #include "output/view.h"
 
-
+/*
+./VAT protein -d prot_db.vatf -q ../data/protein/IPR034042.fa -a match_prot_db --xdrop 18 --top 90
+*/
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -32,6 +34,7 @@ int main(int ac, const char* av[])
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
 			("seed partition,P", po::value<int>(&VATParameters::seed_partition)->default_value(1024), "seed partition (1024)")
+			("out,o", po::value<string>(&VATParameters::output_file), "output file")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
 
         po::options_description makedb("Makedb options");
@@ -44,7 +47,7 @@ int main(int ac, const char* av[])
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
-			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
+			("top", po::value<double>(&VATParameters::toppercent)->default_value(98), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
@@ -94,7 +97,7 @@ int main(int ac, const char* av[])
 
         po::options_description view_options("View options");
         view_options.add_options()
-			("out,o", po::value<string>(&VATParameters::output_file), "output file")
+			// ("out,o", po::value<string>(&VATParameters::output_file), "output file")
 			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam)")
 			("forwardonly", "only show alignments of forward strand");
 
@@ -185,13 +188,16 @@ int main(int ac, const char* av[])
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::ProteinAlign();
+					view();
 				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::DNAAlign();
+					view();
 				}else if (VATParameters::algn_type == VATParameters::blastx)
 				{
 					RunModel::BlastxAlign();
+					view();
 				}else
 				{
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;

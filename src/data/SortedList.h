@@ -12,11 +12,86 @@
 
 using std::auto_ptr;
 using namespace std;
+std::map<int, std::string> generateKmerMap(const std::string& sequence, int k) {
+    std::map<int, std::string> kmerMap; // Key is the sum, and value is the k-mer
+    int sequenceLength = sequence.length();
+
+    // The total number of possible k-mers is 4^k
+    int totalKmers = 1;
+    for (int i = 0; i < k; ++i) {
+        totalKmers *= 4;
+    }
+
+    for (int i = 0; i < totalKmers; ++i) {
+        std::string kmer;
+
+        // Generate a k-mer based on the current index 'i'
+        int index = i;
+        int sum = 0; // Initialize the sum for this k-mer
+
+        for (int j = 0; j < k; ++j) {
+            int nucleotideIndex = index % 4; // There are 4 nucleotides (A, C, G, T)
+            char nucleotide;
+
+            // Map nucleotides to numbers
+            if (nucleotideIndex == 0) {
+                nucleotide = 'A';
+                sum = sum * 10 + 1;
+            } else if (nucleotideIndex == 1) {
+                nucleotide = 'C';
+                sum = sum * 10 + 2;
+            } else if (nucleotideIndex == 2) {
+                nucleotide = 'G';
+                sum = sum * 10 + 3;
+            } else {
+                nucleotide = 'T';
+                sum = sum * 10 + 4;
+            }
+
+            kmer += nucleotide; // Build the k-mer
+            index /= 4;
+        }
+
+        // Store the k-mer as a value, and the sum as the key
+        kmerMap[sum] = kmer;
+    }
+
+    return kmerMap;
+}
+ 	// Function to compute the hash value for a k-mer
+	int computeKmerHash(const std::string& kmer) {
+		int hash = 0;
+
+		for (char nucleotide : kmer) {
+			if (nucleotide == 'A') {
+				hash = hash * 10 + 1;
+			} else if (nucleotide == 'C') {
+				hash = hash * 10 + 2;
+			} else if (nucleotide == 'G') {
+				hash = hash * 10 + 3;
+			} else if (nucleotide == 'T') {
+				hash = hash * 10 + 4;
+			}
+		}
+
+		return hash;
+	}
+	template<typename _val>    
+	std::string to_string(const sequence<const _val> &s) 
+	{
+		std::stringstream ss;
+		for(unsigned i=0;i<s.len_;++i)
+		{
+			ss << AlphabetAttributes<_val>::ALPHABET[s.data_[i]];
+		}
+		return ss.str();
+	}
+
 template<typename _pos>
-class SortedList
+class SortedTuples
 {
 	public:
-	typedef SortedList<typename packed_sequence_location<_pos>::type> Type;
+	typedef SortedTuples<typename packed_sequence_location<_pos>::type> Type;
 
 	class Tuple
 	{
@@ -33,10 +108,21 @@ class SortedList
 		{ 
 
 		}
+		// Tuple(unsigned key, _pos value, unsigned pre_kmer):
+		// key (key),
+		// value (value),
+		// pre_kmer(pre_kmer)
+		// { 
+
+		// }
 		void set_key(unsigned i)
 		{
 			this->key = i;
 		}
+		// void set_prekmer(unsigned i)
+		// {
+		// 	this->pre_kmer = i;
+		// }
 		void set_value(_pos i)
 		{
 			this->value = i;
@@ -46,12 +132,18 @@ class SortedList
 			unsigned k = this->key;
 			return k;
 		}
+		// unsigned get_prekmer()
+		// {
+		// 	unsigned k = this->pre_kmer;
+		// 	return k;
+		// }
 		bool operator<(const Tuple &rhs) const
 		{ 
 			return key < rhs.key; 
 		}
 		// entry operator++() const
 		// { return key < rhs.key; }
+		// unsigned	pre_kmer;
 		unsigned	key;
 		_pos		value;
 	} __attribute__((packed));////Tells the compiler to allocate the variable x at a 16-byte aligned memory address instead of the default 4-byte alignment.
@@ -64,7 +156,7 @@ class SortedList
 
 
 	template<typename _val>
-	SortedList(char *buffer, const SequenceSet<_val> &seqs, const Shape &sh, const ShapeHistogram &hst, const seedp_range &range):
+	SortedTuples(char *buffer, const SequenceSet<_val> &seqs, const Shape &sh, const ShapeHistogram &hst, const seedp_range &range):
 		limits_ (hst, range),
 		data_ (reinterpret_cast<Tuple*>(buffer))
 	{
@@ -102,6 +194,8 @@ class SortedList
 		{ return i >= end; }
 		unsigned key() const
 		{ return i->key; }
+		unsigned pre_kmer() const
+		{ return i->pre_kmer; }
 		_t *i, *end;
 		size_t n;
 	};
@@ -133,27 +227,11 @@ private:
 			const unsigned p (seed_partition(key)); //63505
 			if(range.contains(p)) {
 				assert(n[p] < BUFFER_SIZE);
-				// buf[p][n[p]++] = Tuple (key, value);
 				buf[p][n[p]++] = Tuple (seed_partition_offset(key), value);
+				// buf[p][n[p]++] = Tuple (seed_partition_offset(key),value,pre_kmer);
 				if(n[p] == BUFFER_SIZE)
 					flush(p);
 			}
-			// const unsigned p (seed_partition(key));
-			// if (range.contains(p)) {
-			// 	assert(n[p] < BUFFER_SIZE);
-				
-			// 	// Check the distance between the keys of the current Tuple and the new Tuple 63501
-			// 	if (n[p] > 0 && key - buf[p][n[p] - 1].key > 5) {
-			// 		// If the distance is smaller than 5, update the value of the existing Tuple
-			// 		buf[p][n[p] - 1].value = value;
-			// 	} else {
-			// 		// Otherwise, add the new Tuple to the buffer
-			// 		buf[p][n[p]++] = Tuple(seed_partition_offset(key), value);
-			// 	}
-				
-			// 	if (n[p] == BUFFER_SIZE)
-			// 		flush(p);
-			// }
 
 		}
 		void flush(unsigned p)
@@ -176,12 +254,6 @@ private:
 
 	Tuple* ptr_begin(unsigned i) const
 	{ 
-		// cout<<"data_[limits_[i]] = "<<&data_[limits_[i]]<<endl;
-		// for (size_t j = 0; j < limits_[i].size(); j++)
-		// {
-		// 	cout<<"limit = "<<limits_[i][j]<<endl;
-		// }
-		
 		return &data_[limits_[i]]; 
 	}
 
@@ -224,20 +296,47 @@ private:
 	static void build_seqp(const SequenceSet<_val> &seqs, unsigned begin, unsigned end, Tuple **ptr, const Shape &sh, const seedp_range &range)
 	{
 		uint64_t key;
+		int w = 3;
 		//init buffered iterator via entry size
 		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
 		for(size_t i=begin;i<end;++i) 
 		{
 			const sequence<const _val> seq = seqs[i];
-			// cout<<"seq = "<<seq<<endl;
-			// cout<<"------------ "<<endl;
+			std::string str_seq = to_string(seq);
+			// int w = 20;
+			// int k = sh.length_;
+			// for (int l = 0; l <= str_seq.length() - w; l++) 
+			// {
+			// 	std::string window = str_seq.substr(l, w);
+			// 	// Initialize the smallest k-mer with the first k-mer in the window
+			// 	std::string smallestKmer = window.substr(0, k);
+
+			// 	for (int j = 1; j <= w - k; j++) {
+			// 		std::string currentKmer = window.substr(j, k);
+
+			// 		// Compare the current k-mer with the smallest k-mer
+			// 		if (currentKmer < smallestKmer) {
+			// 			smallestKmer = currentKmer;
+			// 		}
+			// 	}
+			// 	key = computeHashValue(smallestKmer);
+			// 	it->push(key, seqs.position(i, l), range);
+			// }
 			if(seq.length()<sh.length_) continue;
-	
+			uint64_t prev_key = 0;
+			unsigned pre_kmer = 0;
+			// cout<<"str_seq = "<<str_seq<<endl;
 			for(unsigned j=0;j<seq.length()-sh.length_+1; ++j) 
 			{
-				// cout<<"seq = "<<seq[j]<<endl;
-				if(sh.set_seed(key, &seq[j]))//get key via seq
+				std::string window = str_seq.substr(j, w);
+				pre_kmer = computeKmerHash(window);
+				// cout<<"sub seq = "<<window<<endl;
+				// && prev_key != key
+				if(sh.set_seed(key, &seq[j]) )//get key via seq
+				{
 					it->push(key, seqs.position(i, j), range);
+					// prev_key = key;
+				}	
 					
 			}
 		}
@@ -256,8 +355,7 @@ private:
 			{
 				(*iterators)[i][j] = (*iterators)[i-1][j] + hst[i-1][j];
 				//cout<<"iterator = "<<(*iterators)[i][j]<<", hst = "<<(hst[i-1][j])<<endl;
-			}
-				
+			}	
 
 		}
 		return iterators;
@@ -311,7 +409,7 @@ private:
 
 	struct Sort_context
 	{
-		Sort_context(SortedList &sl):
+		Sort_context(SortedTuples &sl):
 			sl (sl)
 		{ }
 
@@ -333,7 +431,7 @@ private:
 			}
 
 		}
-		SortedList &sl;
+		SortedTuples &sl;
 	};
 
 	struct Limits : vector<size_t>
