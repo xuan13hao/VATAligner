@@ -53,8 +53,8 @@ unsigned match_block(const _val *x, const _val *y)
 template<typename _val>
 unsigned fast_match(const _val *q, const _val *s)
 { 
-	// return popcount_3(match_block(q-16, s-16)<<16 | match_block(q, s)); 
-	return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); 
+	return popcount_3(match_block_avx2(q, s)<<32 | match_block_avx2(q+16, s+16)); 
+	// return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); 
 }
 
 template<typename _val>

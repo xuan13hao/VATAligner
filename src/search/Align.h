@@ -24,15 +24,15 @@ void align(const _locq q_pos,
 	stats.inc(Statistics::TENTATIVE_MATCHES0);
 	const _val* subject = ReferenceSeqs<_val>::data_->data(s);
 
-	if(fast_match(query, subject) < VATParameters::min_identities)
-		return;
+	// if(fast_match(query, subject) < VATParameters::min_identities)
+	// 	return;
 
-	stats.inc(Statistics::TENTATIVE_MATCHES1);
+	// stats.inc(Statistics::TENTATIVE_MATCHES1);
 
-	unsigned delta, len;
-	int score;
-	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
-		return;
+	// unsigned delta, len;
+	int score = 100;
+	// if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
+	// 	return;
 
 	// if (sequence_type() == amino_acid)
 	// {
@@ -42,10 +42,10 @@ void align(const _locq q_pos,
 
 	// cout<<"len = "<<len<<", xdrop = "<<score<<", shape id = "<<sid<<", delta = "<<delta<<",shape len = "<<ShapeConfigures::get().get_shape(sid).length_<<endl;
 
-	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
-		return;
+	// if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
+	// 	return;
 
-	stats.inc(Statistics::TENTATIVE_MATCHES2);
+	// stats.inc(Statistics::TENTATIVE_MATCHES2);
 	hf.push(s, score);
 
 }
