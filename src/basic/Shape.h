@@ -100,7 +100,7 @@ class Shape
 			s += uint64_t(r);
 		}
 		s = murmur_hash()(s);
-		if(use_seed_freq<Protein>() && f > VATParameters::max_seed_freq) return false;
+		// if(use_seed_freq<Protein>() && f > VATParameters::max_seed_freq) return false;
 
 		return true;
 	}

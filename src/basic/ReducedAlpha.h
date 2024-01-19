@@ -50,8 +50,8 @@ DIAMOND 11
 KREDQN C G H M F Y ILV W P STA"
 A C DQ EHNY FM G IL K PT RS V W
 */
-// template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("KREDQN C G H M F Y ILV W P STA");
-template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("LIVFMYW C DNTSKEQRAGP H");
+template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("A C DQ EHNY FM G IL K PT RS V W");
+// template<> const ReducedAlpha<Protein> ReducedAlpha<Protein>::reduction ("LIVFMYW C DNTSKEQRAGP H");
 template<> const ReducedAlpha<DNA> ReducedAlpha<DNA>::reduction ("A C G T");
 
 
