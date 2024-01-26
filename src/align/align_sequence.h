@@ -85,7 +85,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		}
 
 		
-	} else if(VATParameters::whole_genome)
+	} else if(VATParameters::whole_genome || VATParameters::algn_type == VATParameters::dna)
 	{
 
 		for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
