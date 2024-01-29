@@ -87,7 +87,10 @@ namespace VATParameters
 	{
 		return std::max(threads_, 1U);
 	}
-
+	inline uint32_t thread()
+	{
+		return threads()*4;
+	}
 	template<typename _t>
 	inline void set_option(_t& option, _t value)
 	{

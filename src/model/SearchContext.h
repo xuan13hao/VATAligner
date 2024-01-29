@@ -79,8 +79,15 @@ void processShapes(unsigned sid,
 
 		timer.go("Searching seeds");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
-
-		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
+		if(VATParameters::algn_type == VATParameters::dna)
+		{
+			launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::thread());
+		}else
+		{
+			launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
+		}
+		
+		
 
 	}
 	timer_mapping.stop();
