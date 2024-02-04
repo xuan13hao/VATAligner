@@ -193,6 +193,7 @@ int main(int ac, const char* av[])
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::DNAAlign();
+					VATParameters::output_format = "paf";
 					view();
 				}else if (VATParameters::algn_type == VATParameters::blastx)
 				{
