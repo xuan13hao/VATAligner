@@ -48,7 +48,7 @@ struct Align_context
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
-		queue (VATParameters::threads()*8, writer)
+		queue (VATParameters::thread(), writer)
 	{ }
 	void operator()(unsigned thread_id)
 	{

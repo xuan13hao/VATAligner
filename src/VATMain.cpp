@@ -52,8 +52,6 @@ int main(int ac, const char* av[])
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
-        	("long-read", "enable long-read mode (default: short)")
-			("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
@@ -63,15 +61,15 @@ int main(int ac, const char* av[])
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
-			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
 			("simd_sort", "Double-index based on SIMD")
+			("lr", "enable long-read mode (default: short)")
+			("accuracy", "enable accuracy mode")
 			("chimera", "chimera alignment")
 			("circ", "circ alignment")
-			("whole-genome", "whole-genome alignment")
+			("wg", "whole-genome alignment")
 			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
-//1111111111111111
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
 			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-10), "maximum seed frequency")
@@ -92,13 +90,12 @@ int main(int ac, const char* av[])
         	("no-traceback,r", "disable alignment traceback")
 			("for_only", "only forward strand alignment")
         	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
-	
-        	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
+
 
         po::options_description view_options("View options");
         view_options.add_options()
 			// ("out,o", po::value<string>(&VATParameters::output_file), "output file")
-			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam)")
+			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam/paf)")
 			("forwardonly", "only show alignments of forward strand");
 
         po::options_description hidden("Hidden options");
@@ -116,7 +113,7 @@ int main(int ac, const char* av[])
         po::store(po::command_line_parser(ac, av).options(cmd_line_options).positional(positional).run(), vm);
         po::notify(vm);
 
-        if(vm.count("long-read"))
+        if(vm.count("lr"))
 		{
 			VATParameters::aligner_mode = VATParameters::long_model;
 		}
@@ -134,7 +131,7 @@ int main(int ac, const char* av[])
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
 		VATParameters::forward_only = vm.count("for_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
-		VATParameters::whole_genome = vm.count("whole-genome") > 0;
+		VATParameters::whole_genome = vm.count("wg") > 0;
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
@@ -212,11 +209,11 @@ int main(int ac, const char* av[])
 	catch(std::bad_alloc &e) 
 	{
 		cerr << "Failed to allocate sufficient memory. Please refer to the readme for instructions on memory usage." << endl;
-		log_stream << "Error: " << e.what() << endl;
+		// log_stream << "Error: " << e.what() << endl;
 	} catch(exception& e) 
 	{
         cerr << "Error: " << e.what() << endl;
-        log_stream << "Error: " << e.what() << endl;
+        // log_stream << "Error: " << e.what() << endl;
         return 1;
     }
     catch(...) 
