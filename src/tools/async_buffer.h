@@ -34,12 +34,33 @@ class AsynchronousBuffer
 		bin_size_ ((input_count + bins_ - 1) / bins_)
 	{
 		// cout << "Async_buffer() " << input_count << ',' << bin_size_ << endl;
-		for(unsigned j=0;j<VATParameters::thread();++j)
-			for(unsigned i=0;i<bins;++i) {
-				tmp_file_.push_back(TempFile ());
-				out_.push_back(new OutputStreamer (tmp_file_.back()));
-				size_.push_back(0);
+		if(VATParameters::algn_type == VATParameters::dna)
+		{
+			for(unsigned j=0;j<VATParameters::thread();++j)
+			{
+				for(unsigned i=0;i<bins;++i) {
+					tmp_file_.push_back(TempFile ());
+					out_.push_back(new OutputStreamer (tmp_file_.back()));
+					size_.push_back(0);
+				}
 			}
+		}else
+		{
+			for(unsigned j=0;j<VATParameters::threads();++j)
+			{
+				for(unsigned i=0;i<bins;++i) {
+					tmp_file_.push_back(TempFile ());
+					out_.push_back(new OutputStreamer (tmp_file_.back()));
+					size_.push_back(0);
+				}
+			}
+		}
+		// for(unsigned j=0;j<VATParameters::threads();++j)
+		// 	for(unsigned i=0;i<bins;++i) {
+		// 		tmp_file_.push_back(TempFile ());
+		// 		out_.push_back(new OutputStreamer (tmp_file_.back()));
+		// 		size_.push_back(0);
+		// 	}
 	}
 	struct Iterator
 	{
@@ -90,21 +111,57 @@ class AsynchronousBuffer
 
 	void load(vector<_t> &data, unsigned bin) const
 	{
-		size_t size = 0;
-		for(unsigned i=0;i<VATParameters::thread();++i)
-			size += size_[i*bins_+bin];
+		// size_t size = 0;
+		// for(unsigned i=0;i<VATParameters::threads();++i)
+		// 	size += size_[i*bins_+bin];
 		// cout << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
-		data.resize(size);
-		_t* ptr = data.data();
-		for(unsigned i=0;i<VATParameters::thread();++i) {
-			Input_stream f (tmp_file_[i*bins_+bin]);
-			const size_t s = size_[i*bins_+bin];
-			const size_t n = f.read(ptr, s);
-			ptr += s;
-			f.close();
-			if(n != s)
-				throw Buffer_file_read_exception(f.file_name.c_str(), s, n);
+		// data.resize(size);
+		// _t* ptr = data.data();
+		// for(unsigned i=0;i<VATParameters::threads();++i) {
+		// 	Input_stream f (tmp_file_[i*bins_+bin]);
+		// 	const size_t s = size_[i*bins_+bin];
+		// 	const size_t n = f.read(ptr, s);
+		// 	ptr += s;
+		// 	f.close();
+		// 	if(n != s)
+		// 		throw Buffer_file_read_exception(f.file_name.c_str(), s, n);
+		// }
+		if(VATParameters::algn_type == VATParameters::dna)
+		{
+			size_t size = 0;
+			for(unsigned i=0;i<VATParameters::thread();++i)
+				size += size_[i*bins_+bin];
+			// cout << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
+			data.resize(size);
+			_t* ptr = data.data();
+			for(unsigned i=0;i<VATParameters::thread();++i) {
+				Input_stream f (tmp_file_[i*bins_+bin]);
+				const size_t s = size_[i*bins_+bin];
+				const size_t n = f.read(ptr, s);
+				ptr += s;
+				f.close();
+				if(n != s)
+					throw Buffer_file_read_exception(f.file_name.c_str(), s, n);
+			}
+		}else
+		{
+			size_t size = 0;
+			for(unsigned i=0;i<VATParameters::threads();++i)
+				size += size_[i*bins_+bin];
+			// cout << "Async_buffer.load() " << size << "(" << (double)size*sizeof(_t)/(1<<30) << " GB)" << endl;
+			data.resize(size);
+			_t* ptr = data.data();
+			for(unsigned i=0;i<VATParameters::threads();++i) {
+				Input_stream f (tmp_file_[i*bins_+bin]);
+				const size_t s = size_[i*bins_+bin];
+				const size_t n = f.read(ptr, s);
+				ptr += s;
+				f.close();
+				if(n != s)
+					throw Buffer_file_read_exception(f.file_name.c_str(), s, n);
+			}
 		}
+	
 	}
 
 	unsigned bins() const

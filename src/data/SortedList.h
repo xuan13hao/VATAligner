@@ -160,12 +160,23 @@ class SortedTuples
 		limits_ (hst, range),
 		data_ (reinterpret_cast<Tuple*>(buffer))
 	{
-		TimerTools timer ("Building seed list", false);
-		Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
-		launch_scheduled_thread_pool(build_context, VATConsts::seqp, 2*VATParameters::threads());
-		timer.go("Sorting seed list");
-		Sort_context sort_context (*this);
-		launch_scheduled_thread_pool(sort_context, VATConsts::seedp, 2*VATParameters::threads());
+		if(VATParameters::algn_type == VATParameters::dna)
+		{
+			TimerTools timer ("Building seed list", false);
+			Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
+			launch_scheduled_thread_pool(build_context, VATConsts::seqp, VATParameters::thread());
+			timer.go("Sorting seed list");
+			Sort_context sort_context (*this);
+			launch_scheduled_thread_pool(sort_context, VATConsts::seedp, VATParameters::thread());
+		}else
+		{
+			TimerTools timer ("Building seed list", false);
+			Build_context<_val> build_context (seqs, sh, range, build_iterators(hst));
+			launch_scheduled_thread_pool(build_context, VATConsts::seqp, VATParameters::threads());
+			timer.go("Sorting seed list");
+			Sort_context sort_context (*this);
+			launch_scheduled_thread_pool(sort_context, VATConsts::seedp, VATParameters::threads());
+		}
 	}
 
 	template<typename _t>

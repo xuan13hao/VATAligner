@@ -85,11 +85,18 @@ namespace VATParameters
 
 	inline uint32_t threads()
 	{
-		return std::max(threads_, 1U);
+		// if (VATParameters::algn_type == VATParameters::dna)
+		// {
+		// 	return 4*std::max(threads_, 1U);
+		// }else
+		// {
+			return std::max(threads_, 1U);
+		// }
+		// return std::max(threads_, 1U);
 	}
 	inline uint32_t thread()
 	{
-		return threads()+4;
+		return threads()*4;
 	}
 	template<typename _t>
 	inline void set_option(_t& option, _t value)
