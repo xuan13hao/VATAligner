@@ -132,7 +132,6 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSee
         dp[i] = seeds[i].len;
         maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
-        int 
 //auto j = i - 1; j >= 0 && i - j <= 50; j--
         if(i < h)
         {

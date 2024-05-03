@@ -89,7 +89,6 @@ void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer*
 	Trace_pt_list<_locr,_locl> v;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
 	{
-		log_stream << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
 		TimerTools timer ("Loading trace points", false);
 		trace_pts.load(v, bin);
 

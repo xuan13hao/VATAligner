@@ -31,14 +31,11 @@ class Masked_sequence_set : public SequenceSet<_val>
 			const size_t ht_size (std::max(static_cast<size_t>(static_cast<float>(counts[i]) * 1.3), static_cast<size_t>(counts[i] + 1)));
 			pos_filters[sid][i] = auto_ptr<filter_table> (new filter_table(ht_size));
 		}
-		log_stream << "Hit cap = " << VATParameters::hit_cap << std::endl;
-		log_stream << "Low complexity seeds = " << n << std::endl;
 
 		timer.go("Building position filter");
 		Build_context<_loc> build_context(idx, sid, counts, *this);
 		launch_scheduled_thread_pool(build_context, VATConsts::seedp, 2*VATParameters::threads());
 		timer.finish();
-		log_stream << "Masked positions = " << std::accumulate(counts.begin(), counts.end(), 0) << std::endl;
 	}
 
 	bool get_masking(const _val *pos, unsigned sid) const
