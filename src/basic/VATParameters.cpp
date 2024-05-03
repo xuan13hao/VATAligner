@@ -71,6 +71,7 @@ size_t		db_size;
 bool		spilce;
 bool		chimera;
 bool		whole_genome;
+bool		whole_genome_sequencing;
 bool		circ;
 int		seed_len;
 bool		simd_sort;

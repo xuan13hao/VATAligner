@@ -65,6 +65,10 @@ vector<DiagonalSeeds<_locr,_locl> > findWholeGenSeeds(vector<DiagonalSeeds<_locr
 
 template<typename _locr, typename _locl>
 std::vector<DiagonalSeeds<_locr, _locl>> ChainWGSSeeds(std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxDistance, int maxIndel, int maxLocalDistance) {
+        // First, sort the seeds by their target start position
+    std::sort(seeds.begin(), seeds.end(), [](const DiagonalSeeds<_locr, _locl>& a, const DiagonalSeeds<_locr, _locl>& b) {
+        return a.j < b.j;
+    });
     std::vector<int> dp(seeds.size());
     std::vector<int> prev(seeds.size(), -1);
     std::vector<int> maxLen(seeds.size());

@@ -72,6 +72,7 @@ namespace VATParameters
 	extern bool		spilce;
 	extern bool		chimera;
 	extern bool		whole_genome;
+	extern bool		whole_genome_sequencing;
 	extern bool		circ;
 	extern int		seed_len;
 	extern bool		simd_sort;
@@ -85,18 +86,12 @@ namespace VATParameters
 
 	inline uint32_t threads()
 	{
-		// if (VATParameters::algn_type == VATParameters::dna)
-		// {
-		// 	return 4*std::max(threads_, 1U);
-		// }else
-		// {
-			return std::max(threads_, 1U);
-		// }
-		// return std::max(threads_, 1U);
+		std::max(threads_, 1U);
+
 	}
 	inline uint32_t thread()
 	{
-		return threads()*4;
+		return threads()+8;
 	}
 	template<typename _t>
 	inline void set_option(_t& option, _t value)
@@ -107,6 +102,8 @@ namespace VATParameters
 
 	template<typename _val>
 	void set_options(double block_size);
+	template<typename _val>
+	void set_options(int block_size);
 	template<typename _val>
 	unsigned read_padding(size_t len);
 	string get_temp_file();

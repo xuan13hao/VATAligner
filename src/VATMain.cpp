@@ -66,7 +66,8 @@ int main(int ac, const char* av[])
 			("accuracy", "enable accuracy mode")
 			("chimera", "chimera alignment")
 			("circ", "circ alignment")
-			("wg", "whole-genome alignment")
+			("wga", "whole-genome alignment")
+			("wgs", "whole_genome_sequencing")
 			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
@@ -134,6 +135,7 @@ int main(int ac, const char* av[])
 		VATParameters::whole_genome = vm.count("wg") > 0;
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
+		VATParameters::whole_genome_sequencing = vm.count("wgs") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
 
         setup(command, ac, av);

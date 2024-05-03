@@ -17,30 +17,7 @@ void setup(const string &command, int ac, const char **av)
 	auto_append_extension(po::database, ".vatf");
 	auto_append_extension(po::daa_file, ".vatr");
 
-	if(po::debug_log) {
-		io::tee_filter<io::file_sink> t (io::file_sink("vat.log", std::ios_base::out | std::ios_base::app));
-		verbose_stream.push(t);
-		log_stream.push(t);
-		log_stream.push(cout);
-	} else
-		log_stream.push(io::null_sink ());
-	if(po::verbose || po::debug_log)
-		verbose_stream.push(cout);
-	else
-		verbose_stream.push(io::null_sink ());
-
-	log_stream << "Command line: ";
-	for(int i=0;i<ac;++i)
-		log_stream << av[i] << ' ';
-	log_stream << endl;
-
-	verbose_stream << VATConsts::program_name << " v" << VATConsts::version_string << "." << VATConsts::build_version << endl;
-#ifndef NDEBUG
-	verbose_stream << "Assertions enabled." << endl;
-#endif
 	po::set_option(po::threads_, tthread::thread::hardware_concurrency());
-	verbose_stream << "#Threads = " << po::threads() << endl;
-
 	if(command == "makevatdb")
 		po::algn_type = po::makevatdb;
 	else if(command == "blastx")
@@ -81,21 +58,6 @@ void setup(const string &command, int ac, const char **av)
 		// ScoreMatrix::get().print<DNA>();
 	}
 	
-	verbose_stream << "Gap open penalty = " << po::gap_open << endl;
-	verbose_stream << "Gap extension penalty = " << po::gap_extend << endl;
-
-	if(po::seg == "" && po::algn_type == po::blastx)
-		po::seg = "yes";
-	verbose_stream << "Seg masking = " << (po::seg == "yes") << endl;
-
-	po::have_ssse3 = check_SSSE3();
-	if(po::have_ssse3)
-		verbose_stream << "SSSE3 enabled." << endl;
-	if(po::debug_log) {
-		copy_file(log_stream, "/etc/issue");
-		copy_file(log_stream, "/proc/cpuinfo");
-		copy_file(log_stream, "/proc/meminfo");
-	}
 }
 
 template<typename _val>
@@ -117,15 +79,51 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 	po::set_option(po::hit_band, 5);
 	po::min_hit_score = ScoreMatrix::get().rawscore(std::min(po::min_hit_score == 0 ? 19.0 : po::min_hit_score, b));
 
-	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
-	log_stream << "Minimum bit score = " << b << endl;
-	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
 
 template<>
 void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
 	namespace po = VATParameters;
+	if(po::chimera)
+	{
+		po::set_option(po::min_identities, 14u);//id2
+		po::set_option(po::padding, 8);//band
+		po::set_option(po::lowmem, 1u);//c
+		po::set_option(po::hit_cap, 15u);//C
+		po::set_option(po::match, 1);//C
+		po::set_option(po::mismatch, -1);//C
+	}
+	if(po::spilce)
+	{
+		po::set_option(po::min_identities, 28u);//id2
+		po::set_option(po::padding, 8);//band
+		po::set_option(po::lowmem, 1u);//c
+		po::set_option(po::hit_cap, 15u);//C
+		po::set_option(po::match, 5);//C
+		po::set_option(po::mismatch, -3);//C
+	}
+	if(po::circ)
+	{
+		po::set_option(po::min_identities, 28u);//id2
+		po::set_option(po::padding, 8);//band
+		po::set_option(po::lowmem, 1u);//c
+		po::set_option(po::hit_cap, 15u);//C
+		po::set_option(po::match, 5);//C
+		po::set_option(po::mismatch, -3);//C
+	}
+	if(po::whole_genome)
+	{
+		po::set_option(po::min_identities, 28u);
+		po::set_option(po::hit_cap, 15u);//C
+	}
+	if(po::whole_genome_sequencing)
+	{
+		po::set_option(po::min_identities, 28u);//id2
+		po::set_option(po::padding, 8);//band
+		po::set_option(po::lowmem, 1u);//c
+		po::set_option(po::hit_cap, 2u);//C
+	}
 	if(po::aligner_mode == po::long_model || po::aligner_mode == po::accuracy_model) {
 		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/17470874)));
 	} else if (po::aligner_mode == po::short_model) {
@@ -156,8 +154,6 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
-	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
-	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
 }
 
 
@@ -191,8 +187,7 @@ void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t c
 		po::set_option(po::hit_band, 5);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
-	log_stream << "Query len bounds " << query_len_bounds.first << ' ' << query_len_bounds.second << endl;
-	log_stream << "Search parameters " << po::min_ungapped_raw_score << ' ' << po::min_hit_score << ' ' << po::hit_cap << endl;
+
 }
 
 #endif /* SETUP_H_ */
