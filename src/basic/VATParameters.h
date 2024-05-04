@@ -73,6 +73,7 @@ namespace VATParameters
 	extern bool		chimera;
 	extern bool		whole_genome;
 	extern bool		whole_genome_sequencing;
+	extern bool		dna_homology;
 	extern bool		circ;
 	extern int		seed_len;
 	extern bool		simd_sort;

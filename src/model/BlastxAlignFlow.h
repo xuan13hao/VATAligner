@@ -90,8 +90,8 @@ void BlastxMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping, 
 	db_file.close();
 
 	timer.finish();
-	cout << "Total time = " << boost::timer::format(total_timer.elapsed(), 1, "%ws\n");
-	cout << "Mapping time = " << boost::timer::format(timer_mapping.elapsed(), 1, "%ws\n");
+	// cout << "Total time = " << boost::timer::format(total_timer.elapsed(), 1, "%ws\n");
+	// cout << "Mapping time = " << boost::timer::format(timer_mapping.elapsed(), 1, "%ws\n");
 	statistics.print();
 }
 
@@ -109,9 +109,9 @@ void BlastxMasterThread()
 	timer.finish();
 	VATParameters::set_options<_val>(ref_header.block_size);
 	cout << "Reference = " << VATParameters::database << endl;
-	cout << "Sequences = " << ref_header.sequences << endl;
-	cout << "Letters = " << ref_header.letters << endl;
-	verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;
+	// cout << "Sequences = " << ref_header.sequences << endl;
+	// cout << "Letters = " << ref_header.letters << endl;
+	// verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;
 
 	if(ref_header.long_addressing)
 		BlastxMasterThread<_val,uint64_t>(db_file, timer_mapping, timer2);

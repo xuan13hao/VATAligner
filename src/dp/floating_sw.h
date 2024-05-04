@@ -17,7 +17,8 @@ local_match<_val> floating_sw_dir(const _val *query, const _val *subject, int ba
 	int j = 0, i_max = -1, j_best = -1, i_best = -1;
 	Scalar_dp_matrix<_score,_traceback> mtx (band);
 	const _val *x = query, *y = subject;
-	
+	// cout<<"xdrop= "<<(int)xdrop<<", open = "<<(int)gap_open<<", extend = "<<(int)gap_extend<<endl;
+
 	while(*y != AlphabetSet<_val>::PADDING_CHAR && max_score - column_max < xdrop) 
 	{
 		typename Scalar_dp_matrix<_score,_traceback>::Column_iterator it = mtx.column(j, i_max);

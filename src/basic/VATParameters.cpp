@@ -72,6 +72,7 @@ bool		spilce;
 bool		chimera;
 bool		whole_genome;
 bool		whole_genome_sequencing;
+bool		dna_homology;
 bool		circ;
 int		seed_len;
 bool		simd_sort;

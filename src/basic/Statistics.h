@@ -42,7 +42,7 @@ class Statistics
 		// cout << "Total score = " << data_[SCORE_TOTAL] << endl;
 		// cout << "Aligned query len = " << data_[ALIGNED_QLEN] << endl;
 		// cout << "Gapped matches = " << data_[GAPPED] << endl;
-		cout << "Final matches = " << data_[MATCHES] << endl;
+		cout << "Matches = " << data_[MATCHES] << endl;
 		// cout << "Queries aligned = " << data_[ALIGNED] << endl;
 	}
 

@@ -61,11 +61,12 @@ int main(int ac, const char* av[])
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
 			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
 			("simd_sort", "Double-index based on SIMD")
-			("chimera", "chimera alignment")
-			("circ", "circ alignment")
-			("wga", "whole-genome alignment")
-			("wgs", "whole-genome sequencing")
-			("splice", "splice alignments ")
+			("chimera", "Chimera alignment")
+			("circ", "Circ alignment")
+			("wga", "Whole-genome alignment")
+			("wgs", "Whole-genome sequencing")
+			("splice", "Splice alignments ")
+			("dnah", "DNA homology ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
 //1111111111111111
@@ -131,7 +132,8 @@ int main(int ac, const char* av[])
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
 		VATParameters::forward_only = vm.count("for_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
-		VATParameters::whole_genome = vm.count("wgs") > 0;
+		VATParameters::whole_genome_sequencing = vm.count("wgs") > 0;
+		VATParameters::dna_homology = vm.count("dnah") > 0;
 		VATParameters::whole_genome = vm.count("wga") > 0;
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
