@@ -22,7 +22,7 @@ template<typename _val, typename _locr, typename _locq, typename _locl>
 class Search_context
 {
     public:
-	Search_context(unsigned sid, const typename SortedTuples<_locr>::Type &ref_idx, const typename SortedTuples<_locq>::Type &query_idx):
+	Search_context(unsigned sid, const typename SortedList<_locr>::Type &ref_idx, const typename SortedList<_locq>::Type &query_idx):
 		sid (sid),
 		ref_idx (ref_idx),
 		query_idx (query_idx)
@@ -39,8 +39,8 @@ class Search_context
 		statistics += stat;
 	}
 	const unsigned sid;
-	const typename SortedTuples<_locr>::Type &ref_idx;
-	const typename SortedTuples<_locq>::Type &query_idx;
+	const typename SortedList<_locr>::Type &ref_idx;
+	const typename SortedList<_locq>::Type &query_idx;
 };
 
 template<typename _val, typename _locr, typename _locq, typename _locl>
@@ -61,7 +61,7 @@ void processShapes(unsigned sid,
 		// cout<<"p.getMin(chunk) = "<<p.getMin(chunk)<<", p.getMax(chunk) = "<<p.getMax(chunk)<<endl;
 		current_range = range;
 		TimerTools timer ("Building reference index", true);
-		typename SortedTuples<_locr>::Type ref_idx (ref_buffer,
+		typename SortedList<_locr>::Type ref_idx (ref_buffer,
 				*ReferenceSeqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				ref_hst.get(VATParameters::index_mode, sid),
@@ -70,7 +70,7 @@ void processShapes(unsigned sid,
 
 		timer.go("Building query index");
 		timer_mapping.resume();
-		typename SortedTuples<_locq>::Type query_idx (query_buffer,
+		typename SortedList<_locq>::Type query_idx (query_buffer,
 				*QuerySeqs<_val>::data_,
 				ShapeConfigures::instance.get_shape(sid),
 				query_hst->get(VATParameters::index_mode, sid),
@@ -79,15 +79,8 @@ void processShapes(unsigned sid,
 
 		timer.go("Searching seeds");
 		Search_context<_val,_locr,_locq,_locl> context (sid, ref_idx, query_idx);
-		if(VATParameters::algn_type == VATParameters::dna)
-		{
-			launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::thread());
-		}else
-		{
-			launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::threads());
-		}
-		
-		
+
+		launch_scheduled_thread_pool(context, VATConsts::seedp, VATParameters::thread());
 
 	}
 	timer_mapping.stop();
@@ -112,7 +105,7 @@ void ProcessRefsChunks(Database_file<_val> &db_file,
 
 	ref_map.init(ReferenceSeqs<_val>::get().get_length());
 	timer.go("Allocating buffers");
-	char *ref_buffer = SortedTuples<_locr>::Type::alloc_buffer(ref_hst);
+	char *ref_buffer = SortedList<_locr>::Type::alloc_buffer(ref_hst);
 
 	timer.go("Initializing temporary storage");
 	timer_mapping.resume();
@@ -165,7 +158,7 @@ void ProcessQueryChunks(Database_file<_val> &db_file,
 		VATOutput &master_out)
 {
 	TimerTools timer ("Allocating buffers", true);
-	char *query_buffer = SortedTuples<_locq>::Type::alloc_buffer(*query_hst);
+	char *query_buffer = SortedList<_locq>::Type::alloc_buffer(*query_hst);
 	vector<TempFile> tmp_file;
 	timer.finish();
 	db_file.rewind();

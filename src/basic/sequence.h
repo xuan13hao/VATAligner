@@ -75,7 +75,6 @@ class sequence
 			buf << AlphabetAttributes<_val>::ALPHABET[s.data_[i]];
 		return buf;
 	}
-
 	/*friend std::ostream& operator<<(std::ostream &os, const sequence &s)
 	{
 		std::cout << "co = " << s.clipping_offset_ << std::endl;

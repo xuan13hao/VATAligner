@@ -11,9 +11,7 @@
 #include "basic/ContextSet.h"
 #include "output/view.h"
 
-/*
-./VAT protein -d prot_db.vatf -q ../data/protein/IPR034042.fa -a match_prot_db --xdrop 18 --top 90
-*/
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -33,8 +31,6 @@ int main(int ac, const char* av[])
             ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(1), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
-			("seed partition,P", po::value<int>(&VATParameters::seed_partition)->default_value(1024), "seed partition (1024)")
-			("out,o", po::value<string>(&VATParameters::output_file), "output file")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
 
         po::options_description makedb("Makedb options");
@@ -47,11 +43,13 @@ int main(int ac, const char* av[])
         aligner.add_options()
 			("query,q", po::value<string>(&VATParameters::query_file), "input query file")
 			("max-target-seqs,k", po::value<uint64_t>(&VATParameters::max_alignments)->default_value(25), "maximum number of target sequences to report alignments for")
-			("top", po::value<double>(&VATParameters::toppercent)->default_value(98), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
+			("top", po::value<double>(&VATParameters::toppercent)->default_value(100), "report alignments within this percentage range of top alignment score (overrides --max-target-seqs)")
         	("compress", po::value<unsigned>(&VATParameters::compression)->default_value(0), "compression for output files (0=none, 1=gzip)")
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
+        	("long-read", "enable long-read mode (default: short)")
+			("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
@@ -61,28 +59,28 @@ int main(int ac, const char* av[])
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
-			// ("simd_sort", "Double-index based on SIMD")
-			// ("lr", "enable long-read mode (default: short)")
-			("accuracy", "enable accuracy mode")
+			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
+			("simd_sort", "Double-index based on SIMD")
 			("chimera", "chimera alignment")
 			("circ", "circ alignment")
 			("wga", "whole-genome alignment")
-			("wgs", "whole_genome_sequencing")
+			("wgs", "whole-genome sequencing")
 			("splice", "splice alignments ")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)");
+//1111111111111111
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
-			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-10), "maximum seed frequency")
+			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
 			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
-       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(0), "minimum number of identities for stage 1 hit")
+       		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(25), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
-        	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(18), "xdrop for ungapped alignment")
-        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(18), "xdrop for gapped alignment in bits")
+        	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(25), "xdrop for ungapped alignment")
+        	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(25), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
-        	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(18), "minimum score to keep a tentative alignment")
+        	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
@@ -91,12 +89,13 @@ int main(int ac, const char* av[])
         	("no-traceback,r", "disable alignment traceback")
 			("for_only", "only forward strand alignment")
         	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
-
+	
+        	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
 
         po::options_description view_options("View options");
         view_options.add_options()
-			// ("out,o", po::value<string>(&VATParameters::output_file), "output file")
-			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam/paf)")
+			("out,o", po::value<string>(&VATParameters::output_file), "output file")
+			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam)")
 			("forwardonly", "only show alignments of forward strand");
 
         po::options_description hidden("Hidden options");
@@ -114,7 +113,7 @@ int main(int ac, const char* av[])
         po::store(po::command_line_parser(ac, av).options(cmd_line_options).positional(positional).run(), vm);
         po::notify(vm);
 
-        if(vm.count("lr"))
+        if(vm.count("long-read"))
 		{
 			VATParameters::aligner_mode = VATParameters::long_model;
 		}
@@ -132,10 +131,10 @@ int main(int ac, const char* av[])
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
 		VATParameters::forward_only = vm.count("for_only") > 0;
 		VATParameters::chimera = vm.count("chimera") > 0;
-		VATParameters::whole_genome = vm.count("wg") > 0;
+		VATParameters::whole_genome = vm.count("wgs") > 0;
+		VATParameters::whole_genome = vm.count("wga") > 0;
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
-		VATParameters::whole_genome_sequencing = vm.count("wgs") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
 
         setup(command, ac, av);
@@ -187,17 +186,13 @@ int main(int ac, const char* av[])
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::ProteinAlign();
-					view();
 				}else if (VATParameters::algn_type == VATParameters::dna)
 				{
 					// VATParameters::chunk_size = 8;
 					RunModel::DNAAlign();
-					VATParameters::output_format = "paf";
-					view();
 				}else if (VATParameters::algn_type == VATParameters::blastx)
 				{
 					RunModel::BlastxAlign();
-					view();
 				}else
 				{
 					cerr << "Failed to get alignment type. Please refer to the readme for instructions." << endl;
@@ -211,11 +206,11 @@ int main(int ac, const char* av[])
 	catch(std::bad_alloc &e) 
 	{
 		cerr << "Failed to allocate sufficient memory. Please refer to the readme for instructions on memory usage." << endl;
-		// log_stream << "Error: " << e.what() << endl;
+		log_stream << "Error: " << e.what() << endl;
 	} catch(exception& e) 
 	{
         cerr << "Error: " << e.what() << endl;
-        // log_stream << "Error: " << e.what() << endl;
+        log_stream << "Error: " << e.what() << endl;
         return 1;
     }
     catch(...) 

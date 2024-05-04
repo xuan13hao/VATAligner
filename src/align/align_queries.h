@@ -48,7 +48,7 @@ struct Align_context
 		trace_pts (trace_pts),
 		output_file (output_file),
 		writer (output_file),
-		queue (VATParameters::thread(), writer)
+		queue (VATParameters::threads()*8, writer)
 	{ }
 	void operator()(unsigned thread_id)
 	{
@@ -89,6 +89,7 @@ void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer*
 	Trace_pt_list<_locr,_locl> v;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
 	{
+		log_stream << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
 		TimerTools timer ("Loading trace points", false);
 		trace_pts.load(v, bin);
 
@@ -96,7 +97,7 @@ void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer*
 
 		
 		v.init();
-		timer.go("Performing Alignment...");
+		timer.go("Generating seeds...");
 		if(ref_header.n_blocks > 1) {
 			Align_context<_val,_locr,_locl,Temp_output_buffer<_val> > context (v, output_file);
 			launch_thread_pool(context, VATParameters::threads());

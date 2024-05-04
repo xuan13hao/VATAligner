@@ -76,7 +76,6 @@ bool		circ;
 int		seed_len;
 bool		simd_sort;
 int		match;
-int		seed_partition;
 int		mismatch;
 Aligner_mode aligner_mode;
 Command algn_type;

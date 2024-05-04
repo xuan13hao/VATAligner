@@ -49,7 +49,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 3)
+			if (ds.len >= 10)
 			{
 				diagonalsegment_.push_back(ds);
 			}
@@ -68,10 +68,8 @@ void align_sequence(vector<Segment<_val> > &matches,
 				floating_sw(&query[h.seed_offset_],
 						local.back(),
 						padding[frame],
-						VATParameters::gapped_xdrop,
-						VATParameters::gap_open,
-						// ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
-						// VATParameters::gap_open + VATParameters::gap_extend,
+						ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+						VATParameters::gap_open + VATParameters::gap_extend,
 						VATParameters::gap_extend,
 						transcript_buf,
 						Traceback ());
@@ -87,7 +85,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 		}
 
 		
-	} else if(VATParameters::whole_genome || VATParameters::algn_type == VATParameters::dna)
+	} else if(VATParameters::whole_genome)
 	{
 
 		for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i) 
@@ -100,10 +98,8 @@ void align_sequence(vector<Segment<_val> > &matches,
 			floating_sw(&query[i->seed_offset_],
 					local.back(),
 					padding[frame],
-					VATParameters::gapped_xdrop,
-					VATParameters::gap_open,
-					// ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
-					// VATParameters::gap_open + VATParameters::gap_extend,
+					ScoreMatrix::get().rawscore(VATParameters::gapped_xdrop),
+					VATParameters::gap_open + VATParameters::gap_extend,
 					VATParameters::gap_extend,
 					transcript_buf,
 					Traceback ());
@@ -131,7 +127,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 3)
+			if (ds.len >= 10)
 			{
 				diagonalsegment_.push_back(ds);
 			}
@@ -177,7 +173,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 3)
+			if (ds.len >= 10)
 			{
 				diagonalsegment_.push_back(ds);
 			}

@@ -30,7 +30,7 @@ void align(const _locq q_pos,
 	stats.inc(Statistics::TENTATIVE_MATCHES1);
 
 	unsigned delta, len;
-	int score ;
+	int score;
 	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
 		return;
 

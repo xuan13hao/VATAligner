@@ -7,6 +7,7 @@
 #include "SequenceSet.h"
 #include "../basic/ShapeParameter.h"
 #include "../tools/thread.h"
+
 using std::vector;
 
 void encode_zero_rle(const int32_t *data, size_t len, OutputStreamer &out)
@@ -159,46 +160,21 @@ private:
 
 			assert(i < seqs.get_length());
 			const sequence<const _val> seq = seqs[i];
-
-			// From here to modify the code
-			// std::string str_seq = to_string(seq);
-			// cout<<"sequence =  "<<seq<<endl;
-			// if(str_seq.length() < VATConsts::min_shape_len) continue;
-			// std::vector<std::string> minimizers = computeMinimizers(str_seq, 20,14);
-			// int prev_key = 0;
-			// for (size_t l = 0; l < minimizers.size(); l++)
-			// {
-			// 	uint64_t key = computeHashValue(minimizers[l]);
-			// 	// if(prev_key != key) continue;
-			// 	// cout<<"minimizer =  "<<minimizers[l]<<", key = "<<key<<endl;
-			// 	for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
-			// 		assert(cfg->mode() < VATConsts::index_modes);
-			// 		assert(cfg->count() <= VATConsts::max_shapes);
-			// 		for(unsigned k=0;k<cfg->count(); ++k)
-			// 		{
-			// 			++data_[cfg->mode()][k][seqp][seed_partition(key)];
-			// 		}
-			// 	}
-			// 	prev_key = key;
-			// }
-			
-			// cout<<"seq j = "<<seq<<endl;
 			if(seq.length() < VATConsts::min_shape_len) continue;
-			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)//VATConsts::min_shape_len
+			for(unsigned j=0;j<seq.length()+1-VATConsts::min_shape_len; ++j)
 				for(vector<ShapeConfigures>::const_iterator cfg = cfgs.begin(); cfg != cfgs.end(); ++cfg) {
 					assert(cfg->mode() < VATConsts::index_modes);
 					assert(cfg->count() <= VATConsts::max_shapes);
 					for(unsigned k=0;k<cfg->count(); ++k)
 						if(j+cfg->get_shape(k).length_ < seq.length()+1 && cfg->get_shape(k).set_seed(key, &seq[j]))
 						{
-							// cout<<"seq j = "<<seq[j]<<endl;
 							// count++;
 							++data_[cfg->mode()][k][seqp][seed_partition(key)];
 							// cout<<"index = "<<count<<", data = "<<****data_<<", model = "<<cfg->mode()<<",k = "<<k<<",seqp = "<<seqp<<", key = "<<seed_partition(key)<<endl;
 						}
 
 				}
-			
+
 		}
 	}
 

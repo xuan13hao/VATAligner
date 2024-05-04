@@ -10,8 +10,8 @@
 using std::string;
 using std::endl;
 using std::cout;
-boost::iostreams::filtering_ostream vat_stream;
-boost::iostreams::filtering_ostream vat_log_stream;
+boost::iostreams::filtering_ostream verbose_stream;
+boost::iostreams::filtering_ostream log_stream;
 
 class TimerTools : public boost::timer::cpu_timer
 {
@@ -34,9 +34,9 @@ class TimerTools : public boost::timer::cpu_timer
 		if(!msg_)
 			return;
 		if(print_ && !VATParameters::debug_log)
-			vat_stream << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
+			log_stream << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
 		else {
-			vat_log_stream << ' ' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
+			verbose_stream << ' ' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
 		}
 		msg_ = 0;
 	}
@@ -44,10 +44,10 @@ private:
 	void start(const char *msg)
 	{
 		if(print_ && !VATParameters::debug_log) {
-			vat_stream << msg << "... " << std::flush;
+			log_stream << msg << "... " << std::flush;
 			fflush(stdout);
 		} else
-			vat_log_stream << msg << "..." << endl;
+			verbose_stream << msg << "..." << endl;
 	}
 	bool print_;
 	const char *msg_;

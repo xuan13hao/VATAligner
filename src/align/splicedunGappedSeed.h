@@ -67,54 +67,6 @@ vector<DiagonalSeeds<_locr,_locl> > findSpliceSeeds(vector<DiagonalSeeds<_locr,_
 The findSpliceSeeds function takes a vector of seeds and the maximum gap allowed between seeds to form chains. 
 It iterates over the seeds in reverse order, computing the maximum right endpoint for each seed by comparing the gaps between consecutive seeds. 
 */
-// template<typename _locr, typename _locl>
-// std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap) {
-//     std::sort(seeds.begin(), seeds.end(), DiagonalSeeds<_locr, _locl>::cmp_subject_end);
-
-//     const int n = seeds.size();
-//     std::vector<int> dp(n);
-//     std::vector<int> prev(n, -1);
-//     int MAX = 999999;
-//     int bestScore = 0;
-//     int bestIdx = -1;
-//     int h = 50; // Maximum number of iterations to find a better score
-
-//     for (int i = 0; i < n; ++i) {
-//         dp[i] = seeds[i].len;
-//         for (int k = 0; k < h && i - k - 1 >= 0; ++k) { // Limit iterations to h
-//             int j = i - k - 1;
-//             int gap = seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len;
-//             if (gap > maxGap)
-//                 continue;
-
-//             int splice_score = seeds[j].IsSpliceJunction ? -MAX : 0;
-//             int circ_score = 0;
-//             if (VATParameters::circ) {
-//                 circ_score = seeds[j].isCandidateBackSplicedJunction ? -MAX : 0;
-//             }
-
-//             int score = dp[j] + seeds[i].len + splice_score + circ_score;
-//             if (score > dp[i]) {
-//                 dp[i] = score;
-//                 prev[i] = j;
-//             }
-//         }
-
-//         if (dp[i] > bestScore) {
-//             bestScore = dp[i];
-//             bestIdx = i;
-//         }
-//     }
-
-//     std::vector<DiagonalSeeds<_locr, _locl>> chainedSeeds;
-//     while (bestIdx >= 0) {
-//         chainedSeeds.push_back(seeds[bestIdx]);
-//         bestIdx = prev[bestIdx];
-//     }
-
-//     std::reverse(chainedSeeds.begin(), chainedSeeds.end());
-//     return chainedSeeds;
-// }
 
 template<typename _locr, typename _locl>
 std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSeeds<_locr, _locl>>& seeds, int maxGap)
@@ -127,17 +79,12 @@ std::vector<DiagonalSeeds<_locr, _locl>> findSpliceSeeds(std::vector<DiagonalSee
     int MAX = 999999;
     int bestScore = 0;
     int bestIdx = -1;
-    int h = 50;
     for (int i = 0; i < seeds.size(); ++i) {
         dp[i] = seeds[i].len;
         maxLen[i] = seeds[i].len;
         maxIdx[i] = i;
-//auto j = i - 1; j >= 0 && i - j <= 50; j--
-        if(i < h)
-        {
-            h  = i;
-        }
-        for (int j = 0; j < h; ++j) {
+
+        for (int j = 0; j < i; ++j) {
             int gap = seeds[i].j + seeds[i].len - seeds[j].j - seeds[j].len;
             // if (gap > maxGap)
             //     continue;

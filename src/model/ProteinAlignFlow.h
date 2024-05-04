@@ -56,7 +56,7 @@ void ProteinMasterThread(Database_file<_val> &db_file, cpu_timer &timer_mapping,
 
 		// if(sequence_type() == amino_acid && program_options::seg == "yes") {
 		// 	timer.go("Running complexity filter");
-		Complexity_filter<_val>::get().run(*QuerySeqs<_val>::data_);
+			// Complexity_filter<_val>::get().run(*query_seqs<_val>::data_);
 		// }
 
 		timer.go("Building query histograms");
@@ -114,6 +114,7 @@ void ProteinMasterThread()
 	cout << "Reference = " << VATParameters::database << endl;
 	cout << "Sequences = " << ref_header.sequences << endl;
 	cout << "Letters = " << ref_header.letters << endl;
+	verbose_stream << "Block size = " << (size_t)(ref_header.block_size * 1e9) << endl;
 
 	if(ref_header.long_addressing)
 		ProteinMasterThread<_val,uint64_t>(db_file, timer_mapping, timer2);
