@@ -50,7 +50,7 @@ int main(int ac, const char* av[])
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
         	("long-read", "enable long-read mode (default: short)")
 			("accuracy", "enable accuracy mode")
-        	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(4), "number of chunks for index processing")
+        	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(1), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
@@ -96,7 +96,7 @@ int main(int ac, const char* av[])
         po::options_description view_options("View options");
         view_options.add_options()
 			("out,o", po::value<string>(&VATParameters::output_file), "output file")
-			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam)")
+			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam/paf)")
 			("forwardonly", "only show alignments of forward strand");
 
         po::options_description hidden("Hidden options");
@@ -138,6 +138,133 @@ int main(int ac, const char* av[])
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
+/**
+		if (VATParameters::chimera)
+		{
+			// cout<<"Init chimeric alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 14u);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 1);
+			// po::set_option(po::mismatch, -5);
+			// po::set_option(po::lowmem, 1u);
+			// cout<<VATParameters::hit_cap<<"\t"<<VATParameters::lowmem<<"\t"<<VATParameters::min_identities<<"\t"<<VATParameters::match<<"\t"<<VATParameters::mismatch<<endl;
+			VATParameters::lowmem = 1u;
+			VATParameters::penalty = -4;
+			VATParameters::gap_extend = 0;
+			VATParameters::gap_open = 0;
+			VATParameters::match = 1;
+			VATParameters::mismatch = -5;
+			VATParameters::penalty = -4;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 15u;
+			VATParameters::min_identities = 14u;
+		}
+		else if (VATParameters::spilce || VATParameters::circ)
+		{
+			// cout<<"Init spliced alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 29u);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 5);
+			// po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 1u);
+			// VATParameters::lowmem = 1u;
+			// // VATParameters::penalty = -4;
+			// // VATParameters::gap_extend = 0;
+			VATParameters::gap_extend = 0;
+			VATParameters::gap_open = 0;
+			VATParameters::match = 5;
+			VATParameters::mismatch = -2;
+			// VATParameters::penalty = -4;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 15;
+			VATParameters::min_identities = 28;
+		}
+		else if (VATParameters::whole_genome_sequencing)
+		{
+			// cout<<"Init whole genome sequencing alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 2u);
+			// po::set_option(po::min_identities, 28u);
+			// po::set_option(po::padding, 8);
+			// // po::set_option(po::match, 5);
+			// // po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 1u);
+			// VATParameters::lowmem = 4;
+			// // VATParameters::penalty = -4;
+			// // VATParameters::gap_extend = 0;
+			VATParameters::lowmem = 1u;
+			VATParameters::match = 5;
+			VATParameters::mismatch = -2;
+			VATParameters::penalty = -2;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 2;
+			VATParameters::min_identities = 28;
+		}
+		else if (VATParameters::whole_genome)
+		{
+			// cout<<"Init whole genome alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 2u);
+			// po::set_option(po::min_identities, 20u);
+			// po::set_option(po::padding, 8);
+			// // po::set_option(po::match, 5);
+			// // po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 4u);
+			// VATParameters::gap_open = 0;
+			// VATParameters::lowmem = 4;
+			// VATParameters::penalty = -4;
+			// VATParameters::gap_extend = 0;
+			// VATParameters::match = 5;
+			// VATParameters::penalty = -4;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 2;
+			VATParameters::min_identities = 24;
+			VATParameters::gapped_xdrop = 18;
+
+		}
+		else if (VATParameters::dna_homology)
+		{
+			// cout<<"Init DNA homology parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 8u);
+			// po::set_option(po::gapped_xdrop, 18);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 5);
+			// po::set_option(po::mismatch, -4);
+			// po::set_option(VATParameters::gap_open, 0);
+			// po::set_option(VATParameters::gap_extend, 0);
+			// po::set_option(po::penalty, -4);
+			// po::set_option(po::lowmem, 1u);
+			VATParameters::gap_open = 0;
+			// VATParameters::lowmem = 1;
+			VATParameters::penalty = -4;
+			VATParameters::gap_extend = 0;
+			VATParameters::match = 5;
+			VATParameters::penalty = -4;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 15;
+			VATParameters::min_identities = 8;
+			VATParameters::gapped_xdrop = 18;
+		}else
+		{
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 24u);
+			// po::set_option(po::gapped_xdrop, 30);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::lowmem, 1u);
+			VATParameters::gap_open = 0;
+			// VATParameters::lowmem = 1;
+			// VATParameters::penalty = -4;
+			VATParameters::gap_extend = 0;
+			// VATParameters::match = 5;
+			// VATParameters::penalty = -4;
+			VATParameters::padding = 8;
+			VATParameters::hit_cap = 15u;
+			VATParameters::min_identities = 24u;
+			VATParameters::gapped_xdrop = 30;	
+		}	
+
+*/
 
         setup(command, ac, av);
 

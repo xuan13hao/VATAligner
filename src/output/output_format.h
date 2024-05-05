@@ -115,6 +115,95 @@ class Blast_tab_format : public Output_format<_val>
 
 };
 
+
+template<typename _val>
+class Paf_tab_format : public Output_format<_val>
+{
+	public:
+	Paf_tab_format()
+	{ }
+	virtual void print_match(const VATMatchRecord<DNA> &r, Text_buffer &out) const
+	{
+
+
+
+		if ((containsSuffix(r.query_name(),"_minus")))
+		{
+			string qry_name = removeSuffix(r.query_name(),"_minus");
+			uint32_t sbj_start= r.subject_begin+r.subject_len;
+			uint32_t sbj_end= r.subject_begin+1;
+			// cout<<"sub start = "<<r.subject_begin<<",r.subject_len =  "<<r.subject_len<<", r.total_subject_len = "<<r.total_subject_len<<endl;
+			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<", r.total_subject_len = "<<r.total_subject_len<<endl;
+			out << qry_name << '\t'
+					<< r.query_begin+1 << '\t'
+					<< r.query_end()+1 << '\t'
+					<< "-" << '\t'
+					<< r.subject_name << '\t'
+					<< sbj_start<< '\t'
+					<< sbj_end<< '\t';
+			out << '\n';
+		}
+		else{	
+			uint32_t sbj_end= r.subject_begin+r.subject_len;
+			uint32_t sbj_start= r.subject_begin+1;	
+			out << r.query_name() << '\t'
+					<< r.query_begin+1 << '\t'
+					<< r.query_end()+1 << '\t'
+					<< "+" << '\t'
+					<< r.subject_name << '\t'
+					<< sbj_start<< '\t'
+					<< sbj_end<< '\t';
+			out << '\n';
+		}
+	}
+
+		virtual void print_match(const VATMatchRecord<Protein> &r, Text_buffer &out) const
+	{
+			out << r.query_name() << '\t'
+					<< r.subject_name << '\t'
+					<< (double)r.identities*100/r.len << '\t'
+					<< r.len << '\t'
+					<< r.mismatches << '\t'
+					<< r.gap_openings << '\t'
+					<< r.query_begin+1 << '\t'
+					<< r.query_end()+1 << '\t'
+					<< r.subject_begin+1<< '\t'
+					<< r.subject_begin+r.subject_len << '\t';
+			out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			out << '\t' << ScoreMatrix::get().bitscore(r.score) << '\n';
+	}
+
+	virtual ~Paf_tab_format()
+	{ }
+	static bool containsSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length()) {
+			std::string strSuffix = str.substr(str.length() - suffix.length());
+			return strSuffix == suffix;
+		}
+		return false;
+	}
+	static std::string removeSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length() && str.substr(str.length() - suffix.length()) == suffix) {
+			return str.substr(0, str.length() - suffix.length());
+		}
+		return str;
+	}
+	static size_t print_salltitles(Text_buffer &buf, const char *id)
+	{
+		size_t n = 0;
+		const vector<string> t (tokenize(id, "\1"));
+		vector<string>::const_iterator i=t.begin();
+		for(;i<t.end()-1;++i) {
+			buf << *i << "<>";
+			n += i->length() + 2;
+		}
+		buf << *i;
+		n += i->length();
+		return n;
+	}
+
+};
+
 template<typename _val>
 class Sam_format : public Output_format<_val>
 {
@@ -229,10 +318,13 @@ const Output_format<_val>& get_output_format()
 {
 	static const Sam_format<_val> sam;
 	static const Blast_tab_format<_val> tab;
+	static const Paf_tab_format<_val> paf;
 	if(VATParameters::output_format == "tab")
 		return tab;
 	else if(VATParameters::output_format == "sam")
 		return sam;
+	else if(VATParameters::output_format == "paf")
+		return paf;
 	else
 		throw std::runtime_error("Invalid output format.");
 }

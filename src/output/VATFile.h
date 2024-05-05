@@ -94,7 +94,7 @@ public:
 
 	}
 
-	uint64_t diamond_build() const
+	uint64_t vat_build() const
 	{ return h2_.vat_build_; }
 
 	uint64_t db_seqs() const

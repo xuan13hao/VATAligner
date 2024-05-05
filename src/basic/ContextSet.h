@@ -71,7 +71,138 @@ void setup(const string &command, int ac, const char **av)
 		if(po::gap_open == -1)
 			po::gap_open = 5;
 		if(po::gap_extend == -1)
-			po::gap_extend = 2;
+			po::gap_extend = 3;
+
+		if (po::chimera)
+		{
+			cout<<"Init chimeric alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 14u);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 1);
+			// po::set_option(po::mismatch, -5);
+			// po::set_option(po::lowmem, 1u);
+			// cout<<VATParameters::hit_cap<<"\t"<<VATParameters::lowmem<<"\t"<<VATParameters::min_identities<<"\t"<<VATParameters::match<<"\t"<<VATParameters::mismatch<<endl;
+			po::lowmem = 1u;
+			po::penalty = -4;
+			po::gap_extend = 0;
+			po::gap_open = 0;
+			po::match = 1;
+			po::mismatch = -5;
+			po::penalty = -5;
+			po::reward = 1;
+			// po::penalty = -5;
+			po::padding = 8;
+			po::hit_cap = 15u;
+			po::min_identities = 14u;
+		}
+		else if (po::spilce || po::circ)
+		{
+			// cout<<"Init spliced alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 29u);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 5);
+			// po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 1u);
+			// VATParameters::lowmem = 1u;
+			// // VATParameters::penalty = -4;
+			// // VATParameters::gap_extend = 0;
+			po::gap_extend = 0;
+			po::gap_open = 0;
+			po::match = 5;
+			po::mismatch = -2;
+			po::reward = 5;
+			po::penalty = -2;
+			po::padding = 8;
+			po::hit_cap = 15;
+			po::min_identities = 28;
+		}
+		else if (po::whole_genome_sequencing)
+		{
+			// cout<<"Init whole genome sequencing alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 2u);
+			// po::set_option(po::min_identities, 28u);
+			// po::set_option(po::padding, 8);
+			// // po::set_option(po::match, 5);
+			// // po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 1u);
+			// VATParameters::lowmem = 4;
+			// // VATParameters::penalty = -4;
+			// // VATParameters::gap_extend = 0;
+			po::lowmem = 1u;
+			po::match = 5;
+			po::mismatch = -2;
+			po::penalty = -2;
+			po::reward = 5;
+			po::penalty = -2;
+			po::padding = 8;
+			po::hit_cap = 2;
+			po::min_identities = 28;
+		}
+		else if (po::whole_genome)
+		{
+			// cout<<"Init whole genome alignment parameters"<<endl;
+			// po::set_option(po::hit_cap, 2u);
+			// po::set_option(po::min_identities, 20u);
+			// po::set_option(po::padding, 8);
+			// // po::set_option(po::match, 5);
+			// // po::set_option(po::mismatch, -2);
+			// po::set_option(po::lowmem, 4u);
+			// VATParameters::gap_open = 0;
+			// VATParameters::lowmem = 4;
+			// VATParameters::penalty = -4;
+			// VATParameters::gap_extend = 0;
+			// VATParameters::match = 5;
+			// VATParameters::penalty = -4;
+			po::padding = 8;
+			po::hit_cap = 2;
+			po::min_identities = 24;
+			po::gapped_xdrop = 18;
+
+		}
+		else if (po::dna_homology)
+		{
+			// cout<<"Init DNA homology parameters"<<endl;
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 8u);
+			// po::set_option(po::gapped_xdrop, 18);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::match, 5);
+			// po::set_option(po::mismatch, -4);
+			// po::set_option(VATParameters::gap_open, 0);
+			// po::set_option(VATParameters::gap_extend, 0);
+			// po::set_option(po::penalty, -4);
+			// po::set_option(po::lowmem, 1u);
+			po::gap_open = 0;
+			// VATParameters::lowmem = 1;
+			po::penalty = -4;
+			po::gap_extend = 0;
+			po::match = 5;
+			po::reward = 5;
+			po::penalty = -4;
+			po::padding = 8;
+			po::hit_cap = 15;
+			po::min_identities = 8;
+			po::gapped_xdrop = 18;
+		}else
+		{
+			// po::set_option(po::hit_cap, 15u);
+			// po::set_option(po::min_identities, 24u);
+			// po::set_option(po::gapped_xdrop, 30);
+			// po::set_option(po::padding, 8);
+			// po::set_option(po::lowmem, 1u);
+			po::gap_open = 0;
+			// VATParameters::lowmem = 1;
+			// VATParameters::penalty = -4;
+			po::gap_extend = 0;
+			// VATParameters::match = 5;
+			// VATParameters::penalty = -4;
+			po::padding = 8;
+			po::hit_cap = 15u;
+			po::min_identities = 24u;
+			po::gapped_xdrop = 30;	
+		}	
 		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,
 				po::gap_extend,
@@ -96,6 +227,128 @@ void setup(const string &command, int ac, const char **av)
 		copy_file(log_stream, "/proc/cpuinfo");
 		copy_file(log_stream, "/proc/meminfo");
 	}
+	// if (po::chimera)
+	// {
+	// 	cout<<"Init chimeric alignment parameters"<<endl;
+	// 	// po::set_option(po::hit_cap, 15u);
+	// 	// po::set_option(po::min_identities, 14u);
+	// 	// po::set_option(po::padding, 8);
+	// 	// po::set_option(po::match, 1);
+	// 	// po::set_option(po::mismatch, -5);
+	// 	// po::set_option(po::lowmem, 1u);
+	// 	// VATParameters::lowmem = 1u;
+	// 	// VATParameters::penalty = -4;
+	// 	po::gap_extend = 0;
+	// 	po::gap_open = 0;
+	// 	po::match = 1;
+	// 	po::mismatch = -5;
+	// 	po::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 15u;
+	// 	po::min_identities = 14u;
+	// }
+	// else if (po::spilce||po::circ)
+	// {
+	// 	cout<<"Init spliced alignment parameters"<<endl;
+	// 	// po::set_option(po::hit_cap, 15u);
+	// 	// po::set_option(po::min_identities, 29u);
+	// 	// po::set_option(po::padding, 8);
+	// 	// po::set_option(po::match, 5);
+	// 	// po::set_option(po::mismatch, -2);
+	// 	// po::set_option(po::lowmem, 1u);
+	// 	// VATParameters::lowmem = 1u;
+	// 	// // VATParameters::penalty = -4;
+	// 	// // VATParameters::gap_extend = 0;
+	// 	po::gap_extend = 1;
+	// 	po::gap_open = 1;
+	// 	po::match = 5;
+	// 	po::mismatch = -2;
+	// 	// VATParameters::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 15;
+	// 	po::min_identities = 29;
+	// }
+	// else if (po::whole_genome_sequencing)
+	// {
+	// 	cout<<"Init whole genome sequencing alignment parameters"<<endl;
+	// 	// po::set_option(po::hit_cap, 2u);
+	// 	// po::set_option(po::min_identities, 28u);
+	// 	// po::set_option(po::padding, 8);
+	// 	// // po::set_option(po::match, 5);
+	// 	// // po::set_option(po::mismatch, -2);
+	// 	// po::set_option(po::lowmem, 1u);
+	// 	// VATParameters::lowmem = 4;
+	// 	// // VATParameters::penalty = -4;
+	// 	// // VATParameters::gap_extend = 0;
+	// 	po::match = 5;
+	// 	po::mismatch = -2;
+	// 	// VATParameters::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 2;
+	// 	po::min_identities = 28;
+	// }
+	// else if (po::whole_genome)
+	// {
+	// 	cout<<"Init whole genome alignment parameters"<<endl;
+	// 	// po::set_option(po::hit_cap, 2u);
+	// 	// po::set_option(po::min_identities, 20u);
+	// 	// po::set_option(po::padding, 8);
+	// 	// // po::set_option(po::match, 5);
+	// 	// // po::set_option(po::mismatch, -2);
+	// 	// po::set_option(po::lowmem, 4u);
+	// 	// VATParameters::gap_open = 0;
+	// 	// VATParameters::lowmem = 4;
+	// 	// VATParameters::penalty = -4;
+	// 	// VATParameters::gap_extend = 0;
+	// 	// VATParameters::match = 5;
+	// 	// VATParameters::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 2;
+	// 	po::min_identities = 24;
+	// 	po::gapped_xdrop = 18;
+
+	// }
+	// else if (po::dna_homology)
+	// {
+	// 	cout<<"Init DNA homology parameters"<<endl;
+	// 	// po::set_option(po::hit_cap, 15u);
+	// 	// po::set_option(po::min_identities, 8u);
+	// 	// po::set_option(po::gapped_xdrop, 18);
+	// 	// po::set_option(po::padding, 8);
+	// 	// po::set_option(po::match, 5);
+	// 	// po::set_option(po::mismatch, -4);
+	// 	// po::set_option(VATParameters::gap_open, 0);
+	// 	// po::set_option(VATParameters::gap_extend, 0);
+	// 	// po::set_option(po::penalty, -4);
+	// 	// po::set_option(po::lowmem, 1u);
+	// 	po::gap_open = 0;
+	// 	// VATParameters::lowmem = 1;
+	// 	po::penalty = -4;
+	// 	po::gap_extend = 0;
+	// 	po::match = 5;
+	// 	po::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 15;
+	// 	po::min_identities = 8;
+	// 	po::gapped_xdrop = 18;
+	// }else
+	// {
+	// 	// po::set_option(po::hit_cap, 15u);
+	// 	// po::set_option(po::min_identities, 24u);
+	// 	// po::set_option(po::gapped_xdrop, 30);
+	// 	// po::set_option(po::padding, 8);
+	// 	// po::set_option(po::lowmem, 1u);
+	// 	po::gap_open = 0;
+	// 	// VATParameters::lowmem = 1;
+	// 	// VATParameters::penalty = -4;
+	// 	po::gap_extend = 0;
+	// 	// VATParameters::match = 5;
+	// 	// VATParameters::penalty = -4;
+	// 	po::padding = 8;
+	// 	po::hit_cap = 15u;
+	// 	po::min_identities = 24u;
+	// 	po::gapped_xdrop = 30;	
+	// }	
 }
 
 template<typename _val>
@@ -125,14 +378,49 @@ void setup_search_params(pair<size_t,size_t> query_len_bounds, size_t chunk_db_l
 template<>
 void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk_db_letters)
 {
+
 	namespace po = VATParameters;
+	if(po::aligner_mode == po::long_model || po::aligner_mode == po::accuracy_model) {
+		po::set_option(po::hit_cap, std::max(256u, (unsigned)(chunk_db_letters/8735437)));
+	} else if (po::aligner_mode == po::short_model) {
+		po::set_option(po::hit_cap, std::max(128u, (unsigned)(chunk_db_letters/17470874)));
+	}
+
+	const double b = po::min_bit_score == 0 ? ScoreMatrix::get().bitscore(po::max_evalue, ref_header.letters, query_len_bounds.first) : po::min_bit_score;
+
+	if(query_len_bounds.second <= 40) {
+		po::set_option(po::min_identities, 10u);
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(27.0, b)));
+	} else {
+		po::set_option(po::min_identities, 9u);
+		po::set_option(po::min_ungapped_raw_score, ScoreMatrix::get().rawscore(std::min(23.0, b)));
+	}
+
+	if(query_len_bounds.second <= 80) {
+		const int band = po::read_padding<DNA>(query_len_bounds.second);
+		po::set_option(po::window, (unsigned)(query_len_bounds.second + band));
+		po::set_option(po::hit_band, band);
+		// cout<<"rawscore = "<<score_matrix::get().rawscore(b)<<endl;
+		// po::set_option(po::min_hit_score, 11);
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(b));
+	} else {
+		po::set_option(po::window, 30u);
+		po::set_option(po::hit_band, 6);
+		// cout<<"rawscore = "<<score_matrix::get().rawscore(std::min(29.0, b))<<endl;
+		// po::set_option(po::min_hit_score, 11);
+		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
+	}
+	// cout<<VATParameters::hit_cap<<"\t"<<VATParameters::lowmem<<"\t"<<VATParameters::min_identities<<"\t"<<VATParameters::match<<"\t"<<VATParameters::mismatch<<endl;
+
+	// namespace po = VATParameters;
+	/*
 	if(po::aligner_mode == po::long_model || po::aligner_mode == po::accuracy_model) {
 		po::set_option(po::hit_cap, 24u);
 	} else if (po::aligner_mode == po::short_model) {
 		po::set_option(po::hit_cap, 24u);
 	}
-
-	const double b = 0;
+*/
+	// const double b = 0;
 /**
  *         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
@@ -141,7 +429,7 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(25), "xdrop for ungapped alignment")
         	("gapped-xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(25), "xdrop for gapped alignment in bits")
         	("ungapped-score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
-*/
+
 	if(query_len_bounds.second <= 40) {
 		po::set_option(po::min_identities, 0u);
 		po::set_option(po::min_ungapped_raw_score, 0);
@@ -164,67 +452,133 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		// po::set_option(po::min_hit_score, 11);
 		po::set_option(po::min_hit_score, 0);
 	}
+	*/
+	/*
 	if (po::chimera)
 	{
-		// cout<<"Init chimeric alignment parameters"<<endl;
-		po::set_option(po::hit_cap, 15u);
-		po::set_option(po::min_identities, 14u);
-		po::set_option(po::padding, 8);
-		po::set_option(po::match, 1);
-		po::set_option(po::mismatch, -5);
-		po::set_option(po::lowmem, 1u);
+		cout<<"Init chimeric alignment parameters"<<endl;
+		// po::set_option(po::hit_cap, 15u);
+		// po::set_option(po::min_identities, 14u);
+		// po::set_option(po::padding, 8);
+		// po::set_option(po::match, 1);
+		// po::set_option(po::mismatch, -5);
+		// po::set_option(po::lowmem, 1u);
+		// cout<<VATParameters::hit_cap<<"\t"<<VATParameters::lowmem<<"\t"<<VATParameters::min_identities<<"\t"<<VATParameters::match<<"\t"<<VATParameters::mismatch<<endl;
+		// VATParameters::lowmem = 1u;
+		// VATParameters::penalty = -4;
+		// VATParameters::gap_extend = 0;
+		// VATParameters::gap_open = 0;
+		// VATParameters::match = 1;
+		// VATParameters::mismatch = -5;
+		// VATParameters::penalty = -4;
+		// VATParameters::padding = 8;
+		// VATParameters::hit_cap = 15u;
+		// VATParameters::min_identities = 14u;
 	}
+
 	if (po::spilce||po::circ)
 	{
-		// cout<<"Init spliced alignment parameters"<<endl;
-		po::set_option(po::hit_cap, 15u);
-		po::set_option(po::min_identities, 29u);
-		po::set_option(po::padding, 8);
-		po::set_option(po::match, 5);
-		po::set_option(po::mismatch, -2);
-		po::set_option(po::lowmem, 1u);
+		cout<<"Init spliced alignment parameters"<<endl;
+		// po::set_option(po::hit_cap, 15u);
+		// po::set_option(po::min_identities, 29u);
+		// po::set_option(po::padding, 8);
+		// po::set_option(po::match, 5);
+		// po::set_option(po::mismatch, -2);
+		// po::set_option(po::lowmem, 1u);
+		// VATParameters::lowmem = 1u;
+		// // VATParameters::penalty = -4;
+		// // VATParameters::gap_extend = 0;
+		VATParameters::gap_extend = 1;
+		VATParameters::gap_open = 1;
+		VATParameters::match = 5;
+		VATParameters::mismatch = -2;
+		// VATParameters::penalty = -4;
+		VATParameters::padding = 8;
+		VATParameters::hit_cap = 15;
+		VATParameters::min_identities = 29;
 	}
 	if (po::whole_genome_sequencing)
 	{
-		// cout<<"Init whole genome sequencing alignment parameters"<<endl;
-		po::set_option(po::hit_cap, 2u);
-		po::set_option(po::min_identities, 28u);
-		po::set_option(po::padding, 8);
-		// po::set_option(po::match, 5);
-		// po::set_option(po::mismatch, -2);
-		po::set_option(po::lowmem, 1u);
+		cout<<"Init whole genome sequencing alignment parameters"<<endl;
+		// po::set_option(po::hit_cap, 2u);
+		// po::set_option(po::min_identities, 28u);
+		// po::set_option(po::padding, 8);
+		// // po::set_option(po::match, 5);
+		// // po::set_option(po::mismatch, -2);
+		// po::set_option(po::lowmem, 1u);
+		// VATParameters::lowmem = 4;
+		// // VATParameters::penalty = -4;
+		// // VATParameters::gap_extend = 0;
+		VATParameters::match = 5;
+		VATParameters::mismatch = -2;
+		// VATParameters::penalty = -4;
+		VATParameters::padding = 8;
+		VATParameters::hit_cap = 2;
+		VATParameters::min_identities = 28;
 	}
 	if (po::whole_genome)
 	{
-		// cout<<"Init whole genome alignment parameters"<<endl;
-		po::set_option(po::hit_cap, 2u);
-		po::set_option(po::min_identities, 20u);
-		po::set_option(po::padding, 8);
-		// po::set_option(po::match, 5);
-		// po::set_option(po::mismatch, -2);
-		po::set_option(po::lowmem, 4u);
+		cout<<"Init whole genome alignment parameters"<<endl;
+		// po::set_option(po::hit_cap, 2u);
+		// po::set_option(po::min_identities, 20u);
+		// po::set_option(po::padding, 8);
+		// // po::set_option(po::match, 5);
+		// // po::set_option(po::mismatch, -2);
+		// po::set_option(po::lowmem, 4u);
+		// VATParameters::gap_open = 0;
+		// VATParameters::lowmem = 4;
+		// VATParameters::penalty = -4;
+		// VATParameters::gap_extend = 0;
+		// VATParameters::match = 5;
+		// VATParameters::penalty = -4;
+		VATParameters::padding = 8;
+		VATParameters::hit_cap = 2;
+		VATParameters::min_identities = 24;
+		VATParameters::gapped_xdrop = 18;
+
 	}
 	if (po::dna_homology)
 	{
-		// cout<<"Init DNA homology parameters"<<endl;
-		po::set_option(po::hit_cap, 15u);
-		po::set_option(po::min_identities, 8u);
-		po::set_option(po::gapped_xdrop, 18);
-		po::set_option(po::padding, 8);
-		po::set_option(po::match, 5);
-		po::set_option(po::mismatch, -4);
-		po::set_option(po::gap_open, 0);
-		po::set_option(po::gap_extend, 0);
-		po::set_option(po::penalty, -4);
-		po::set_option(po::lowmem, 1u);
+		cout<<"Init DNA homology parameters"<<endl;
+		// po::set_option(po::hit_cap, 15u);
+		// po::set_option(po::min_identities, 8u);
+		// po::set_option(po::gapped_xdrop, 18);
+		// po::set_option(po::padding, 8);
+		// po::set_option(po::match, 5);
+		// po::set_option(po::mismatch, -4);
+		// po::set_option(VATParameters::gap_open, 0);
+		// po::set_option(VATParameters::gap_extend, 0);
+		// po::set_option(po::penalty, -4);
+		// po::set_option(po::lowmem, 1u);
+		VATParameters::gap_open = 0;
+		// VATParameters::lowmem = 1;
+		VATParameters::penalty = -4;
+		VATParameters::gap_extend = 0;
+		VATParameters::match = 5;
+		VATParameters::penalty = -4;
+		VATParameters::padding = 8;
+		VATParameters::hit_cap = 15;
+		VATParameters::min_identities = 8;
+		VATParameters::gapped_xdrop = 18;
 	}else
 	{
-		po::set_option(po::hit_cap, 15u);
-		po::set_option(po::min_identities, 24u);
-		po::set_option(po::gapped_xdrop, 30);
-		po::set_option(po::padding, 8);
-		po::set_option(po::lowmem, 1u);	
-	}				
+		// po::set_option(po::hit_cap, 15u);
+		// po::set_option(po::min_identities, 24u);
+		// po::set_option(po::gapped_xdrop, 30);
+		// po::set_option(po::padding, 8);
+		// po::set_option(po::lowmem, 1u);
+		VATParameters::gap_open = 0;
+		// VATParameters::lowmem = 1;
+		// VATParameters::penalty = -4;
+		VATParameters::gap_extend = 0;
+		// VATParameters::match = 5;
+		// VATParameters::penalty = -4;
+		VATParameters::padding = 8;
+		VATParameters::hit_cap = 15u;
+		VATParameters::min_identities = 24u;
+		VATParameters::gapped_xdrop = 30;	
+	}	
+	*/			
 }
 
 

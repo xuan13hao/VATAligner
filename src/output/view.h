@@ -101,10 +101,11 @@ void view(VATFile &daa)
 					daa.mismatch_penalty(),
 					_val ()));
 
-	// cout << "Build version = " << daa.diamond_build() << endl;
+	// cout << "Build version = " << daa.vat_build() << endl;
 	// cout << "DB sequences = " << daa.db_seqs() << endl;
 	// cout << "DB sequences used = " << daa.db_seqs_used() << endl;
 	// cout << "DB letters = " << daa.db_letters() << endl;
+	// cout << "DB gap_open_penalty = " << daa.gap_open_penalty() << endl;
 
 	View_writer writer;
 	const Output_format<_val>& format (get_output_format<_val>());
