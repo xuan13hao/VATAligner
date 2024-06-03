@@ -135,24 +135,32 @@ class Paf_tab_format : public Output_format<_val>
 			// cout<<"sub start = "<<r.subject_begin<<",r.subject_len =  "<<r.subject_len<<", r.total_subject_len = "<<r.total_subject_len<<endl;
 			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<", r.total_subject_len = "<<r.total_subject_len<<endl;
 			out << qry_name << '\t'
+					<<r.translated_query_len<<'\t'
 					<< r.query_begin+1 << '\t'
 					<< r.query_end()+1 << '\t'
 					<< "-" << '\t'
 					<< r.subject_name << '\t'
+					<<r.subject_len<<'\t'
 					<< sbj_start<< '\t'
-					<< sbj_end<< '\t';
+					<< sbj_end<< '\t'
+					<< r.identities<< '\t'
+					<<r.len<<'\t';
 			out << '\n';
 		}
 		else{	
 			uint32_t sbj_end= r.subject_begin+r.subject_len;
 			uint32_t sbj_start= r.subject_begin+1;	
 			out << r.query_name() << '\t'
+					<<r.translated_query_len<<'\t'
 					<< r.query_begin+1 << '\t'
 					<< r.query_end()+1 << '\t'
 					<< "+" << '\t'
 					<< r.subject_name << '\t'
+					<<r.subject_len<<'\t'
 					<< sbj_start<< '\t'
 					<< sbj_end<< '\t';
+					<< r.identities<< '\t'
+					<<r.len<<'\t';
 			out << '\n';
 		}
 	}
