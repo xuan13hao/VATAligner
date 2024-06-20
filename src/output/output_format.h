@@ -259,23 +259,23 @@ class Sam_format : public Output_format<_val>
     // int tlen = 0;                        // Observed template length
     // std::string seq = "AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG"; // Segment sequence
     // std::string qual = "*";  
+		int deltaS = r.score;
+		double probWrong = pow(10.0, -deltaS / 10.0);
+		int mapq = static_cast<int>(-10.0 * log10(probWrong));
 		out << r.query_name() << '\t'
 				<< '0' << '\t'
 				<< r.subject_name << '\t'
 				<< r.subject_begin+1 << '\t'
-				<< "255" << '\t';
+				<< "60" << '\t';
 
 		print_cigar(r, out);
-		int deltaS = r.score;
-		double probWrong = pow(10.0, -deltaS / 10.0);
-		int mapq = static_cast<int>(-10.0 * log10(probWrong));
+
 		out << '\t'
 				<< '*' << '\t'
 				<< '0' << '\t'
 				<< '0' << '\t'
 				<< sequence<const _val> (&r.query()[r.translated_query_begin], r.translated_query_len) << '\t'
-				<< '*' << '\t'
-				<< mapq<< '\t';
+				<< '*' << '\t';
 		// 		<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
 		// 		<< "NM:i:" << r.len - r.identities << '\t'
 		// 		<< "ZL:i:" << r.total_subject_len << '\t'
