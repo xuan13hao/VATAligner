@@ -192,7 +192,7 @@ else if(VATParameters::dna_homology)
 		vector<DiagonalSeeds<_locr,_locl> > diagonalsegment_;
 		for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i)
 		{
-			//(i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]
+			// (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]
 			if(i != begin && (i->global_diagonal() - (i-1)->global_diagonal()) <= padding[frame]) 
 			{
 				stat.inc(Statistics::DUPLICATES);
@@ -202,7 +202,7 @@ else if(VATParameters::dna_homology)
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 10)
+			if (ds.len >= 5)
 			{
 				diagonalsegment_.push_back(ds);
 			}

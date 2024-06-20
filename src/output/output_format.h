@@ -158,7 +158,7 @@ class Paf_tab_format : public Output_format<_val>
 					<< r.subject_name << '\t'
 					<<r.subject_len<<'\t'
 					<< sbj_start<< '\t'
-					<< sbj_end<< '\t';
+					<< sbj_end<< '\t'
 					<< r.identities<< '\t'
 					<<r.len<<'\t';
 			out << '\n';
@@ -210,6 +210,33 @@ class Paf_tab_format : public Output_format<_val>
 		return n;
 	}
 
+	// Function to estimate the probability of incorrect mapping
+	double estimateProbWrong(int bestScore, int secondBestScore) {
+		// Calculate the difference in alignment scores
+		int deltaS = bestScore - secondBestScore;
+		
+		// Estimate the probability of incorrect mapping
+		double probWrong = pow(10.0, -deltaS / 10.0);
+		
+		return probWrong;
+	}
+
+	// Function to compute the MAPQ score
+	int computeMAPQ(double probWrong) {
+		// Ensure probability is within valid range (0 < p < 1)
+		if (probWrong <= 0.0 || probWrong >= 1.0) {
+			std::cerr << "Probability must be between 0 and 1 (exclusive)." << std::endl;
+			return -1;  // Return -1 to indicate an error
+		}
+		
+		// Calculate MAPQ score
+		double mapq = -10.0 * log10(probWrong);
+		
+		// Round to the nearest integer
+		int mapqRounded = static_cast<int>(round(mapq));
+		
+		return mapqRounded;
+	}
 };
 
 template<typename _val>
@@ -221,6 +248,17 @@ class Sam_format : public Output_format<_val>
 
 	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
+    // std::string qname =  r.query_name();         // Query template name
+    // int flag = 0;                        // Bitwise FLAG
+    // std::string rname = r.subject_name;          // Reference sequence name
+    // int pos = r.subject_begin+1;                       // 1-based leftmost mapping position
+    // int mapq = 255;                      // Mapping quality
+    // std::string cigar = "76M";           // CIGAR string
+    // std::string rnext = "*";             // Reference name of the mate/next read
+    // int pnext = 0;                       // Position of the mate/next read
+    // int tlen = 0;                        // Observed template length
+    // std::string seq = "AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG"; // Segment sequence
+    // std::string qual = "*";  
 		out << r.query_name() << '\t'
 				<< '0' << '\t'
 				<< r.subject_name << '\t'
@@ -228,26 +266,29 @@ class Sam_format : public Output_format<_val>
 				<< "255" << '\t';
 
 		print_cigar(r, out);
-
+		int deltaS = r.score;
+		double probWrong = pow(10.0, -deltaS / 10.0);
+		int mapq = static_cast<int>(-10.0 * log10(probWrong));
 		out << '\t'
 				<< '*' << '\t'
 				<< '0' << '\t'
 				<< '0' << '\t'
 				<< sequence<const _val> (&r.query()[r.translated_query_begin], r.translated_query_len) << '\t'
 				<< '*' << '\t'
-				<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
-				<< "NM:i:" << r.len - r.identities << '\t'
-				<< "ZL:i:" << r.total_subject_len << '\t'
-				<< "ZR:i:" << r.score << '\t'
-				<< "ZE:f:";
-		out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
-		out << '\t'
-				<< "ZI:i:" << r.identities*100/r.len << '\t'
-				<< "ZF:i:" << blast_frame(r.frame) << '\t'
-				<< "ZS:i:" << r.query_begin+1 << '\t'
-				<< "MD:Z:";
+				<< mapq<< '\t';
+		// 		<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
+		// 		<< "NM:i:" << r.len - r.identities << '\t'
+		// 		<< "ZL:i:" << r.total_subject_len << '\t'
+		// 		<< "ZR:i:" << r.score << '\t'
+		// 		<< "ZE:f:";
+		// out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+		// out << '\t'
+		// 		<< "ZI:i:" << r.identities*100/r.len << '\t'
+		// 		<< "ZF:i:" << blast_frame(r.frame) << '\t'
+		// 		<< "ZS:i:" << r.query_begin+1 << '\t'
+		// 		<< "MD:Z:";
 
-		print_md(r, out);
+		// print_md(r, out);
 		out << '\n';
 	}
 
@@ -308,17 +349,44 @@ class Sam_format : public Output_format<_val>
 
 	virtual void print_header(OutputStreamer &f) const
 	{
-		static const char* line = "@HD\tVN:1.5\tSO:query\n\
-@PG\tPN:VAT\n\
-@mm\tVAT\n\
-@CO\tVAT alignments\n\
-@CO\tReporting AS: bitScore, ZR: rawScore, ZE: expected, ZI: percent identity, ZL: reference length, ZF: frame, ZS: query start DNA coordinate\n";
+// 		static const char* line = "@HD\tVN:1.5\tSO:query\n\
+// @PG\tPN:VAT\n\
+// @mm\tVAT\n\
+// @CO\tVAT alignments\n\
+// @CO\tReporting AS: bitScore, ZR: rawScore, ZE: expected, ZI: percent identity, ZL: reference length, ZF: frame, ZS: query start DNA coordinate\n";
+		static const char* line = "";
 		f.write(line, strlen(line));
 	}
 
 	virtual ~Sam_format()
 	{ }
+	// Function to estimate the probability of incorrect mapping
+	// double estimateProbWrong(int bestScore, int secondBestScore) {
+	// 	// Calculate the difference in alignment scores
+	// 	int deltaS = bestScore - secondBestScore;
+		
+	// 	// Estimate the probability of incorrect mapping
+	// 	double probWrong = pow(10.0, -deltaS / 10.0);
+		
+	// 	return probWrong;
+	// }
 
+	// // Function to compute the MAPQ score
+	// int computeMAPQ(double probWrong) {
+	// 	// Ensure probability is within valid range (0 < p < 1)
+	// 	if (probWrong <= 0.0 || probWrong >= 1.0) {
+	// 		std::cerr << "Probability must be between 0 and 1 (exclusive)." << std::endl;
+	// 		return -1;  // Return -1 to indicate an error
+	// 	}
+		
+	// 	// Calculate MAPQ score
+	// 	double mapq = -10.0 * log10(probWrong);
+		
+	// 	// Round to the nearest integer
+	// 	int mapqRounded = static_cast<int>(round(mapq));
+		
+	// 	return mapqRounded;
+	// }
 };
 
 template<typename _val>
