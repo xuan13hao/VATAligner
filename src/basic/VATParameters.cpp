@@ -80,7 +80,7 @@ int		match;
 int		mismatch;
 Aligner_mode aligner_mode;
 Command algn_type;
-
+// Kmer_mode aligner_mode;
 template<typename _val>
 void set_options(double block_size)
 {

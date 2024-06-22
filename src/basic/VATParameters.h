@@ -80,7 +80,9 @@ namespace VATParameters
 	extern int		match;
 	extern int		mismatch;
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
+	// typedef enum { kmer=8, kmer=9,kmer=10,kmer=11, kmer=12,kmer=13,kmer=14, kmer=15,kmer=16,kmer=17, kmer=18,kmer=19,kmer=20, kmer=21,kmer=22,kmer=23, kmer=24,kmer=25,kmer=26, kmer=27,kmer=28,kmer=29, kmer=30} Kmer_mode;
 	extern Aligner_mode aligner_mode;
+	// extern Kmer_mode aligner_mode;
 	typedef enum { invalid=0, makevatdb=1, protein=2, blastx=3, dna=4, view=5 } Command;
 	extern Command algn_type;
 

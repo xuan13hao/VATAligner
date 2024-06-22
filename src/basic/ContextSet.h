@@ -73,9 +73,129 @@ void setup(const string &command, int ac, const char **av)
 		if(po::gap_extend == -1)
 			po::gap_extend = 3;
 
+if (po::seed_len == 8)
+{
+    uint32_t idx = 8 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 9)
+{
+    uint32_t idx = 9 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 10)
+{
+    uint32_t idx = 10 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 11)
+{
+    uint32_t idx = 11 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 12)
+{
+    uint32_t idx = 12 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 13)
+{
+    uint32_t idx = 13 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 14)
+{
+    uint32_t idx = 14 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 16)
+{
+    uint32_t idx = 16 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 17)
+{
+    uint32_t idx = 17 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 18)
+{
+    uint32_t idx = 18 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 19)
+{
+    uint32_t idx = 19 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 20)
+{
+    uint32_t idx = 20 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 21)
+{
+    uint32_t idx = 21 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 22)
+{
+    uint32_t idx = 22 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 23)
+{
+    uint32_t idx = 23 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 24)
+{
+    uint32_t idx = 24 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 25)
+{
+    uint32_t idx = 25 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 26)
+{
+    uint32_t idx = 26 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 27)
+{
+    uint32_t idx = 27 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 28)
+{
+    uint32_t idx = 28 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 29)
+{
+    uint32_t idx = 29 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 30)
+{
+    uint32_t idx = 30 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else if (po::seed_len == 15)
+{
+    uint32_t idx = 15 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
+else
+{
+    uint32_t idx = 15 - 8 + 1;
+    po::set_option(po::index_mode, idx);
+}
 		if (po::chimera)
 		{
-			cout<<"Init chimeric alignment parameters"<<endl;
+			// cout<<"Init chimeric alignment parameters"<<endl;
 			// po::set_option(po::hit_cap, 15u);
 			// po::set_option(po::min_identities, 14u);
 			// po::set_option(po::padding, 8);
