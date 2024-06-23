@@ -55,7 +55,7 @@ int main(int ac, const char* av[])
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
         	("reward", po::value<int>(&VATParameters::reward)->default_value(2), "match reward score (blastn only)")
-			("seed_len, sl", po::value<int>(&VATParameters::seed_len)->default_value(15), "Seed length default(15)")
+			("seed_len,S", po::value<int>(&VATParameters::seed_len)->default_value(15), "Seed length default(15) for DNA, Seed length default(8) for Protein")
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
@@ -83,8 +83,8 @@ int main(int ac, const char* av[])
         	("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit-score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
-        	("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
-        	("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
+        	// ("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
+        	// ("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
         	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
         	("single-domain", "Discard secondary domains within one target sequence")
         	("no-traceback,r", "disable alignment traceback")
@@ -97,7 +97,8 @@ int main(int ac, const char* av[])
         view_options.add_options()
 			("out,o", po::value<string>(&VATParameters::output_file), "output file")
 			("outfmt,f", po::value<string>(&VATParameters::output_format)->default_value("tab"), "output format (tab/sam/paf)")
-			("forwardonly", "only show alignments of forward strand");
+			// ("forwardonly", "only show alignments of forward strand")
+			;
 
         po::options_description hidden("Hidden options");
         hidden.add_options()

@@ -87,16 +87,16 @@ void set_options(double block_size)
 	if(aligner_mode == accuracy_model) {
 		set_option(seed_signatures, 2u);
 		set_option(hit_cap, 1024u);
-		set_option(index_mode, 3u);
+		// set_option(index_mode, 1u);
 		lowmem = std::max(lowmem, 4u);
 	} else
 	if(aligner_mode == long_model) {
 		set_option(seed_signatures, 1u);
-		set_option(index_mode, 2u);
+		// set_option(index_mode, 2u);
 		//lowmem = std::max(lowmem, 4u);
 	} else if (aligner_mode == short_model) {
 		set_option(seed_signatures, 1u);
-		set_option(index_mode, 1u);
+		// set_option(index_mode, 1u);
 	}
 
 	set_option(chunk_size, block_size);

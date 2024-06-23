@@ -225,6 +225,7 @@ private:
 	{
 		uint64_t key;
 		//init buffered iterator via entry size
+		// cout<<"sh.length_+1 = "<<sh.length_+1<<endl;
 		auto_ptr<buffered_iterator> it (new buffered_iterator(ptr));
 		for(size_t i=begin;i<end;++i) 
 		{

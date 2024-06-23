@@ -99,6 +99,7 @@ void DNAMasterThread()
 	Database_file<_val> db_file;
 	timer.finish();
 	VATParameters::set_options<_val>(ref_header.block_size);
+	// kmer_set();
 	cout << "Reference = " << VATParameters::database << endl;
 	// cout << "Sequences = " << ref_header.sequences << endl;
 	// cout << "Letters = " << ref_header.letters << endl;

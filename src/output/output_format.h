@@ -245,7 +245,19 @@ class Sam_format : public Output_format<_val>
 	public:
 	Sam_format()
 	{ }
-
+	static bool containsSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length()) {
+			std::string strSuffix = str.substr(str.length() - suffix.length());
+			return strSuffix == suffix;
+		}
+		return false;
+	}
+	static std::string removeSuffix(const std::string& str, const std::string& suffix) {
+		if (str.length() >= suffix.length() && str.substr(str.length() - suffix.length()) == suffix) {
+			return str.substr(0, str.length() - suffix.length());
+		}
+		return str;
+	}
 	virtual void print_match(const VATMatchRecord<_val> &r, Text_buffer &out) const
 	{
     // std::string qname =  r.query_name();         // Query template name
@@ -259,6 +271,73 @@ class Sam_format : public Output_format<_val>
     // int tlen = 0;                        // Observed template length
     // std::string seq = "AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG"; // Segment sequence
     // std::string qual = "*";  
+		// int deltaS = r.score;
+		// double probWrong = pow(10.0, -deltaS / 10.0);
+		// int mapq = static_cast<int>(-10.0 * log10(probWrong));
+		// out << r.query_name() << '\t'
+		// 		<< '0' << '\t'
+		// 		<< r.subject_name << '\t'
+		// 		<< r.subject_begin+1 << '\t'
+		// 		<< "60" << '\t';
+
+		// print_cigar(r, out);
+
+		// out << '\t'
+		// 		<< '*' << '\t'
+		// 		<< '0' << '\t'
+		// 		<< '0' << '\t'
+		// 		<< sequence<const _val> (&r.query()[r.translated_query_begin], r.translated_query_len) << '\t'
+		// 		<< '*' << '\t';
+		// // 		<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
+		// // 		<< "NM:i:" << r.len - r.identities << '\t'
+		// // 		<< "ZL:i:" << r.total_subject_len << '\t'
+		// // 		<< "ZR:i:" << r.score << '\t'
+		// // 		<< "ZE:f:";
+		// // out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+		// // out << '\t'
+		// // 		<< "ZI:i:" << r.identities*100/r.len << '\t'
+		// // 		<< "ZF:i:" << blast_frame(r.frame) << '\t'
+		// // 		<< "ZS:i:" << r.query_begin+1 << '\t'
+		// // 		<< "MD:Z:";
+
+		// // print_md(r, out);
+		// out << '\n';
+		if ((containsSuffix(r.query_name(),"_minus")))
+		{
+			string qry_name = removeSuffix(r.query_name(),"_minus");
+			int deltaS = r.score;
+			double probWrong = pow(10.0, -deltaS / 10.0);
+			int mapq = static_cast<int>(-10.0 * log10(probWrong));
+			out << qry_name << '\t'
+					<< '0' << '\t'
+					<< r.subject_name << '\t'
+					<< r.subject_begin+1 << '\t'
+					<< "60" << '\t';
+
+			print_cigar(r, out);
+
+			out << '\t'
+					<< '*' << '\t'
+					<< '0' << '\t'
+					<< '0' << '\t'
+					<< sequence<const _val> (&r.query()[r.translated_query_begin], r.translated_query_len) << '\t'
+					<< '*' << '\t';
+			// 		<< "AS:i:" << (uint32_t)ScoreMatrix::get().bitscore(r.score) << '\t'
+			// 		<< "NM:i:" << r.len - r.identities << '\t'
+			// 		<< "ZL:i:" << r.total_subject_len << '\t'
+			// 		<< "ZR:i:" << r.score << '\t'
+			// 		<< "ZE:f:";
+			// out.print_e(ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size()));
+			// out << '\t'
+			// 		<< "ZI:i:" << r.identities*100/r.len << '\t'
+			// 		<< "ZF:i:" << blast_frame(r.frame) << '\t'
+			// 		<< "ZS:i:" << r.query_begin+1 << '\t'
+			// 		<< "MD:Z:";
+
+			// print_md(r, out);
+			out << '\n';
+		}
+		else{	
 		int deltaS = r.score;
 		double probWrong = pow(10.0, -deltaS / 10.0);
 		int mapq = static_cast<int>(-10.0 * log10(probWrong));
@@ -290,6 +369,8 @@ class Sam_format : public Output_format<_val>
 
 		// print_md(r, out);
 		out << '\n';
+		}
+
 	}
 
 	void print_md(const VATMatchRecord<_val> &r, Text_buffer &buf) const
