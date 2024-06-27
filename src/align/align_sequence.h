@@ -49,7 +49,7 @@ void align_sequence(vector<Segment<_val> > &matches,
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 10)
+			if (ds.len >= 5)
 			{
 				diagonalsegment_.push_back(ds);
 			}
@@ -156,7 +156,7 @@ else if(VATParameters::dna_homology)
 			const _val* sbj = ref->data(i->subject_);
 			const _val* qry = &query[i->seed_offset_];
 			DiagonalSeeds<_locr,_locl> ds = ungappedSeeds<_val, _locr,_locl> (qry, sbj,(int)i->seed_offset_,(int)l.second,*i);
-			if (ds.len >= 10)
+			if (ds.len >= 5)
 			{
 				diagonalsegment_.push_back(ds);
 			}
@@ -189,6 +189,7 @@ else if(VATParameters::dna_homology)
 	}
 	else
 	{
+		// std::cout << "align_sequence" <<std::endl;
 		vector<DiagonalSeeds<_locr,_locl> > diagonalsegment_;
 		for(typename Trace_pt_buffer<_locr,_locl>::Vector::iterator i = begin; i != end; ++i)
 		{
@@ -213,9 +214,9 @@ else if(VATParameters::dna_homology)
 		int max_gap = 50000; 
 		int maxIndel = 0; 
 		int maxLocalDistance = 40;
-		 
+		// cout<<"chaining seeds"<<'\t'; 
 		seeds = chainingSeeds(diagonalsegment_, max_gap,maxIndel,maxLocalDistance);
-
+		// cout<<"chaining seeds"<<'\t'; 
 		for (size_t i = 0; i < seeds.size(); i++)
 		{
 			Hits<_locr,_locl> h = seeds[i].hit_;

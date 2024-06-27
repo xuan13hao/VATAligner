@@ -34,9 +34,9 @@ class TimerTools : public boost::timer::cpu_timer
 		if(!msg_)
 			return;
 		if(print_ && !VATParameters::debug_log)
-			log_stream << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
+			verbose_stream << boost::timer::format(elapsed(), 1, "[%ws]") << endl;
 		else {
-			verbose_stream << ' ' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
+			log_stream << ' ' << msg_ << boost::timer::format(elapsed(), 1, " [%ws]") << endl;
 		}
 		msg_ = 0;
 	}
@@ -44,10 +44,10 @@ private:
 	void start(const char *msg)
 	{
 		if(print_ && !VATParameters::debug_log) {
-			log_stream << msg << "... " << std::flush;
+			verbose_stream << msg << "... " << std::flush;
 			fflush(stdout);
 		} else
-			verbose_stream << msg << "..." << endl;
+			log_stream << msg << "..." << endl;
 	}
 	bool print_;
 	const char *msg_;

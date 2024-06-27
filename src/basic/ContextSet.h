@@ -315,10 +315,10 @@ else
 			// po::set_option(po::gapped_xdrop, 30);
 			// po::set_option(po::padding, 8);
 			// po::set_option(po::lowmem, 1u);
-			po::gap_open = 0;
+			// po::gap_open = 0;
 			// VATParameters::lowmem = 1;
 			// VATParameters::penalty = -4;
-			po::gap_extend = 0;
+			// po::gap_extend = 0;
 			// VATParameters::match = 5;
 			// VATParameters::penalty = -4;
 			po::padding = 8;

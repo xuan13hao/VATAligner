@@ -36,6 +36,7 @@ void alignQueries(typename Trace_pt_list<_locr,_locl>::iterator begin,
 	typename Map_t::Iterator i = hits.begin();
 	while(i.valid() && !exception_state()) 
 	{
+		// cout<<"align_read ............"<<endl;
 		align_read<_val,_locr,_locl>(buffer, st, i.begin(), i.end());
 		++i;
 	}
@@ -55,6 +56,7 @@ struct Align_context
 		Statistics st;
 		size_t i=0;
 		//vector to store
+		// cout<<"Align_context............."<<endl;
 		typename Trace_pt_list<_locr,_locl>::Query_range query_range (trace_pts.get_range());
 		_buffer *buffer = 0;
 		while(queue.get(i, buffer, query_range) && !exception_state()) {
@@ -89,7 +91,7 @@ void alignQueries(const Trace_pt_buffer<_locr,_locl> &trace_pts, OutputStreamer*
 	Trace_pt_list<_locr,_locl> v;
 	for(unsigned bin=0;bin<trace_pts.bins();++bin) 
 	{
-		log_stream << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
+		// cout << "Processing query bin " << bin+1 << '/' << trace_pts.bins() << '\n';
 		TimerTools timer ("Loading trace points", false);
 		trace_pts.load(v, bin);
 

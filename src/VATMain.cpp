@@ -48,8 +48,8 @@ int main(int ac, const char* av[])
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min-score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
-        	("long-read", "enable long-read mode (default: short)")
-			("accuracy", "enable accuracy mode")
+        	// ("long-read", "enable long-read mode (default: short)")
+			// ("accuracy", "enable accuracy mode")
         	("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(1), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
@@ -73,7 +73,7 @@ int main(int ac, const char* av[])
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
 			("seed-freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
-			("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
+			// ("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max-hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
        		("id2", po::value<unsigned>(&VATParameters::min_identities)->default_value(0), "minimum number of identities for stage 1 hit")
         	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
@@ -85,11 +85,12 @@ int main(int ac, const char* av[])
         	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
         	// ("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	// ("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
-        	("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
-        	("single-domain", "Discard secondary domains within one target sequence")
-        	("no-traceback,r", "disable alignment traceback")
+        	// ("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
+        	// ("single-domain", "Discard secondary domains within one target sequence")
+        	// ("no-traceback,r", "disable alignment traceback")
 			("for_only", "only forward strand alignment")
-        	("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)");
+        	// ("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)")
+			;
 	
         	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
 
@@ -115,19 +116,19 @@ int main(int ac, const char* av[])
         po::store(po::command_line_parser(ac, av).options(cmd_line_options).positional(positional).run(), vm);
         po::notify(vm);
 
-        if(vm.count("long-read"))
-		{
-			VATParameters::aligner_mode = VATParameters::long_model;
-		}
-		else if (vm.count("accuracy"))
-		{
-			VATParameters::aligner_mode = VATParameters::accuracy_model;
-		}
-        else
-        	VATParameters::aligner_mode = VATParameters::short_model;
+        // if(vm.count("long-read"))
+		// {
+		// 	VATParameters::aligner_mode = VATParameters::long_model;
+		// }
+		// else if (vm.count("accuracy"))
+		// {
+		// 	VATParameters::aligner_mode = VATParameters::accuracy_model;
+		// }
+        // else
+        // 	VATParameters::aligner_mode = VATParameters::short_model;
         VATParameters::alignment_traceback = (vm.count("no-traceback") == 0);
         // VATParameters::long_mode = vm.count("long") > 0;
-        VATParameters::verbose = vm.count("verbose") > 0;
+        // VATParameters::verbose = vm.count("verbose") > 0;
         VATParameters::debug_log = vm.count("log") > 0;
         VATParameters::salltitles = vm.count("salltitles") > 0;
         VATParameters::forwardonly = vm.count("forwardonly") > 0;
@@ -274,10 +275,10 @@ int main(int ac, const char* av[])
         	cout << endl << "Syntax:" << endl;
         	cout << "  VAT COMMAND [OPTIONS]" << endl << endl;
         	cout << "Commands:" << endl;
-        	cout << "  makevatdb\tBuild VAT database from a FASTA file" << endl;
-        	cout << "  protein\tAlign protein query sequences against a protein reference database" << endl;
-        	cout << "  dna\tAlign DNA query sequences against a DNA reference database" << endl;
-			cout <<"   blastx\tAlign DNA query sequences against a protein reference database" << endl;
+        	cout << "makevatdb\tBuild VAT database from a FASTA file" << endl;
+        	cout << "protein\tAlign protein query sequences against a protein reference database" << endl;
+        	cout << "dna\tAlign DNA query sequences against a DNA reference database" << endl;
+			// cout <<"blastx\tAlign DNA query sequences against a protein reference database" << endl;
         	cout << "  view\tView VAT alignment archive (vaa) formatted file" << endl;
         	cout << endl;
         	cout << general << endl << makedb << endl << aligner << endl << advanced << endl << view_options << endl;
@@ -288,12 +289,12 @@ int main(int ac, const char* av[])
 			// {
 				if (vm.count("dbtype")&&VATParameters::db_type == "nucl")
 				{
-					// VATParameters::chunk_size = 8;
+					VATParameters::chunk_size = 8;
 					RunModel::CreateDNADB();
 				}
 				else if (vm.count("dbtype")&&VATParameters::db_type == "prot")
 				{
-					// VATParameters::chunk_size = 8;
+					VATParameters::chunk_size = 8;
 					RunModel::CreateProteinDB();
 				}else
 				{
