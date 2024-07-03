@@ -9,7 +9,7 @@
 #include <boost/iostreams/device/file.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
-#include "../basic/exceptions.h"
+#include "../Commons/exceptions.h"
 #include "temp_file.h"
 
 namespace io = boost::iostreams;

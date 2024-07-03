@@ -3,11 +3,11 @@
 #define MAKE_DB_H_
 
 #include <iostream>
-#include "../basic/VATParameters.h"
-#include "../data/Reference.h"
-#include "../basic/exceptions.h"
-#include "../basic/Statistics.h"
-#include "../data/LoadSequence.h"
+#include "../Commons/VATParameters.h"
+#include "../Database/Reference.h"
+#include "../Commons/exceptions.h"
+#include "../Commons/Statistics.h"
+#include "../Database/LoadSequence.h"
 #include "../tools/seq_file_format.h"
 
 template<class _val>

@@ -1,19 +1,18 @@
 #ifndef __DNAALIGNFLOW_H__
 #define __DNAALIGNFLOW_H__
 
-
-
 #include <iostream>
 #include <boost/timer/timer.hpp>
-#include "../data/Reference.h"
-#include "../data/Queries.h"
-#include "../basic/Statistics.h"
-#include "../basic/ShapeParameter.h"
-#include "../output/join_blocks.h"
-#include "../align/align_queries.h"
-#include "../search/AlignPartition.h"
-#include "../basic/ContextSet.h"
+#include "../Database/Reference.h"
+#include "../Database/Queries.h"
+#include "../Commons/Statistics.h"
+#include "../Commons/ShapeParameter.h"
+#include "../Output/join_blocks.h"
+#include "../Alignment/queriesAlign.h"
+#include "../Filter/AlignPartition.h"
+#include "../Commons/ContextSet.h"
 #include "SearchContext.h"
+
 
 using std::endl;
 using std::cout;

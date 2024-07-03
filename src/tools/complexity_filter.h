@@ -5,7 +5,7 @@
 
 #include "../algo/blast/core/blast_seg.h"
 #include "../algo/blast/core/blast_filter.h"
-#include "../basic/value.h"
+#include "../Commons/value.h"
 
 template<class _val>
 struct Complexity_filter

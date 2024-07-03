@@ -18,8 +18,8 @@
 #include <vector>
 #include <boost/thread.hpp>
 #include <sys/stat.h>
-#include "../basic/VATConsts.h"
-#include "../basic/SeedPartition.h"
+#include "../Commons/VATConsts.h"
+#include "../Commons/SeedPartition.h"
 
 using std::vector;
 

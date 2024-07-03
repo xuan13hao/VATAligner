@@ -3,13 +3,13 @@
 #include <iostream>
 #include <iterator>
 #include <boost/program_options.hpp>
-#include "basic/VATParameters.h"
+#include "Commons/VATParameters.h"
 #include "tools/TimerTools.h"
-#include "data/Reference.h"
+#include "Database/Reference.h"
 #include "model/RunModel.h"
 #include "tools/complexity_filter.h"
-#include "basic/ContextSet.h"
-#include "output/view.h"
+#include "Commons/ContextSet.h"
+#include "Output/view.h"
 
 
 using std::cout;

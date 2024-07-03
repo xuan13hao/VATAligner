@@ -19,7 +19,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/tools/include/avx256)
 #   "${Boost_INCLUDE_DIR} ")
 
 add_executable(VAT src/VATMain.cpp
-  src/basic/VATParameters.cpp
+  src/Commons/VATParameters.cpp
   src/tools/tinythread.cpp
   src/tools/sort_simd/common.cpp
   src/tools/sort_simd/avx256/merge_util.cpp
