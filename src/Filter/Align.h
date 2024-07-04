@@ -8,7 +8,7 @@
 #include "../Commons/NuclScoreMatrix.h"
 // #include "../basic/ScoreMatrix.h"
 #include "../Commons/ShapeParameter.h"
-#include "../Filter/sse_dist.h"
+#include "../Filter/SSEFilter.h"
 #include "../Filter/MainHit.h"
 #include "../Filter/HitFilter.h"
 #include "../Filter/XdropUngapped.h"

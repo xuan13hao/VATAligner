@@ -1,6 +1,8 @@
+#ifndef __CREATEDB_H__
+#define __CREATEDB_H__
 
-#ifndef MAKE_DB_H_
-#define MAKE_DB_H_
+
+
 
 #include <iostream>
 #include "../Commons/VATParameters.h"
@@ -127,4 +129,6 @@ void CreateDNA_DB()
 }
 */
 
-#endif /* MAKE_DB_H_ */
+
+
+#endif // __CREATEDB_H__
