@@ -78,6 +78,7 @@ int		seed_len;
 bool		simd_sort;
 int		match;
 int		mismatch;
+string	spaced_seed;
 Aligner_mode aligner_mode;
 Command algn_type;
 // Kmer_mode aligner_mode;

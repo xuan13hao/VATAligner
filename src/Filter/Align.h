@@ -12,7 +12,7 @@
 #include "../Filter/MainHit.h"
 #include "../Filter/HitFilter.h"
 #include "../Filter/XdropUngapped.h"
-
+#include "../Filter/SuffixAlign.h"
 template<typename _val, typename _locr, typename _locq, typename _locl>
 void align(const _locq q_pos,
 	  const _val *query,
@@ -27,7 +27,9 @@ void align(const _locq q_pos,
 
 	if(fast_match(query, subject) < VATParameters::min_identities)
 		return;
-
+	std::string spaced_seed = VATParameters::spaced_seed;
+	if(!suffix_align(query, subject, spaced_seed))
+		return;
 	stats.inc(Statistics::TENTATIVE_MATCHES1);
 
 	unsigned delta, len;
