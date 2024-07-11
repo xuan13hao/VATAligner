@@ -180,11 +180,6 @@ else if (po::seed_len == 29)
     uint32_t idx = 29 - 8 + 1;
     po::set_option(po::index_mode, idx);
 }
-else if (po::seed_len == 30)
-{
-    uint32_t idx = 30 - 8 + 1;
-    po::set_option(po::index_mode, idx);
-}
 else if (po::seed_len == 15)
 {
     uint32_t idx = 15 - 8 + 1;
@@ -323,8 +318,8 @@ else
 			// VATParameters::penalty = -4;
 			po::padding = 8;
 			po::hit_cap = 15u;
-			po::min_identities = 24u;
-			po::gapped_xdrop = 30;	
+			po::min_identities = 15u;
+			po::gapped_xdrop = 18;	
 		}	
 		ScoreMatrix::instance = auto_ptr<ScoreMatrix> (new ScoreMatrix(po::matrix,
 				po::gap_open,

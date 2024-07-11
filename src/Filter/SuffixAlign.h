@@ -11,23 +11,21 @@ bool suffix_align( const _val *query , const _val* subject, std::string spaced_s
 {
     if(spaced_seed != "null")
     {
-        // Define the spaced seed pattern (example: 1111001111)
+        // Define the spaced seed pattern (example: 1111001111) 
         const size_t seed_length = spaced_seed.length();
 
-        const _val* q = query + VATParameters::seed_len - 1;
-        const _val* s = subject + VATParameters::seed_len - 1;
+        const _val* q = query + VATParameters::seed_len;
+        const _val* s = subject + VATParameters::seed_len;
 
         size_t seed_index = 0;
 
         while (*q != AlphabetSet<_val>::PADDING_CHAR && *s != AlphabetSet<_val>::PADDING_CHAR && seed_index < seed_length)
         {
-            // Only align positions if the spaced seed pattern allows (1)
             if (spaced_seed[seed_index] == '1')
             {
                 if (*q != *s)
                 {
-                    // Handle mismatch (custom logic based on your needs)
-                    return false; // Return false on mismatch
+                    return false;
                 }
             }
 
@@ -35,14 +33,7 @@ bool suffix_align( const _val *query , const _val* subject, std::string spaced_s
             ++q;
             ++s;
             ++seed_index;
-
-            // Reset seed index if the end of the pattern is reached
-            if (seed_index == seed_length)
-            {
-                seed_index = 0;
-            }
         }
-
         return true; // Return true if no mismatches found
     }
         else

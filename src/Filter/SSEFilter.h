@@ -1,7 +1,9 @@
+#ifndef __SSEFILTER_H__
+#define __SSEFILTER_H__
 
 
-#ifndef SSE_DIST_H_
-#define SSE_DIST_H_
+
+
 
 #ifdef __SSSE3__
 #include <tmmintrin.h>
@@ -25,13 +27,34 @@ unsigned popcount_3(uint64_t x)
 
 
 template<typename _val>
-unsigned match_block_256(const _val *x, const _val *y)
+unsigned match_block_avx2(const _val *x, const _val *y)
 {
     static const __m256i mask = _mm256_set1_epi8(0x7F);
     __m256i r1 = _mm256_loadu_si256((__m256i const*)(x));
     __m256i r2 = _mm256_loadu_si256((__m256i const*)(y));
     r2 = _mm256_and_si256(r2, mask);
-    return _mm256_movemask_epi8(_mm256_cmpeq_epi8(r1, r2));
+
+    // Perform comparison using 256-bit AVX2 registers
+    __m256i cmp_result = _mm256_cmpeq_epi8(r1, r2);
+
+    // Extract a bitmask indicating which bytes are equal
+    int bitmask = _mm256_movemask_epi8(cmp_result);
+
+    return bitmask;
+}
+template<typename _val>
+unsigned pre_filter(const _val *q, const _val *s)
+{
+	const _val *q_shift = q; 
+	const _val *s_shift = s; 
+	// unsigned result = match_block(q-8, s-8)<<16 | match_block(q+8, s+8);
+	// unsigned re_l = match_block(q+8, s+8);
+	// std::cout << "Matching bits: " << std::bitset<32>(re_l) << ": "<<re_l<<std::endl;
+	return popcount_3(match_block_avx2(q_shift-16, s_shift-16)<<32 | match_block_avx2(q_shift+16, s_shift+16)); 
+	// return popcount_3(match_block_avx2(q_shift+16, s_shift+16)); 
+	// return popcount_3(result); 
+	// return re_l;
+	// return popcount_3( match_block(q+8, s+8)); 
 }
 template<typename _val>
 unsigned match_block(const _val *x, const _val *y)
@@ -49,9 +72,9 @@ unsigned fast_match(const _val *q, const _val *s)
 template<typename _val>
 unsigned pre_match(const _val *q, const _val *s)
 {     
-    uint64_t match1 = match_block(q - 16, s - 16);
-    uint64_t match2 = match_block(q + 16, s + 16);
-    uint64_t combined = (match1 << 32) | match2; // Combine results from two 256-bit matches
+    uint64_t match1 = match_block(q - 8, s - 8);
+    uint64_t match2 = match_block(q + 8, s + 8);
+    uint64_t combined = (match1 << 16) | match2; // Combine results from two 256-bit matches
     return popcount_3(combined);
 }
 template<typename _val>
@@ -116,4 +139,6 @@ uint64_t reduced_match32(const _val* q, const _val *s, unsigned len)
 	return x;
 }
 
-#endif /* SSE_DIST_H_ */
+
+
+#endif // __SSEFILTER_H__

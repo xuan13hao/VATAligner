@@ -74,7 +74,7 @@ int main(int ac, const char* av[])
 //1111111111111111
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
-			("seed_freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
+			// ("seed_freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
 			// ("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max_hits,C", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
        		("pre_filter", po::value<unsigned>(&VATParameters::min_identities)->default_value(0), "minimum number of identities for pre-filter hit")
@@ -84,7 +84,7 @@ int main(int ac, const char* av[])
         	("ungapped_score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
         	// ("hit-band", po::value<int>(&VATParameters::hit_band)->default_value(0), "band for hit verification")
         	("hit_score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a tentative alignment")
-        	("band", po::value<int>(&VATParameters::padding)->default_value(0), "band for dynamic programming computation")
+        	("band", po::value<int>(&VATParameters::padding)->default_value(8), "band for dynamic programming computation")
         	// ("shapes,s", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
         	// ("index-mode", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
         	// ("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")

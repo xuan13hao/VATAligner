@@ -24,26 +24,23 @@ void align(const _locq q_pos,
 	stats.inc(Statistics::TENTATIVE_MATCHES0);
 	//const _val* query = QuerySeqs<_val>::data_->data(q_pos);
 	const _val* subject = ReferenceSeqs<_val>::data_->data(s);
-
-	if(fast_match(query, subject) < VATParameters::min_identities)
-		return;
 	std::string spaced_seed = VATParameters::spaced_seed;
 	if(!suffix_align(query, subject, spaced_seed))
 		return;
+	if(fast_match(query, subject) < VATParameters::min_identities)
+		return;
+	// std::string spaced_seed = VATParameters::spaced_seed;
+	// if(!suffix_align(query, subject, spaced_seed))
+	// 	return;
+	// if(pre_filter(query, subject) < VATParameters::min_identities)
+	// 	return;
+
 	stats.inc(Statistics::TENTATIVE_MATCHES1);
 
 	unsigned delta, len;
 	int score;
 	if((score = xdrop_ungapped<_val,_locr,_locq>(query, subject, ShapeConfigures::get().get_shape(sid).length_, delta, len)) < VATParameters::min_ungapped_raw_score)
 		return;
-
-	// if (sequence_type() == amino_acid)
-	// {
-	// 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
-	// 	return;
-	// }
-
-	// cout<<"len = "<<len<<", xdrop = "<<score<<", shape id = "<<sid<<", delta = "<<delta<<",shape len = "<<ShapeConfigures::get().get_shape(sid).length_<<endl;
 
 	if(!is_primary_hit<_val,_locr>(query-delta, subject-delta, delta, sid, len))
 		return;
