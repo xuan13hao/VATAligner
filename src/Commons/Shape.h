@@ -81,7 +81,7 @@ class Shape
 */
 
 
-std::vector<uint64_t> extractMinimizers(const DNA* sequence, size_t sequenceLength, size_t kmerSize, size_t windowSize) {
+inline std::vector<uint64_t> extractMinimizers(const DNA* sequence, size_t sequenceLength, size_t kmerSize, size_t windowSize) {
     std::vector<uint64_t> minimizers;
     uint64_t minSeed = std::numeric_limits<uint64_t>::max();
 
