@@ -1,0 +1,14 @@
+/home/xuan/VATAligner/build/CMakeFiles/VAT.dir
+/home/xuan/VATAligner/build/CMakeFiles/edit_cache.dir
+/home/xuan/VATAligner/build/CMakeFiles/rebuild_cache.dir
+/home/xuan/VATAligner/build/CMakeFiles/list_install_components.dir
+/home/xuan/VATAligner/build/CMakeFiles/install.dir
+/home/xuan/VATAligner/build/CMakeFiles/install/local.dir
+/home/xuan/VATAligner/build/CMakeFiles/install/strip.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/blast_core.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/edit_cache.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/rebuild_cache.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/list_install_components.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/install.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/install/local.dir
+/home/xuan/VATAligner/build/src/algo/blast/core/CMakeFiles/install/strip.dir
