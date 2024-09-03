@@ -1,3 +1,4 @@
+# Benchmark Data Preparation 
 ## Protein query and target datasets generation from Pfam for benchmark
 The process to generate target.fasta and query.fasta from Pfam-A.fa involves two main steps. First, we randomly select a specific number of sequences from a large input FASTA file, such as the Pfam-A database, while imposing a limit on the number of sequences from the same Pfam family. This ensures diversity in the selected sequences by preventing any single family from dominating the dataset. The selected sequences are written to a new FASTA file, which serves as the basis for further analysis. In the second step, we split these selected sequences into two distinct files: a query set and a search database. A specified number of sequences are randomly chosen as query sequences and written to the query.fasta file. The remaining sequences are compiled into the target.fasta file, which will serve as the search database. 
 
