@@ -106,3 +106,11 @@ We simulated silico sequencing data for the benchmark experiment. We selected 18
 wgsim -1 100 -2 100 -N mibcrobial.fna mibcrobial.r1.fq mibcrobial.r2.fq
 cat mibcrobial.r1.fq mibcrobial.r2.fq> mibcrobial.fq
 ```
+## Whole-Genome Alignment for benchmark
+
+In our study, we used a benchmark method based on the MUMmer4 genome alignment system, as described by Marçais et al. (2018), to compare the human and chimpanzee genomes. This method was selected for its ability to handle large genomic datasets with high efficiency and precision, making it ideal for whole-genome alignments. The benchmark involved aligning the current assemblies of the human genome (GRCh38) and the chimpanzee genome (PanTro4), both of which are large and complex
+### Dataset
+```
+ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/dna/, human, GRCh38
+www.ncbi.nlm.nih.gov/datasets/genome/GCA_000001515.4/, chimpanzee
+```
