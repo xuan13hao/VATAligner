@@ -6,7 +6,6 @@ The process to generate target.fasta and query.fasta from Pfam-A.fa involves two
 In the short-read genomic simulation study, Mason2 was employed to generate synthetic genomic reads extracted from a reference genome. Mason2 is a read simulator tool designed to replicate the sequencing process, allowing researchers to simulate short-read datasets with realistic sequencing errors, which are useful for benchmarking and testing various genomic tools. In this study, Mason2 was particularly useful for producing datasets with controlled characteristics, such as read length and sequencing error rates. The generated reads, formatted in the standard FASTQ format, are suitable for use as input in a wide range of short-read alignment tools, facilitating fair comparisons between them. For consistency, most of the synthetic datasets were extracted from the human genome (GRCh38), with Mason2 allowing for the generation of reads of different lengths and quantities as required for the study's objectives. By adjusting parameters such as the number of reads and the lengths of the sequences, Mason2 ensured that the simulated datasets were tailored to specific experimental conditions, https://github.com/seqan/seqan/blob/main/apps/mason2/README.mason_simulator.
 
 ```
-wget https://www.niehs.nih.gov/sites/default/files/2024-02/artbinvanillaicecream03.11.14linux64.tgz
 mason2-2.0.9-Linux-x86_64/bin/mason_simulator -ir GCA_000001405.22_GRCh38.p7_genomic.fna -n 5000000 --illumina-read-length 150 -o hg38_reads.fa -oa hg38.reads.sam
 ```
 
