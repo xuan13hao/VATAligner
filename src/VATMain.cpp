@@ -60,13 +60,14 @@ int main(int ac, const char* av[])
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
 			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
-			("simd_sort", "Double-index based on SIMD")
+			("simd_sort", "Double Index Sorting on AVX2")
 			("chimera", "Chimera alignment")
 			("circ", "Circ alignment")
 			("wga", "Whole-genome alignment")
 			("wgs", "Whole-genome sequencing")
 			("splice", "Splice alignments ")
 			("dnah", "DNA homology ")
+			("avx2", "Enable AVX2 hamming distance ")
 			("spaced", po::value<string>(&VATParameters::spaced_seed)->default_value("null"), "Spaced seed")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
         	// ("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)")
@@ -144,6 +145,7 @@ int main(int ac, const char* av[])
 		VATParameters::circ = vm.count("circ") > 0;
 		VATParameters::spilce = vm.count("splice") > 0;
         VATParameters::single_domain = vm.count("single-domain") > 0;
+		VATParameters::enable_avx2 = vm.count("avx2") > 0;
 /**
 		if (VATParameters::chimera)
 		{

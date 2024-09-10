@@ -3,14 +3,28 @@
 
 
 
-
-
+#include <immintrin.h>  // For AVX2 and SIMD instructions
+#include <iostream>
 #ifdef __SSSE3__
 #include <tmmintrin.h>
-#include <immintrin.h>
 #endif
-
+#include <stdint.h>
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 #include "../Commons/ReducedAlpha.h"
+
+unsigned popcount64(unsigned long long x)
+{
+#ifdef _MSC_VER
+    // Use MSVC's intrinsic function to count bits
+    return (unsigned)__popcnt64(x);
+#else
+    // Use GCC/Clang's built-in function to count bits
+    return __builtin_popcountll(x);
+#endif
+}
+
 //The number of 1 bits in the value of x
 unsigned popcount_3(uint64_t x)
 {
@@ -25,7 +39,15 @@ unsigned popcount_3(uint64_t x)
     return (x * h01)>>56;  //returns left 8 bits of x + (x<<8) + (x<<16) + (x<<24) + ...
 }
 
-
+template<typename _val>
+unsigned match_block(const _val *x, const _val *y)
+{
+	static const __m128i mask = _mm_set1_epi8(0x7F);
+	__m128i r1 = _mm_loadu_si128 ((__m128i const*)(x));
+	__m128i r2 = _mm_loadu_si128 ((__m128i const*)(y));
+	r2 = _mm_and_si128(r2, mask);
+	return _mm_movemask_epi8(_mm_cmpeq_epi8(r1, r2));
+}
 template<typename _val>
 unsigned match_block_avx2(const _val *x, const _val *y)
 {
@@ -38,45 +60,87 @@ unsigned match_block_avx2(const _val *x, const _val *y)
     __m256i cmp_result = _mm256_cmpeq_epi8(r1, r2);
 
     // Extract a bitmask indicating which bytes are equal
-    int bitmask = _mm256_movemask_epi8(cmp_result);
+    // int bitmask = _mm256_movemask_epi8(cmp_result);
 
-    return bitmask;
-}
-template<typename _val>
-unsigned pre_filter(const _val *q, const _val *s)
-{
-	const _val *q_shift = q; 
-	const _val *s_shift = s; 
-	// unsigned result = match_block(q-8, s-8)<<16 | match_block(q+8, s+8);
-	// unsigned re_l = match_block(q+8, s+8);
-	// std::cout << "Matching bits: " << std::bitset<32>(re_l) << ": "<<re_l<<std::endl;
-	return popcount_3(match_block_avx2(q_shift-16, s_shift-16)<<32 | match_block_avx2(q_shift+16, s_shift+16)); 
-	// return popcount_3(match_block_avx2(q_shift+16, s_shift+16)); 
-	// return popcount_3(result); 
-	// return re_l;
-	// return popcount_3( match_block(q+8, s+8)); 
-}
-template<typename _val>
-unsigned match_block(const _val *x, const _val *y)
-{
-	static const __m128i mask = _mm_set1_epi8(0x7F);
-	__m128i r1 = _mm_loadu_si128 ((__m128i const*)(x));
-	__m128i r2 = _mm_loadu_si128 ((__m128i const*)(y));
-	r2 = _mm_and_si128(r2, mask);
-	return _mm_movemask_epi8(_mm_cmpeq_epi8(r1, r2));
+    return _mm256_movemask_epi8(cmp_result);
 }
 
+
+// Function to count the number of set bits (popcount) in an integer
+unsigned popcount3(unsigned x) {
+    unsigned count = 0;
+    while (x) {
+        count += x & 1;
+        x >>= 1;
+    }
+    return count;
+}
+
+// Function to count the number of set bits in a 256-bit AVX2 register
+int popcount_256(__m256i vec) {
+    int total_popcount = 0;
+
+    // Store the 256-bit vector into an array of 32 bytes
+    alignas(32) unsigned char bytes[32];
+    _mm256_storeu_si256((__m256i*)bytes, vec);
+
+    // Count the set bits in each byte
+    for (int i = 0; i < 32; ++i) {
+        total_popcount += popcount3(bytes[i]);
+    }
+
+    return total_popcount;
+}
+
+// Function to compute the Hamming distance between two sequences using AVX2
+template<typename _val>
+int hamming_distance_avx2(const _val *q, const _val *s, size_t length) {
+    size_t i = 0;
+    int hamming_dist = 0;
+
+    // Process 32 bytes at a time using AVX2
+    for (; i + 31 < length; i += 32) {
+        __m256i vec_q = _mm256_loadu_si256((__m256i const*)(q + i));  // Load 32 bytes from q
+        __m256i vec_s = _mm256_loadu_si256((__m256i const*)(s + i));  // Load 32 bytes from s
+
+        __m256i xor_result = _mm256_xor_si256(vec_q, vec_s);  // XOR the two blocks
+        hamming_dist += popcount_256(xor_result);  // Count the number of differing bits
+    }
+	// AlphabetAttributes<_val>::ALPHABET[q[i]]
+    // Process any remaining bytes
+    for (; i < length; ++i) {
+        hamming_dist += popcount_3(AlphabetAttributes<_val>::ALPHABET[q[i]] ^ AlphabetAttributes<_val>::ALPHABET[s[i]]);
+    }
+
+    return hamming_dist;
+}
 template<typename _val>
 unsigned fast_match(const _val *q, const _val *s)
-{ return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); }
-template<typename _val>
-unsigned pre_match(const _val *q, const _val *s)
-{     
-    uint64_t match1 = match_block(q - 8, s - 8);
-    uint64_t match2 = match_block(q + 8, s + 8);
-    uint64_t combined = (match1 << 16) | match2; // Combine results from two 256-bit matches
-    return popcount_3(combined);
+{ 
+	return popcount_3(match_block(q-8, s-8)<<16 | match_block(q+8, s+8)); 
 }
+
+template<typename _val>
+unsigned fast_match_short(const _val *q, const _val *s)
+{
+	// unsigned count = popcount_3((match_block_avx2(q-8, s-8) << 16) | match_block_avx2(q+8, s+8));
+	// cout<<"count = "<<count<<"\n";
+    return popcount_3((match_block_avx2(q-8, s-8) << 16) | match_block_avx2(q+8, s+8));
+}
+
+template<typename _val>
+unsigned fast_match_forward(const _val *q, const _val *s)
+{
+    // return popcount64(match_block_avx2(q+16, s+16));
+	return popcount_3(match_block_avx2(q+16, s+16));
+}
+
+template<typename _val>
+unsigned fast_match_long(const _val *q, const _val *s)
+{
+    return popcount_3(((uint64_t)match_block_avx2(q-16, s-16) << 32) | match_block_avx2(q+16, s+16));
+}
+
 template<typename _val>
 __m128i reduce_seq_ssse3(const __m128i &seq)
 {
@@ -138,7 +202,6 @@ uint64_t reduced_match32(const _val* q, const _val *s, unsigned len)
 		x &= (1 << len) - 1;
 	return x;
 }
-
 
 
 #endif // __SSEFILTER_H__

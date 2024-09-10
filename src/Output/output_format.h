@@ -132,8 +132,16 @@ class Paf_tab_format : public Output_format<_val>
 			string qry_name = removeSuffix(r.query_name(),"_minus");
 			uint32_t sbj_start= r.subject_begin+r.subject_len;
 			uint32_t sbj_end= r.subject_begin+1;
-			// cout<<"sub start = "<<r.subject_begin<<",r.subject_len =  "<<r.subject_len<<", r.total_subject_len = "<<r.total_subject_len<<endl;
-			// cout<<"sub start = "<<sbj_start<<",sub end =  "<<sbj_end<<", r.total_subject_len = "<<r.total_subject_len<<endl;
+			double e_value = ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size());
+			const unsigned max_MAPQ = 60;
+			unsigned mapq = 0;
+			// If E-value is 0, return the maximum MAPQ
+			if (e_value <= 0.000001) {
+				mapq =  max_MAPQ;
+			}else
+			{
+				mapq = static_cast<unsigned>(-10 * std::log10(e_value));
+			}
 			out << qry_name << '\t'
 					<<r.translated_query_len<<'\t'
 					<< r.query_begin+1 << '\t'
@@ -143,13 +151,24 @@ class Paf_tab_format : public Output_format<_val>
 					<<r.subject_len<<'\t'
 					<< sbj_start<< '\t'
 					<< sbj_end<< '\t'
-					<< r.identities<< '\t'
-					<<r.len<<'\t';
+					<<r.len<<'\t'
+					<< mapq<< '\t'
+					;
 			out << '\n';
 		}
 		else{	
 			uint32_t sbj_end= r.subject_begin+r.subject_len;
 			uint32_t sbj_start= r.subject_begin+1;	
+			double e_value = ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size());
+			const unsigned max_MAPQ = 60;
+			unsigned mapq = 0;
+			// If E-value is 0, return the maximum MAPQ
+			if (e_value <= 0.000001) {
+				mapq =  max_MAPQ;
+			}else
+			{
+				mapq = static_cast<unsigned>(-10 * std::log10(e_value));
+			}
 			out << r.query_name() << '\t'
 					<<r.translated_query_len<<'\t'
 					<< r.query_begin+1 << '\t'
@@ -159,8 +178,9 @@ class Paf_tab_format : public Output_format<_val>
 					<<r.subject_len<<'\t'
 					<< sbj_start<< '\t'
 					<< sbj_end<< '\t'
-					<< r.identities<< '\t'
-					<<r.len<<'\t';
+					<<r.len<<'\t'
+					<< mapq<< '\t'
+					;
 			out << '\n';
 		}
 	}
@@ -222,7 +242,7 @@ class Paf_tab_format : public Output_format<_val>
 	}
 
 	// Function to compute the MAPQ score
-	int computeMAPQ(double probWrong) {
+	double computeMAPQ(double probWrong) {
 		// Ensure probability is within valid range (0 < p < 1)
 		if (probWrong <= 0.0 || probWrong >= 1.0) {
 			std::cerr << "Probability must be between 0 and 1 (exclusive)." << std::endl;
@@ -233,7 +253,7 @@ class Paf_tab_format : public Output_format<_val>
 		double mapq = -10.0 * log10(probWrong);
 		
 		// Round to the nearest integer
-		int mapqRounded = static_cast<int>(round(mapq));
+		double mapqRounded = static_cast<double>(round(mapq));
 		
 		return mapqRounded;
 	}
@@ -305,14 +325,21 @@ class Sam_format : public Output_format<_val>
 		if ((containsSuffix(r.query_name(),"_minus")))
 		{
 			string qry_name = removeSuffix(r.query_name(),"_minus");
-			int deltaS = r.score;
-			double probWrong = pow(10.0, -deltaS / 10.0);
-			int mapq = static_cast<int>(-10.0 * log10(probWrong));
+			double e_value = ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size());
+			const unsigned max_MAPQ = 60;
+			unsigned mapq = 0;
+			// If E-value is 0, return the maximum MAPQ
+			if (e_value <= 0.000001) {
+				mapq =  max_MAPQ;
+			}else
+			{
+				mapq = static_cast<unsigned>(-10 * std::log10(e_value));
+			}
 			out << qry_name << '\t'
 					<< '0' << '\t'
 					<< r.subject_name << '\t'
 					<< r.subject_begin+1 << '\t'
-					<< "60" << '\t';
+					<< mapq<< '\t';
 
 			print_cigar(r, out);
 
@@ -338,14 +365,21 @@ class Sam_format : public Output_format<_val>
 			out << '\n';
 		}
 		else{	
-		int deltaS = r.score;
-		double probWrong = pow(10.0, -deltaS / 10.0);
-		int mapq = static_cast<int>(-10.0 * log10(probWrong));
+			double e_value = ScoreMatrix::get().evalue(r.score, r.db_letters(), r.query().size());
+			const unsigned max_MAPQ = 60;
+			unsigned mapq = 0;
+			// If E-value is 0, return the maximum MAPQ
+			if (e_value <= 0.000001) {
+				mapq =  max_MAPQ;
+			}else
+			{
+				mapq = static_cast<unsigned>(-10 * std::log10(e_value));
+			}
 		out << r.query_name() << '\t'
 				<< '0' << '\t'
 				<< r.subject_name << '\t'
 				<< r.subject_begin+1 << '\t'
-				<< "60" << '\t';
+				<< mapq << '\t';
 
 		print_cigar(r, out);
 

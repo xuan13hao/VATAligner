@@ -27,14 +27,16 @@ void align(const _locq q_pos,
 	std::string spaced_seed = VATParameters::spaced_seed;
 	if(!suffix_align(query, subject, spaced_seed))
 		return;
-	if(fast_match(query, subject) < VATParameters::min_identities)
-		return;
-	// std::string spaced_seed = VATParameters::spaced_seed;
-	// if(!suffix_align(query, subject, spaced_seed))
-	// 	return;
-	// if(pre_filter(query, subject) < VATParameters::min_identities)
-	// 	return;
-
+	if(VATParameters::enable_avx2)
+	{
+		if(fast_match_short(query, subject) < VATParameters::min_identities)
+			return;
+	}
+	else
+	{
+		if(fast_match(query, subject) < VATParameters::min_identities)
+			return;
+	}
 	stats.inc(Statistics::TENTATIVE_MATCHES1);
 
 	unsigned delta, len;

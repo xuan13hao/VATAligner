@@ -80,6 +80,7 @@ namespace VATParameters
 	extern int		match;
 	extern int		mismatch;
 	extern string	spaced_seed;
+	extern bool	enable_avx2;
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;
 	// typedef enum { kmer=8, kmer=9,kmer=10,kmer=11, kmer=12,kmer=13,kmer=14, kmer=15,kmer=16,kmer=17, kmer=18,kmer=19,kmer=20, kmer=21,kmer=22,kmer=23, kmer=24,kmer=25,kmer=26, kmer=27,kmer=28,kmer=29, kmer=30} Kmer_mode;
 	extern Aligner_mode aligner_mode;

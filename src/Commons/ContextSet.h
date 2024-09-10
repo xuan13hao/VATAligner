@@ -203,12 +203,12 @@ else
 			// cout<<VATParameters::hit_cap<<"\t"<<VATParameters::lowmem<<"\t"<<VATParameters::min_identities<<"\t"<<VATParameters::match<<"\t"<<VATParameters::mismatch<<endl;
 			po::lowmem = 1u;
 			po::penalty = -4;
-			po::gap_extend = 0;
-			po::gap_open = 0;
+			// po::gap_extend = 0;
+			// po::gap_open = 0;
 			po::match = 1;
 			po::mismatch = -5;
-			po::penalty = -5;
-			po::reward = 1;
+			// po::penalty = -5;
+			// po::reward = 1;
 			// po::penalty = -5;
 			po::padding = 8;
 			po::hit_cap = 15u;
@@ -226,14 +226,14 @@ else
 			// VATParameters::lowmem = 1u;
 			// // VATParameters::penalty = -4;
 			// // VATParameters::gap_extend = 0;
-			po::gap_extend = 0;
-			po::gap_open = 0;
+			// po::gap_extend = 0;
+			// po::gap_open = 0;
 			po::match = 5;
 			po::mismatch = -2;
-			po::reward = 5;
-			po::penalty = -2;
+			// po::reward = 5;
+			// po::penalty = -2;
 			po::padding = 8;
-			po::hit_cap = 15;
+			po::hit_cap = 16;
 			po::min_identities = 28;
 		}
 		else if (po::whole_genome_sequencing)
@@ -292,16 +292,16 @@ else
 			// po::set_option(VATParameters::gap_extend, 0);
 			// po::set_option(po::penalty, -4);
 			// po::set_option(po::lowmem, 1u);
-			po::gap_open = 0;
+			// po::gap_open = 0;
 			// VATParameters::lowmem = 1;
-			po::penalty = -4;
-			po::gap_extend = 0;
-			po::match = 5;
-			po::reward = 5;
-			po::penalty = -4;
+			// po::penalty = -4;
+			// po::gap_extend = 0;
+			// po::match = 5;
+			// po::reward = 5;
+			// po::penalty = -4;
 			po::padding = 8;
 			po::hit_cap = 15;
-			po::min_identities = 8;
+			po::min_identities = 16;
 			po::gapped_xdrop = 18;
 		}else
 		{
