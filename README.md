@@ -1,52 +1,43 @@
-# VATAligner
+# Versatile Alignment Tool 
 
-Versatile Alignment Tool (VAT) is a fast, multi-purpose aligner for short and long nucleotide sequences mapping and protein homology search. It aims to simplify integrative sequence analysis pipelines and handle sequencing data with previously-unseen characteristics, providing an efficient and high-performance alternative to traditional multi-purpose aligners and special-purpose sequence mapping tools.
+**VATAligner** (Versatile Alignment Tool) is a fast and efficient multi-purpose sequence aligner. It supports the alignment of both short and long nucleotide sequences, as well as protein homology searches, offering a flexible solution for various sequence analysis needs.
+
+## Features
+- Supports both DNA and protein sequence alignments.
+- High-performance alignment with multi-threading capabilities.
+- Flexible input formats for FASTA/FASTQ sequences.
+- Suitable for large-scale sequence analysis in genomics and proteomics.
 
 ## Installation
 
-1. Navigate to the source directory:
-    ```sh
-    cd src/
+### Prerequisites
+- **Boost Library**: Required for VATAligner to function properly.
+
+### Steps to Install
+
+1. Clone the repository and navigate to the `src/` directory:
+    ```bash
+    git clone https://github.com/xuan13hao/VATAligner.git
+    cd VATAligner
     ```
-2. Install Boost library:
-    ```sh
+
+2. Install the Boost library by running the pre-build script (optional):
+    ```bash
     ./pre-build_boost
     ```
 
-## Usage
-
-### DNA Alignment
-1. Create a nucleotide database:
-    ```console
-    VAT makevatdb --dbtype nucl --in ../data/test_all.fa -d mt
-    ```
-2. Perform DNA alignment:
-    ```console
-    VAT dna -d mt.vatf -q ../data/test_forward_reads.fa -a match
-    VAT view -a match.vatr -o match
-    vim match
-    ```
-
-#### Example with real data:
-1. Build the nucleotide database:
-    ```console
+3. Compile the tool:
+    ```bash
+    mkdir build
+    cd build
+    cmake ..
     make
-    ./VAT makevatdb --dbtype nucl --in /home/xuan/test_data/test_data/marine.ref.fn -d marine.ref -b 1
-    ```
-2. Align DNA sequences using multiple threads:
-    ```console
-    /usr/bin/time -v ./VAT dna -d marine.ref -q /home/xuan/test_data/test_data/marine.sim.singular.fn/marine.sim.singular.fn -a marine.ref -p 4 -a match
     ```
 
-### Protein Alignment
-1. Create a protein database:
-    ```console
-    VAT makevatdb --dbtype prot --in ../data/pfam_ref.fa -d pfam
-    ```
-2. Perform protein alignment:
-    ```console
-    VAT protein -d pfam.vatf -q ../data/pfam_test.fa -a match -p 4
-    VAT view -a match.vatr -o match
-    ```
+## Performance
 
-For more detailed usage and examples, please refer to our [documentation](https://github.com/xuan13hao/VATAligner.git).
+**VATAligner** leverages multi-threading to accelerate the alignment process for large datasets. 
+
+## Help and Options
+
+For a list of available options and command-line flags, refer to the detailed documentation in the [src/README.md](src/README.md) file.
