@@ -29,7 +29,7 @@ void align(const _locq q_pos,
 		return;
 	if(VATParameters::enable_avx2)
 	{
-		if(fast_match_short(query, subject) < VATParameters::min_identities)
+		if(match_forward(query, subject) < VATParameters::min_identities)
 			return;
 	}
 	else

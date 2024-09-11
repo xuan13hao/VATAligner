@@ -129,7 +129,7 @@ unsigned fast_match_short(const _val *q, const _val *s)
 }
 
 template<typename _val>
-unsigned fast_match_forward(const _val *q, const _val *s)
+unsigned match_forward(const _val *q, const _val *s)
 {
     // return popcount64(match_block_avx2(q+16, s+16));
 	return popcount_3(match_block_avx2(q+16, s+16));
