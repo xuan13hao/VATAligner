@@ -32,9 +32,7 @@
 | `--report_id`             | Minimum identity percentage to report alignments (default: 0).                               |
 | `--gapopen`               | Gap opening penalty (default: -1, which corresponds to 11 for protein).                      |
 | `--gapextend`             | Gap extension penalty (default: -1, which corresponds to 1 for protein).                     |
-| `--reward`                | Match reward score for `blastn` only (default: 2).                                           |
 | `-S`, `--seed_len`        | Seed length (default: 15 for DNA, 8 for protein).                                            |
-| `--penalty`               | Mismatch penalty score for `blastn` only (default: -3).                                      |
 | `--match`                 | Match score (default: 5).                                                                    |
 | `--mismatch`              | Mismatch score (default: -4).                                                                |
 | `--simd_sort`             | Enable SIMD (AVX2) sorting for double-indexing.                                              |
