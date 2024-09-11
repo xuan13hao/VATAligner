@@ -27,11 +27,9 @@
 |--------------------------|----------------------------------------------------------------------------------------------|
 | `-q`, `--query`           | Input query file.                                                                            |
 | `-k`, `--maxtarget_seqs`  | Maximum number of target sequences to report (default: 25).                                  |
-| `--top`                   | Report alignments within this percentage range of top alignment score (default: 98).         |
 | `-e`, `--evalue`          | Maximum e-value to report (default: 0.001).                                                  |
 | `--min_score`             | Minimum bit score to report alignments (default: 0).                                         |
 | `--report_id`             | Minimum identity percentage to report alignments (default: 0).                               |
-| `-t`, `--tmpdir`          | Directory for temporary files (default: `/dev/shm`).                                         |
 | `--gapopen`               | Gap opening penalty (default: -1, which corresponds to 11 for protein).                      |
 | `--gapextend`             | Gap extension penalty (default: -1, which corresponds to 1 for protein).                     |
 | `--reward`                | Match reward score for `blastn` only (default: 2).                                           |
@@ -53,12 +51,10 @@
 ### Advanced Options
 | Option                | Description                                                                                |
 |-----------------------|--------------------------------------------------------------------------------------------|
-| `-C`, `--max_hits`     | Maximum number of hits to consider for one seed (default: 0).                               |
 | `--pre_filter`         | Minimum number of identities for pre-filter hit (default: 0).                               |
 | `--xdrop`              | X-drop threshold for ungapped alignment (default: 18).                                      |
 | `-X`, `--gapped_xdrop` | X-drop threshold for gapped alignment in bits (default: 18).                                |
 | `--ungapped_score`     | Minimum raw alignment score to continue local extension (default: 0).                       |
-| `--hit_score`          | Minimum score to keep a tentative alignment (default: 0).                                   |
 | `--band`               | Band size for dynamic programming computation (default: 8).                                 |
 | `--for_only`           | Enable alignment only on the forward strand.                                                |
 
