@@ -23,6 +23,7 @@
 
 2. Install the Boost library by running the pre-build script (optional):
     ```bash
+    cd src
     ./pre-build_boost
     ```
 
@@ -37,6 +38,10 @@
 ## Performance
 
 **VATAligner** leverages multi-threading to accelerate the alignment process for large datasets. 
+
+## Data Availability
+
+For information on data preparation and access, please refer to the [data_preparation/README.md](data_preparation/README.md) file.
 
 ## Help and Options
 
