@@ -77,6 +77,7 @@ namespace VATParameters
 	extern bool		circ;
 	extern int		seed_len;
 	extern bool		simd_sort;
+	extern bool		avx512;
 	extern int		match;
 	extern int		mismatch;
 	extern string	spaced_seed;

@@ -6,7 +6,7 @@ void SIMDSort(size_t N, int *&arr) {
   // Determine block size for the sorting network
   int BLOCK_SIZE = 64;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(N % BLOCK_SIZE == 0);
   for (int i = 0; i < N; i += BLOCK_SIZE) 
   {
@@ -20,7 +20,7 @@ void SIMDSort(size_t N, int64_t *&arr) {
   // Determine block size for the sorting network
   int BLOCK_SIZE = 16;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(N % BLOCK_SIZE == 0);
   for (int i = 0; i < N; i += BLOCK_SIZE) {
     SortBlock16<int64_t, __m256i>(arr, i);
@@ -33,7 +33,7 @@ void SIMDSort(size_t N, float *&arr) {
   // Determine block size for the sorting network
   int BLOCK_SIZE = 64;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(N % BLOCK_SIZE == 0);
   for (int i = 0; i < N; i += BLOCK_SIZE) {
     SortBlock64<float, __m256>(arr, i);
@@ -46,7 +46,7 @@ void SIMDSort(size_t N, double *&arr) {
   // Determine block size for the sorting network
   int BLOCK_SIZE = 16;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(N % BLOCK_SIZE == 0);
   for (int i = 0; i < N; i += BLOCK_SIZE) {
     SortBlock16<double, __m256d>(arr, i);
@@ -67,7 +67,7 @@ void SIMDSort(size_t N, std::pair<int, int> *&arr) {
 
   int BLOCK_SIZE = 32;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(Nkv % BLOCK_SIZE == 0);
   for (int i = 0; i < Nkv; i += BLOCK_SIZE) {
     MaskedSortBlock4x8<int, __m256i>(kv_arr, i);
@@ -97,7 +97,7 @@ void SIMDOrderBy32(std::pair<int, int> *&result_arr, size_t N, std::pair<int, in
   // 4 rows of 4 K-V(8 total) pairs = 32 values
   int BLOCK_SIZE = 32;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(Nkv % BLOCK_SIZE == 0);
   for (int i = 0; i < Nkv; i += BLOCK_SIZE) {
     MaskedSortBlock4x8<int, __m256i>(kv_arr, i);
@@ -139,7 +139,7 @@ void SIMDSort(size_t N, std::pair<float, float> *&arr) {
   // 4 rows of 4 K-V(8 total) pairs = 32 values
   int BLOCK_SIZE = 32;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(Nkv % BLOCK_SIZE == 0);
   for (int i = 0; i < Nkv; i += BLOCK_SIZE) {
     MaskedSortBlock4x8<float, __m256>(kv_arr, i);
@@ -188,7 +188,7 @@ void SIMDSort(size_t N, Tuple *&arr) {
   // 2 rows of 2 K-V(4 total) pairs = 8 values
   int BLOCK_SIZE = 8;
   int p  = N % BLOCK_SIZE;
-  std::cout << "p = " <<p<< std::endl;
+  // std::cout << "p = " <<p<< std::endl;
   assert(Nkv % BLOCK_SIZE == 0);
   for (int i = 0; i < Nkv; i += BLOCK_SIZE) {
     MaskedSortBlock2x4<int64_t, __m256i>(kv_arr, i);

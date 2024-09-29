@@ -11,7 +11,7 @@
 #include <omp.h>
 
 /**
- * Common definitions
+ * Tuple Common definitions
  */
 
 class Tuple

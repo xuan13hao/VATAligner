@@ -4,6 +4,11 @@
 #include <memory>
 #include <map>
 #include "../tools/sort_simd/include/avx256/simd_sort.h"
+
+#ifdef AVX512
+#include "../tools/sort_simd/avx512/simd_sort.h"
+#endif
+
 #include "../tools/util.h"
 #include "SeedHistogram.h"
 #include "../Commons/PackedLocations.h"
@@ -389,7 +394,7 @@ private:
 		}
 		return iterators;
 	}
-	void sortSIMD(Tuple* s ,Tuple* e ) 
+	void sortSIMDAVX2(Tuple* s ,Tuple* e ) 
 	// void sortSIMD() 
 	{
 		uint64_t N = e - s;
@@ -435,6 +440,54 @@ private:
 		delete rand_arr;
 		delete soln_arr;
 	}
+	#ifdef AVX512
+	void sortSIMDAVX512(Tuple* s ,Tuple* e ) 
+	// void sortSIMD() 
+	{
+		uint64_t N = e - s;
+		uint64_t p = N % 8;
+		uint64_t n = N;
+		std::pair<uint64_t, uint64_t> *rand_arr;
+		std::pair<uint64_t, uint64_t> *soln_arr;
+		if(p != 0)
+		{   
+			n = N + 8 - p  ;
+		}
+		// allocate n memory
+		aligned_init<std::pair<uint64_t, uint64_t> >(rand_arr, n);
+		for (size_t i = 0; i < n; i++)
+		{
+			if (i < N )
+			{
+				uint64_t k = (uint64_t)s[i].key;
+				uint64_t v = (uint64_t)s[i].value;
+				// std::pair<uint64_t ,uint64_t> pair_(k,v);
+				rand_arr[i].first = k;
+				rand_arr[i].second = v;
+			}else
+			{
+				// std::pair<uint64_t ,uint64_t> Padding(MAX_uint64,MAX_uint64);
+				rand_arr[i].first = MAX_uint64;
+				rand_arr[i].second = MAX_uint64;
+			}	
+		}
+   		aligned_init<std::pair<uint64_t ,uint64_t> >(soln_arr, n);
+		std::copy(rand_arr, rand_arr + n, soln_arr);
+		avx512::SIMDSort(n, soln_arr);
+		for (size_t i = 0; i < n; i++)
+    	{
+			if ((soln_arr[i].first != MAX_uint64) && (soln_arr[i].second != MAX_uint64))
+			{
+				unsigned k = (unsigned)soln_arr[i].first;
+				_pos v = (_pos)soln_arr[i].second;
+				s[i].key = k;
+				s[i].value = v;
+			}
+    	}
+		delete rand_arr;
+		delete soln_arr;
+	}
+#endif
 
 	struct Sort_context
 	{
@@ -451,8 +504,15 @@ private:
 			if((n >= 8 && ((n != 0) && ((n & (n - 1)) == 0))) && VATParameters::simd_sort)
 			{
 				// cout<<"Using SIMD Sort "<<n<<endl;
-				sl.sortSIMD(sl.ptr_begin(seedp), sl.ptr_end(seedp));
-			}else
+				sl.sortSIMDAVX2(sl.ptr_begin(seedp), sl.ptr_end(seedp));
+			}
+			else if((n >= 8 && ((n != 0) && ((n & (n - 1)) == 0))) && VATParameters::avx512)
+			{
+			#ifdef AVX512
+				sl.sortSIMDAVX512(sl.ptr_begin(seedp), sl.ptr_end(seedp));
+			#endif
+			}
+			else
 			{
 				
 				std::sort(sl.ptr_begin(seedp), sl.ptr_end(seedp)); 

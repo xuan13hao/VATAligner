@@ -79,6 +79,7 @@ bool		simd_sort;
 int		match;
 int		mismatch;
 bool	enable_avx2;
+bool		avx512;
 string	spaced_seed;
 Aligner_mode aligner_mode;
 Command algn_type;

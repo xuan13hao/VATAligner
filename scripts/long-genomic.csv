@@ -1,0 +1,7 @@
+,Time(s),Accuracy,Memory(KB)
+VAT,181,94.94%,31999828
+ngmlr,2221,89.91%,12753140
+Minimap2,241,94.76%,28033800
+BLASR,4620,94.61%,22522208
+pblat,> 3 days,,
+vearch,> 3 days,,
