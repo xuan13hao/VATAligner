@@ -168,10 +168,9 @@ private:
 					for(unsigned k=0;k<cfg->count(); ++k)
 						if(j+cfg->get_shape(k).length_ < seq.length()+1 && cfg->get_shape(k).set_seed(key, &seq[j]))
 						{
-							// count++;
-							// cout<<"index = "<<cfg->get_shape(k).weight_<<endl;
+
 							++data_[cfg->mode()][k][seqp][seed_partition(key)];
-							// cout<<" model = "<<cfg->mode()<<endl;
+
 						}
 
 				}

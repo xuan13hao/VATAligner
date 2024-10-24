@@ -28,7 +28,7 @@ int main(int ac, const char* av[])
         po::options_description general("General options");
         general.add_options()
             ("help,h", "produce help message")
-            ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(1), "number of cpu threads")
+            ("threads,p", po::value<uint32_t>(&VATParameters::threads_)->default_value(4), "number of cpu threads")
             ("db,d", po::value<string>(&VATParameters::database), "database file")
             ("vaa,a", po::value<string>(&VATParameters::daa_file), "VAT alignment archive (vatr) file")
         	("dbtype", po::value<string>(&VATParameters::db_type), "database type (nucl/prot)");
@@ -47,7 +47,7 @@ int main(int ac, const char* av[])
 			("evalue,e", po::value<double>(&VATParameters::max_evalue)->default_value(0.001), "maximum e-value to report alignments")
         	("min_score", po::value<double>(&VATParameters::min_bit_score)->default_value(0), "minimum bit score to report alignments (overrides e-value setting)")
         	("report_id", po::value<double>(&VATParameters::min_id)->default_value(0), "minimum identity% to report an alignment")
-        	// ("index-chunks,c", po::value<unsigned>(&VATParameters::lowmem)->default_value(1), "number of chunks for index processing")
+        	("chunks", po::value<unsigned>(&VATParameters::lowmem)->default_value(1), "number of chunks for index processing")
         	("tmpdir,t", po::value<string>(&VATParameters::tmpdir)->default_value("/dev/shm"), "directory for temporary files")
         	("gapopen", po::value<int>(&VATParameters::gap_open)->default_value(-1), "gap open penalty, -1=default (11 for protein)")
         	("gapextend", po::value<int>(&VATParameters::gap_extend)->default_value(-1), "gap extension penalty, -1=default (1 for protein)")
@@ -56,7 +56,6 @@ int main(int ac, const char* av[])
         	("penalty", po::value<int>(&VATParameters::penalty)->default_value(-3), "mismatch penalty score (blastn only)")
 			("match", po::value<int>(&VATParameters::match)->default_value(5), "match score (5)")
 			("mismatch", po::value<int>(&VATParameters::mismatch)->default_value(-4), "mismatch score (-4)")
-			// ("whole-genome", po::value<bool>(&VATParameters::whole_genome)->default_value(0), "whole genome alignment (0)")
 			("simd_sort", "Enable Double Index Sorting on AVX2")
 			("chimera", "Enable Chimera alignment")
 			("circ", "Enable Circ alignment")
@@ -65,18 +64,15 @@ int main(int ac, const char* av[])
 			("splice", "Enable Splice alignments ")
 			("dnah", "Enable DNA homology ")
 			("avx2", "Enable AVX2 hamming distance ")
-			("spaced", po::value<string>(&VATParameters::spaced_seed)->default_value("null"), "Spaced seed")
+			("SEN", "Enable sensitive protein alignment")
         	("matrix", po::value<string>(&VATParameters::matrix)->default_value("blosum62"), "score matrix for protein alignment")
-        	// ("seg", po::value<string>(&VATParameters::seg), "enable SEG masking of queries (yes/no)")
 			;
-//1111111111111111
         po::options_description advanced("Advanced options (0=auto)");
         advanced.add_options()
 			// ("seed_freq", po::value<double>(&VATParameters::max_seed_freq)->default_value(-20), "maximum seed frequency")
-			// ("run-len,l", po::value<unsigned>(&VATParameters::run_len)->default_value(0), "mask runs between stop codons shorter than this length")
        		("max_seeds,M", po::value<unsigned>(&VATParameters::hit_cap)->default_value(0), "maximum number of hits to consider for one seed")
-       		("pre_filter", po::value<unsigned>(&VATParameters::min_identities)->default_value(0), "minimum number of identities for pre-filter hit")
-        	("window,w", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for minimizer")
+        	("window,W", po::value<unsigned>(&VATParameters::window)->default_value(0), "window size for local hit search")
+			("minimizer,w", po::value<unsigned>(&VATParameters::mini_mizer)->default_value(10), "window size for minimizer")
         	("xdrop", po::value<int>(&VATParameters::xdrop)->default_value(18), "xdrop for ungapped alignment")
         	("gapped_xdrop,X", po::value<int>(&VATParameters::gapped_xdrop)->default_value(18), "xdrop for gapped alignment in bits")
         	("ungapped_score", po::value<int>(&VATParameters::min_ungapped_raw_score)->default_value(0), "minimum raw alignment score to continue local extension")
@@ -84,15 +80,13 @@ int main(int ac, const char* av[])
         	("pre_score", po::value<int>(&VATParameters::min_hit_score)->default_value(0), "minimum score to keep a pre-alignment")
         	("band", po::value<int>(&VATParameters::padding)->default_value(8), "band for dynamic programming computation")
         	("num_shapes,N", po::value<unsigned>(&VATParameters::shapes)->default_value(0), "number of seed shapes (0 = all available)")
-        	("mode_shape", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
-        	// ("fetch-size", po::value<unsigned>(&VATParameters::fetch_size)->default_value(4096), "trace point fetch size")
-        	// ("single-domain", "Discard secondary domains within one target sequence")
-        	// ("no-traceback,r", "disable alignment traceback")
+			("spaced", po::value<string>(&VATParameters::spaced_seed)->default_value("null"), "Spaced seed")
+			("ra", po::value<string>(&VATParameters::reduced_alphabet)->default_value("null"), "Reduced alphabet patterns (dssp.5, murphy.5, dssp.10, murphy.10, MMSEQS12,and td.10)")
+        	// ("mode_shape", po::value<unsigned>(&VATParameters::index_mode)->default_value(0), "index mode")//future interface
 			("for_only", "only forward strand alignment")
-        	// ("dbsize", po::value<size_t>(&VATParameters::db_size)->default_value(0), "effective database size (in letters)")
 			;
 	
-        	//("compress-temp", po::value<unsigned>(&program_options::compress_temp)->default_value(0), "compression for temporary output files (0=none, 1=gzip)");
+
 
         po::options_description view_options("View options");
         view_options.add_options()
@@ -115,7 +109,8 @@ int main(int ac, const char* av[])
         po::variables_map vm;
         po::store(po::command_line_parser(ac, av).options(cmd_line_options).positional(positional).run(), vm);
         po::notify(vm);
-
+        if(vm.count("SEN"))
+        	VATParameters::aligner_mode = VATParameters::accuracy_model;
 		VATParameters::lowmem = 1;
 		VATParameters::chunk_size = 4;
         VATParameters::alignment_traceback = (vm.count("no-traceback") == 0);

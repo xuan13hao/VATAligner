@@ -30,7 +30,7 @@ class Statistics
 	void print() const
 	{
 		cout << "Seed hits = " << data_[SEED_HITS] << endl;
-		cout << "Pre_Filter = " << data_[TENTATIVE_MATCHES1] << endl;
+		// cout << "Pre_Filter = " << data_[TENTATIVE_MATCHES1] << endl;
 		cout << "Matches = " << data_[OUT_MATCHES] << endl;
 	}
 

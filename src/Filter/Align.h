@@ -24,9 +24,10 @@ void align(const _locq q_pos,
 	stats.inc(Statistics::TENTATIVE_MATCHES0);
 	//const _val* query = QuerySeqs<_val>::data_->data(q_pos);
 	const _val* subject = ReferenceSeqs<_val>::data_->data(s);
-	std::string spaced_seed = VATParameters::spaced_seed;
-	if(!suffix_align(query, subject, spaced_seed))
-		return;
+	// std::string spaced_seed = VATParameters::spaced_seed;
+	// std::string reduced_alphabet = VATParameters::reduced_alphabet;
+	// if(!suffix_align(query, subject, spaced_seed,reduced_alphabet))
+	// 	return;
 	if(VATParameters::enable_avx2)
 	{
 		if(match_forward(query, subject) < VATParameters::min_identities)

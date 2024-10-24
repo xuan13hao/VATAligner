@@ -576,6 +576,38 @@ void setup_search_params<DNA>(pair<size_t,size_t> query_len_bounds, size_t chunk
 		po::set_option(po::hit_band, 6);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}	
+    switch (po::mini_mizer) {
+        case 10:
+            po::set_option(po::min_identities, 4u);
+            break;
+        case 11:
+            po::set_option(po::min_identities, 8u);
+            break;
+        case 12:
+            po::set_option(po::min_identities, 10u);
+            break;
+        case 13:
+            po::set_option(po::min_identities, 14u);
+            break;
+        case 14:
+            po::set_option(po::min_identities, 18u);
+            break;
+        case 15:
+           po::set_option(po::min_identities, 22u);
+            break;
+        case 16:
+            po::set_option(po::min_identities, 24u);
+            break;
+        case 17:
+            po::set_option(po::min_identities, 28u);
+            break;
+        case 18:
+            po::set_option(po::min_identities, 30u);
+            break;
+        default:
+            po::set_option(po::min_identities, 28u);
+            break;
+    }
 }
 
 
@@ -609,6 +641,38 @@ void setup_search_params<Protein>(pair<size_t,size_t> query_len_bounds, size_t c
 		po::set_option(po::hit_band, 5);
 		po::set_option(po::min_hit_score, ScoreMatrix::get().rawscore(std::min(29.0, b)));
 	}
+    switch (po::mini_mizer) {
+        case 4:
+            po::set_option(po::hit_cap, 10000u);
+            break;
+        case 5:
+            po::set_option(po::hit_cap, 4096u);
+            break;
+        case 6:
+            po::set_option(po::hit_cap, 2048u);
+            break;
+        case 7:
+            po::set_option(po::hit_cap, 1024u);
+            break;
+        case 8:
+            po::set_option(po::hit_cap, 512u);
+            break;
+        case 9:
+           po::set_option(po::hit_cap, 256u);
+            break;
+        case 10:
+            po::set_option(po::hit_cap, 128u);
+            break;
+        case 11:
+            po::set_option(po::hit_cap, 64u);
+            break;
+        case 12:
+            po::set_option(po::hit_cap, 32u);
+            break;
+        default:
+            po::set_option(po::hit_cap, 2048u);
+            break;
+    }
 }
 
 #endif /* SETUP_H_ */

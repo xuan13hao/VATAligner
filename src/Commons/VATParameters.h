@@ -80,6 +80,8 @@ namespace VATParameters
 	extern bool		avx512;
 	extern int		match;
 	extern int		mismatch;
+	extern unsigned		mini_mizer;
+	extern string	reduced_alphabet;
 	extern string	spaced_seed;
 	extern bool	enable_avx2;
 	typedef enum { short_model=0, long_model=1,accuracy_model=3 } Aligner_mode;

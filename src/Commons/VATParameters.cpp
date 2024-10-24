@@ -79,6 +79,8 @@ bool		simd_sort;
 int		match;
 int		mismatch;
 bool	enable_avx2;
+unsigned		mini_mizer;
+string	reduced_alphabet;
 bool		avx512;
 string	spaced_seed;
 Aligner_mode aligner_mode;
@@ -89,8 +91,9 @@ void set_options(double block_size)
 {
 	if(aligner_mode == accuracy_model) {
 		set_option(seed_signatures, 2u);
-		set_option(hit_cap, 1024u);
+		set_option(hit_cap, 10000u);
 		set_option(index_mode, 1u);
+		set_option(min_identities, 0u);
 		// lowmem = std::max(lowmem, 4u);
 	} else
 	if(aligner_mode == long_model) {
